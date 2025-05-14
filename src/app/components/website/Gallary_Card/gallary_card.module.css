@@ -1,0 +1,14 @@
+.parent{
+    min-width: 331px;
+    min-height: 452px;
+    background-color: var(--Primary-color);
+    position: relative;
+    & h3{
+        color: white;
+        font-size: 24px;
+        font-weight: 500;
+        position: absolute;
+        bottom: 20%;
+        left: 10%;
+    }
+}

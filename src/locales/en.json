@@ -1,0 +1,300 @@
+{
+    "alerts":{
+        "success":{
+            "title":"Success",
+            "text":"Your action was successful"
+        },
+        "error":{
+            "title":"Error",
+            "text":"An error occurred, please try again"
+        },
+        "warning":{
+            "title":"Warning",
+
+            "wrong_passowrd_or_email":"The email or password you entered is incorrect",
+            "confirm_password_not_match":"Your passwords do not match",
+            "missing_data":"Please fill in all required fields",
+
+            "wrong_phone_number":"Please enter a valid phone number",
+            "wrong_email":"Please enter a valid email",
+
+            "wrong_password":"Please enter a valid password with at least \n 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character",
+            "wrong_data":"Please enter a valid information"
+            
+        },
+        "info":{
+            "title":"Info",
+            "text":"Here is some information for you"
+        },
+        "confirm":{
+            "title":"Confirm",
+            "text":"Are you sure you want to proceed?"
+        },
+        "cancel":{
+            "title":"Cancel",
+            "text":"Your action has been canceled"
+        }
+    },
+
+    "common":{
+        "loading":"Loading...",
+        "no_data":"No data available",
+        "search":"Search",
+        "save":"Save",
+        "delete":"Delete",
+        "edit":"Edit",
+        "update":"Update",
+        "add":"Add",
+        "remove":"Remove",
+        "yes":"Yes",
+        "no":"No",
+        "ok":"OK",
+        "cancel":"Cancel"
+    },
+
+
+    "aside_component":{
+        "title":"LAEQ FOOD SAFETY",
+
+        "dashboard":"Dashboard",
+        "checklist":"Checklist",
+        "reports":"Reports",
+        "actions":"Actions",
+        "assets":"Assets",
+
+        "users":"Users",
+        "roles":"Roles",
+        "company":"Company",
+        "department":"Department",
+        "inspector_requests":"Inspector Requests",
+        "payments_plans":"Payments & Plans",
+        "settings":"Settings"
+
+    },
+
+    "table_component":{
+        "search":"Search",
+        "date":"Date : ",
+        "filter":"Filter",
+        "filter_status":{
+            "title":"Select Status",
+            "reset":"Reset",
+            "all":"All",
+            "completed":"Completed",
+            "pending":"Pending",
+            "in_progress":"In progress",
+            "approved":"Approved",
+            "rejected":"Rejected",
+            "not_started":"Not started",
+            "active":"Active",
+            "inactive":"Inactive",
+            "archived":"Archived",
+            "draft":"Draft",
+            "published":"Published",
+            "unpublished":"Unpublished"
+        },
+        "tbfooter":{
+            "previous":"Previous",
+            "next":"Next"
+        },
+            "client_dashboard":{
+                "reports":{
+                    "tb_headers":{
+                        "id":"Report ID",
+                        "name":"Report Name",
+                        "company":"Company",
+                        "site":"Site",
+                        "submitted_by":"Submitted By",
+                        "date":"Date",
+                        "score":"Score",
+                        "status":"Status"
+                    },
+                    "button_title":"Print",
+                    "button_title2":"Automation"
+                },
+                "actions":{},
+                "assets":{},
+                "roles":{},
+                "company":{},
+                "department":{},
+                "inspector_requests":{}
+            }
+    },
+
+    "nave_bar_component":{
+        "home":"Home",
+        "sectors":"Sectors",
+        "pricing":"Pricing",
+        "about_us":"About us",
+        "contact_us":"Contact Us",
+
+        "login_btn":"Login"
+    },
+
+    "footer_component":{
+        "reach_us":"Reach us",
+        "legal":{
+            "title":"Legal",
+            "privacy_policy":"Privacy Policy",
+            "terms_services":"Terms & Services",
+            "terms_of_use":"Terms of Use"
+
+        },
+        "company":"Company"
+    },
+
+    "login_screen":{
+        "title":"Welcome back",
+        "subtitle":"",
+        "email_label":"Email",
+        "password_label":"Password",
+        "submit_button":"login",
+        "OR":"or",
+        "google_login":"Log in with Google",
+        "Do_not_have_account":"Don’t have an account?",
+        "signup":"Sign up for free"
+    },
+
+    "signup_screen":{
+        "title":"Create free trial an Account",
+        "full_name_label":"Full name",
+        "email_label":"Email",
+        "Phone_number_label":"Phone number",
+        "password_label":"Password",
+        "Confirm_Password_label":"Confirm Password",
+        "submit_button":"Signup",
+        "OR":"or",
+        "google_signup":"Sign up with Google",
+        "already_have_an_account":"Already have an account!",
+        "login":"Log-in"
+    },
+
+    "contact_us":{
+        "title":"Get in",
+        "special_word":" Touch ",
+        "subtitle":"Enim tempor eget pharetra facilisis sed maecenas adipiscing. Eu leo molestie vel, ornare non id blandit netus.",
+
+
+        "full_name_placeholder":"Name *",
+        "email_placeholder":"Email *",
+        "Phone_number_placeholder":"Phone number *",
+        "how_did_you_find_us_placeholder":"How did you find us?",
+
+        "Phone_number":"Phone number",
+        "whatsup":"Email",
+        "email":"Full name",
+
+        "submit_button":"send"
+
+    },
+
+    "not_found_screen":{
+        "title":"OOPS ! PAGE NOT FOUND",
+        "text":"Sorry the page you are looking for does not exist",
+        "go_back_btn":"Go back to Home page"
+    },
+
+    "website":{
+        "home_screen":{
+            "header":{
+                "first_title":"Simplify safety and ",
+                "special_word":"food",
+                "second_title":" management for teams everywhere",
+
+                "get_started_btn":"Get Started",
+                "free_trial_btn":"Start Free Trial"
+            },
+            "partners":"Over 1k+ Companies growing with Lauq",
+            "features":{
+                "first_title":"Powerful ",
+                "special_word":" Features ",
+                "second_title":" to Transform Your Workflow",
+                "subtitle":"Explore a suite of intuitive tools designed to simplify your processes",
+
+                "boxe1":{
+                        "title":"Assets",
+                        "subtitle":"Lorem ipsum dolor sit amet, consdter adipis elit, sed do eiusmod tempor incididu"
+                },
+
+                "boxe2":{
+                        "title":"Inspections",
+                        "subtitle":"Lorem ipsum dolor sit amet, consdter adipis elit, sed do eiusmod tempor incididu"
+                },
+
+                "boxe3":{
+                        "title":"Reports",
+                        "subtitle":"Lorem ipsum dolor sit amet, consdter adipis elit, sed do eiusmod tempor incididu"
+                }
+            },
+            "sectors":{
+                "title":"Sectors",
+                "subtitle":"Streamline Safety and Quality in Food & Beverage",
+                "text":"Elevate your food and beverage operations with tools designed to ensure safety, maintain compliance, and uphold the highest quality standards. From managing inspections to tracking assets and generating real-time reports, our platform simplifies complex workflows",
+                "btn":"Start free trial"
+            },
+            "soluions":{
+                "first_title":"Solutions That Fit Every  ",
+                "special_word":"  Sectors ",
+                "subtitle":"Streamline operations and maintain compliance with tools"
+            },
+            "assets":{
+                "title":"Assets",
+                "subtitle":"Building a Foundation of Trust and Protection",
+                "text":"assets aimed at building a strong safety culture can include interactive safety guides, online training modules, safety policy documentation, and a user-friendly reporting system. These assets not only provide essential resources for users but also promote a proactive approach to safety."
+            },
+            "actions":{
+                "first_title":"Discover the ",
+                "special_word":" Power ",
+                "second_title":"in Action",
+                "subtitle":"Watch quick videos to see how our platform simplifies workflows, enhances safety, and empowers teams to perform at their best."
+            },
+
+            "experience":{
+                "title":"Experience the Difference",
+                "text":"Get A Personalized Live Demo Tailored To Your Needs, Or Kickstart Your Journey With A 7-Day FREE Trial—no Credit Card Required, No Strings Attached.",
+                "get_started_btn":"Get Started",
+                "free_trial":"Start a free trial"
+            }
+        },
+
+        "pricing_screen":{
+            "title":"Powerful features for ",
+            "special_word":"Powerful Companies",
+            "subtitle":"Choose a plan that’s right for you",
+            "pay_monthly":"Pay Monthly",
+            "pay_yearly":"Pay Yearly"
+        },
+
+        "about_us_screen":{
+            "header":{
+                "title":"About Us",
+                "subtitle":"Lauq empowers teams to streamline safety and food management with ease. Our intuitive tools ensure compliance, improve efficiency, and support seamless collaboration across all operations. Simplify your processes and focus on delivering excellence—every time, everywhere.",
+                "get_started_btn":"Get Started",
+                "free_trial_btn":"Start Free Trial"
+            },
+
+            "busniess_section":{
+                "suptitle":"Why Should you work with us",
+                "title":"To upscale your business to the next level",
+                "cards":{
+                    "experience":"Years of sectors experience",
+                    "clients":"Clients",
+                    "brands":"Trusted by Leading Brands",
+                    "service":"Fulltime customer service"
+                }
+            },
+
+            "team_section":{
+                "title":"Team",
+                 "special_word":"Management"
+            },
+
+            "brands_section":{
+                "first_title":"Beloved by trusted ",
+                "special_word":" brands ",
+                "second_title":" worldwide"
+            }
+        }
+    }
+
+}

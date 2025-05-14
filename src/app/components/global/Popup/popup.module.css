@@ -1,0 +1,35 @@
+.backGround{
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 9999;
+    background-color: #00000099;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    .popup{
+        width: 40%;
+        min-width: 350px;
+        height: 405px;
+        border-radius: 16px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+
+        .icon{
+            color: var(--Secondary-color);
+            font-size: 8rem;
+        }
+
+        & p{
+            font-weight: 500;
+            font-size: 1.8rem;
+        }
+    }
+}

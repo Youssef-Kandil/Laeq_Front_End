@@ -1,0 +1,51 @@
+.parent{
+    background-color: #EEEEEE80;
+    .mainContainer {
+        background-color: #FFF;
+        min-height: 100vh;
+        width: 98%;
+        margin: 10px auto;
+        border-radius: 8px;
+        padding: 22px 16px;
+    }
+    && nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #f0f1fa ;
+        color: rgba(140, 146, 147, 1);
+        && div {
+            cursor: pointer;
+            padding: 12px;
+        }
+    }
+}
+
+
+.AccountInfo{
+    .InputsContainer{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        column-gap: 20px;
+        height: fit-content;
+        margin: 30px 10px 20px;
+        && div{
+            flex: 1;
+            height: fit-content;
+        }
+    }
+    .ImageInputContainer{
+        margin: 30px 10px 20px;
+    }
+
+    .btnContainer {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin: 0px 10px ;
+        && p{
+            cursor: pointer;
+        }
+    }
+}
