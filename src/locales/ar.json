@@ -1,0 +1,54 @@
+
+{
+
+    "nave_bar_component":{
+        "home":"الرئيسية",
+        "sectors":"التخصصات",
+        "pricing":"الباقات",
+        "about_us":"عنا",
+        "contact_us":"تواصل معنا",
+
+        "login_btn":"تسجيل "
+    },
+
+    "login_screen":{
+        "title":"اهلا بعودتك",
+        "subtitle":"",
+        "email_label":"البريد الإلكتروني",
+        "password_label":"كلمة المرور",
+        "OR":"أو",
+        "submit_button":"تسجيل الدخول",
+         "google_login":"تسجيل الدخول باستخدام جوجل",
+        "Do_not_have_account":"ليس لديك حساب؟",
+        "signup":"انشاء حساب مجانا"
+    },
+
+    "signup_screen":{
+        "title":"انشئ حساب جديد",
+        "full_name_label":"Full name",
+        "email_label":"Email",
+        "Phone_number_label":"Phone number",
+        "password_label":"Password",
+        "Confirm_Password_label":"Confirm Password",
+        "submit_button":"Signup",
+        "OR":"or",
+        "google_signup":"Sign up with Google"
+    },
+    "website":{
+    "hi":"اختبار",
+        "home_screen":{
+            "header":{
+                "first_title":"نضمن لك أمان عالي في",
+                "special_word":"الغذاء",
+                "second_title":" و ادارة للفريق من اي مكان"
+            },
+            "partners":{},
+            "features":{},
+            "sectors":{},
+            "soluions":{},
+            "assets":{},
+            "actions":{},
+            "experience":{}
+        }
+    }
+}

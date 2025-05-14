@@ -1,0 +1,22 @@
+.ScoreInput{
+    margin: 10px 0;
+    && span {
+        display: inline-block;
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    .boxsContainer{
+        display: flex;
+        gap: 10px;
+        .Box{
+            width: 45px;
+            height: 45px;
+            border-radius: 4px;
+            padding: 10px;
+            border: 1px solid rgba(224, 226, 231, 1);
+            text-align: center;
+            cursor: pointer;
+        }
+    }
+}

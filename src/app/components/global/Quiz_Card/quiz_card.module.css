@@ -1,0 +1,43 @@
+.parent{
+    background-color: #FFFFFF;
+    width: 98%;
+    min-width: 340px;
+    margin: 10px auto;
+    height: 80px;
+    border-radius: 8px;
+    padding: 10px 40px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s;
+    & section{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        /* background-color: black; */
+        & img{
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+        }
+        & h3{
+            font-size: 18px;
+            font-weight: 500;
+        }
+        & p{
+            font-size: 14px;
+            font-weight: 500;
+            color: #BABABA;
+        }
+    }
+
+    & span {
+        font-size: 1.4rem;
+        color: var(--Secondary-color);
+        cursor: pointer;
+    }
+}
+
+.parent:hover{
+    background-color: #efeded;
+}

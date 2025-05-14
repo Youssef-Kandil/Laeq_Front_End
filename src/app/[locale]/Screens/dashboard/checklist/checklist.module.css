@@ -1,0 +1,79 @@
+.parent{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    & nav{
+        height: 80px;
+        padding: 10px 20px;
+        background-color: #FFFFFF;
+        /* background-color: #5E5E5E; */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        .pikers{
+            flex: 1;
+            display: flex;
+            align-items: center; 
+            gap:25px;         
+            .input_container{
+                flex: 1;
+                max-width: 30%;
+                display: flex;
+                align-items: center;
+                border: 1px solid #E0E2E7;
+                border-radius: 8px;
+                padding: 4px 8px;
+                font-weight: 500;
+                font-size: 14px;
+                width: fit-content;
+                & input{
+                    border: none;
+                    outline: none;
+                    padding: 4px 8px;
+                    font-weight: 500;
+                    font-size: 14px;
+                    width: 100%;
+                    color: #5E5E5E;
+                }
+            }
+
+        }
+        .button{
+            height: 40px;
+            border-radius: 6px;
+            padding-top: 14.09px;
+            padding-right: 22.14px;
+            padding-bottom: 14.09px;
+            padding-left: 22.14px;
+            gap: 7.48px;
+            background-color: var(--Secondary-color);
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            & button{
+                cursor: pointer;
+            }
+        }
+
+
+    }
+    & section{
+        /* background-color: #5E5E5E; */
+        padding: 22px 15px;
+        .title{
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .cardsList{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+    }
+}

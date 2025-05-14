@@ -1,0 +1,13 @@
+.main_layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 80px 1fr;
+    height: 100vh;
+  }
+  
+  @media (max-width: 1000px) {
+    .main_layout {
+      grid-template-columns: 60px 1fr;
+    }
+  }
+  

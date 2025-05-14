@@ -1,0 +1,41 @@
+
+.parent{
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: 16px 48px;
+    margin-top: 200px;
+}
+.section{
+
+   & h3{
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 24px;
+    }
+    & div{
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        .icon{
+            color:  var(--Primary-color);
+        }
+       & p{
+            font-size: 16px;
+            font-weight: 400;
+            color: #323135;
+            max-width: 280px;
+            text-wrap: wrap;
+        }
+
+       & span{
+            width: 44px;
+            height: 44px;
+            margin-top: 10px;
+            border-radius: 15px;
+            background-color: var(--Primary-color);
+        }
+    }
+}

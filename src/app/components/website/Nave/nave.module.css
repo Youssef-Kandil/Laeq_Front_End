@@ -1,0 +1,36 @@
+.parent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 48px;
+    .titles{
+        /* flex: 2; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 55px;
+       & p{
+            font-weight: 400;
+            font-size: 18px;
+            color: #323135;
+            cursor: pointer;
+        }
+    }
+    
+    .nav_configs{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 25px;
+        .login_btn{
+            color: white;
+            background-color: var(--Primary-color);
+            padding: 14px 40px;
+            border-radius: 16px;
+            width: fit-content;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+    }
+}
