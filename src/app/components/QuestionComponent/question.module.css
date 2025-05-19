@@ -1,0 +1,15 @@
+.Question{
+    /* margin: 50px 20px 100px 20px; */
+    padding:50px 20px 100px 20px ;
+    margin: 20px;
+    background-color: #FFF;
+    border-radius: 8px;
+    && h2{
+        font-family: Roboto;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 20px;
+        letter-spacing: 0.5%;
+        color:rgba(50, 49, 53, 1);
+    }
+}

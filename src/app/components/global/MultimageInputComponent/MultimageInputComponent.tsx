@@ -7,6 +7,7 @@ import { resizeAndConvert } from '@/app/utils/imageHelpers';
 
 interface Props {
   label: string;
+  placeholder:string;
   onChange?: (previews: string[], blobs: Blob[]) => void;
   maxWidth?: number;
   maxHeight?: number;
@@ -15,6 +16,7 @@ interface Props {
 
 export default function MultimageInputComponent({
   label,
+  placeholder,
   onChange,
   maxWidth = 400,
   maxHeight = 400,
@@ -73,11 +75,11 @@ export default function MultimageInputComponent({
   return (
     <div className={Styles.ImageInput}>
       {error && <p className={Styles.errorMsg}>{error}</p>}
-
+          <p>{label}</p>
       <section className={Styles.holder} onClick={openFilePicker}>
         <label>
           <LuImagePlus size={30} />
-          <p>{label}</p>
+          <p>{placeholder}</p>
           <p>{previews.length} / {MAX_IMAGES}</p>
         </label>
         <input

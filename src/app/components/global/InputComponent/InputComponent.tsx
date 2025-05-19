@@ -5,7 +5,7 @@ import Styles from './InputComponent.module.css'
 interface props{
     label:string;
     placeholder:string;
-    type:React.ComponentPropsWithoutRef<'input'>['type'];
+    type?:React.ComponentPropsWithoutRef<'input'>['type'];
     value:string;
     isTextArea?:boolean
     onTyping:(value:string)=>void;

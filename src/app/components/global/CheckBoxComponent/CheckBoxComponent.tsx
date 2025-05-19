@@ -13,7 +13,7 @@ function CheckBoxComponent({label}:props) {
   return (
       <FormControlLabel 
             control={<Checkbox 
-                        defaultChecked
+                        // defaultChecked
                         // checked={isAllChecked}
                         // onChange={handelCheckAll}
                         sx={{
