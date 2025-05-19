@@ -2,6 +2,7 @@
 import React, { ReactNode } from 'react'
 // import {useLocale} from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { FaRegEye } from "react-icons/fa";
 
 import Styles from './quiz_card.module.css'
 import Image from 'next/image'
@@ -26,7 +27,7 @@ function Quiz_card({title,questionsCount,imgSrc,icon}:props) {
             <p>{questionsCount} questions</p>
         </div>
       </section>
-        <span onClick={()=>router.push(``)}>
+        <span>
             {icon}
         </span>
       

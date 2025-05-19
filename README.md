@@ -10,6 +10,8 @@ git commit -m "Initial commit"
 git branch -M main
 git remote add origin https://github.com/Youssef-Kandil/Laeq_Front_End.git
 git push -u origin main
+git push -f origin main
+
 
 
 First, run the development server:
@@ -72,7 +74,7 @@ console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
     TextArea ✅
     ImageInput ✅
     MultiImageInput ✅
-    ChooseBtn
+    ChooseBtns  ✅
     ActionBtn
     FileInput ✅
     DropListInput
@@ -123,44 +125,30 @@ console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
 
 
 
+{
+  "id": 1,
+  "text": "قيّم الخدمة",
+
+  "fields": [
+    { "id": 1, "type": "text",      "metadata": { "maxLength":5 } },
+
+    { "id": 2, "type": "long_text", "metadata": { "maxLength":500 } },
+
+    { "id": 3, "type": "image",     "metadata": { "maxFiles":1 } },
+
+    {
+      "id": 4,
+      "type": "single",
+      "options": [
+        { "id": 11, "label":"Good","value":"good" },
+        { "id": 12, "label":"Bad", "value":"bad"  }
+      ]
+    }
+  ]
+}
 
 
-        <nav>
-            <div className={Styles.pikers}>
-                <div className={Styles.input_container} onClick={()=>setShowDatePicker(false)}>
-                    <IoIosSearch style={{fontSize:22}}/>
-                    <input type="text" placeholder={t("search")} id="" />
-                </div>
 
 
-                <div id={Styles.datePiker} className={Styles.input_container}  >
-                    <span className={Styles.dateLable}>{t("date")}</span>
-                    <div>
-                        {/* <span>{`${formatDate(new Date(startData))} - ${formatDate(new Date(endData))}`}</span> */}
-                        <span>{`${formatDate(new Date(range[0].startDate ?? new Date()))} - ${formatDate(new Date(range[0].endDate ?? new Date()))}`}</span>
-                    </div>
-                    <span onClick={() => {
-                        setShowDatePicker(!showDatePicker);
-                    }} style={{cursor:'pointer'}}><MdOutlineKeyboardArrowDown/></span>
-                    {/* ========= */}
-                        {showDatePicker && (
-                            <div className={Styles.dateRange}>
-                                <DateRange
-                                editableDateInputs={true}
-                                // onChange={(item: { selection: dateRang }) => setRange([item.selection])}
-                                onChange={(rangesByKey) => handleDateRangeChange(rangesByKey, setRange)}
-                                moveRangeOnFirstSelection={false}
-                                ranges={range}
-                                rangeColors={[app_identity.secondary_color]}
-                                />
-                            </div>
-                        )}
-                    {/* ================== */}
-                </div>
 
-
-            </div>
-
-            
-        </nav>
 >>>>>>> 4caca67 (Initial commit)

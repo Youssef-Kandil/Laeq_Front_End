@@ -2,24 +2,28 @@
 import React from 'react'
 import Styles from './quizes.module.css'
 
-import { useParams } from 'next/navigation'
+import { useParams ,useRouter } from 'next/navigation'
 import {useTranslations} from 'next-intl';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { FaRegEye } from "react-icons/fa";
 
 import { LuSend } from "react-icons/lu";
 import { IoIosSearch } from "react-icons/io";
 import Quiz_card from '@/app/components/global/Quiz_Card/Quiz_card';
 
+import { useLocale } from 'next-intl';
 
+// NOTES: THE ROWS OF TEMPLATES THAT HAVE SAME PARENT CHECKLIST
 
 function Quizes() {
     const t = useTranslations('table_component');
+      const router = useRouter();
+      const current_lang = useLocale();
 
     // Start Sceleton Loading..
     //  Get Checklist ID From Params
     const params = useParams(); 
     const   { checklistID }= params
-    console.log("checklistID : ",checklistID)
 
     // Send Request To Backend To Get All Quizes OF This Checklist 
     interface QuizType {
@@ -43,7 +47,11 @@ function Quizes() {
                     imgSrc={card.srcImg} 
                     title={card.title}
                     questionsCount={card.questionsCount}
-                    icon={ <LuSend/>}/>
+                    icon={ <div  style={{display:"flex",alignItems:"center",gap:"20px"}}>
+                        <FaRegEye  
+                            onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${card.id}`)}/> 
+                        <LuSend/>
+                    </div> }/>
     })
     
     //Send Request To Backend To Get All Checklists
@@ -130,20 +138,9 @@ function Quizes() {
                 </div>
             </div>
       </nav>
+
+      
       <section>
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
-        {Cards}
         {Cards}
       </section>
     </div>
