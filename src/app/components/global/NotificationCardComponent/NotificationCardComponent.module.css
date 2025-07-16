@@ -1,0 +1,42 @@
+.parent{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px #333 solid;
+    padding: 16px;
+    .Icon{
+        background-color: rgba(104, 166, 166, 1);
+        min-height: 50px;
+        min-width: 50px;
+        border-radius: 5px;
+        margin: 0px 10px;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 36px;
+    }
+
+    .Text{
+        flex: 1;
+        margin: 0px 10px;
+        overflow: hidden;
+        & h3{
+            font-size: 14px;
+            font-weight: 400;
+        }
+        & p{
+            font-size: 16px;
+            font-weight: 300;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%; /* مهم جداً */
+            display: block;
+        }
+    }
+
+    .dateText{
+
+    }
+}

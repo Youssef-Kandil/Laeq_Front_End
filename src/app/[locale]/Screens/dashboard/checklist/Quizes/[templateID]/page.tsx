@@ -1,3 +1,4 @@
+//  ===== ROWS LIST OF Templates
 "use client";
 import React from 'react'
 import Styles from './quizes.module.css'
@@ -9,11 +10,11 @@ import { FaRegEye } from "react-icons/fa";
 
 import { LuSend } from "react-icons/lu";
 import { IoIosSearch } from "react-icons/io";
-import Quiz_card from '@/app/components/global/Quiz_Card/Quiz_card';
+import Quiz_card from '@/app/components/global/CheckList_Card/CheckList_Card';
 
 import { useLocale } from 'next-intl';
 
-// NOTES: THE ROWS OF TEMPLATES THAT HAVE SAME PARENT CHECKLIST
+// NOTES: THE ROWS OF Checklists THAT HAVE SAME PARENT template
 
 function Quizes() {
     const t = useTranslations('table_component');
@@ -21,11 +22,11 @@ function Quizes() {
       const current_lang = useLocale();
 
     // Start Sceleton Loading..
-    //  Get Checklist ID From Params
+    //  Get template ID  From Params
     const params = useParams(); 
-    const   { checklistID }= params
+    const   { templateID }= params
 
-    // Send Request To Backend To Get All Quizes OF This Checklist 
+    // Send Request To Backend To Get All Quizes OF This template 
     interface QuizType {
         id:string|number;
         title: string;
@@ -40,6 +41,7 @@ function Quizes() {
         // Set Array
         setQuizes([])
     }
+
     // Reander It (Maping)
     const Cards = Quizes.map((card,indx)=>{
         return  <Quiz_card
@@ -48,9 +50,8 @@ function Quizes() {
                     title={card.title}
                     questionsCount={card.questionsCount}
                     icon={ <div  style={{display:"flex",alignItems:"center",gap:"20px"}}>
-                        <FaRegEye  
-                            onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${card.id}`)}/> 
-                        <LuSend/>
+                        <FaRegEye onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${templateID}/${card.title}-${card.id}`)}/> 
+                        <LuSend onClick={()=>  router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${templateID}/${card.title}-${card.id}/ChooseUserTableScreen`)}/>
                     </div> }/>
     })
     

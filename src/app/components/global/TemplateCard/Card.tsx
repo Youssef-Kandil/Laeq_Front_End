@@ -10,7 +10,7 @@ import { useLocale } from 'next-intl';
 interface props {
     title:string;
     imgSrc?:string;
-    cardInfo:{id:string|number};
+    cardInfo:{id:string|number,title:string};
 }
 
 function Card({title,imgSrc,cardInfo}:props) {
@@ -21,9 +21,9 @@ function Card({title,imgSrc,cardInfo}:props) {
   // === get all quizs of this checklist with id ===
   const handelGetQuizs = ()=>{
     // Get Checklist ID
-    const checklistID = cardInfo.id
+    const TemplateID = cardInfo.id
     //Send It As Param With Route To Quizs Screen
-    router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}`);
+    router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${cardInfo.title}-${TemplateID}`);
 
   }
   

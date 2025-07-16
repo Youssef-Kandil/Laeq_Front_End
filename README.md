@@ -6,12 +6,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 git init
 git add .
-git commit -m "Initial commit"
+git commit -m "build check list Question Component"
 git branch -M main
 git remote add origin https://github.com/Youssef-Kandil/Laeq_Front_End.git
 git push -u origin main
 git push -f origin main
-
+ذم
 
 
 First, run the development server:
@@ -74,10 +74,17 @@ console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
     TextArea ✅
     ImageInput ✅
     MultiImageInput ✅
+    DateRangeInput ✅
+    DateTimeInput ✅
+    DateInput ✅
+    TimeInput ✅
     ChooseBtns  ✅
     ActionBtn
     FileInput ✅
-    DropListInput
+    DropListInput ✅
+    DropListInput ✅
+    LocationInput ✅
+    SignatureInput ✅
     CheckBoxeWithLable To Put It In A List ✅
     ScoreInput ✅
 
@@ -102,8 +109,7 @@ console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
       - add new user form
       - add new company form
       - add new department form
-      - request inspector form
-      - request inspector form
+      - request inspector form ✅
       - setting & lang form
       - add new role form
       - add new role permission screen
@@ -115,8 +121,8 @@ console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
       - Table with check boxes ✅
       
       - automation
-      - show quiz template
-      - answer the quiz
+      - show quiz template ✅
+      - answer the quiz ✅ ?????
       - add temp -m(add new qestions)
 
       // ===  unKoune
@@ -146,6 +152,29 @@ console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
     }
   ]
 }
+
+
+
+{
+  "taskId": "xyz",
+  "checklist": {
+    "questions": [
+      {
+        "id": "q1",
+        "text": "ما هو اسمك؟",
+        "fields": [...],
+        "answers": [
+          {
+            "id": "a1",
+            "value": "أنديل",
+            "type": "text"
+          }
+        ]
+      }
+    ]
+  }
+}
+
 
 
 

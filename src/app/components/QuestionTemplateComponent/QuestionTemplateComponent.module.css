@@ -1,0 +1,62 @@
+.Question{
+    /* margin: 50px 20px 100px 20px; */
+    padding:50px 20px 100px 20px ;
+    margin: 20px;
+    background-color: #FFF;
+    border-radius: 8px;
+    && h2{
+        font-family: Roboto;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 20px;
+        letter-spacing: 0.5%;
+        color:rgba(50, 49, 53, 1);
+    }
+
+    && section{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+    }
+}
+
+
+
+
+
+
+
+
+.ButtonCard{
+    display: flex;
+    align-items: center;
+    height: 33px;
+    padding: 5px 10px;
+    gap: 12px;
+    border-radius: 4px;
+    border-width: 1px;
+    border: 1px solid rgba(224, 226, 231, 1);
+    transition: 0.5s;
+    /* box-shadow: 2px 5px 5px 0px #7975753d; */
+    cursor: pointer;
+
+    && span{
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        letter-spacing: 0.5%;
+        color: rgba(50, 49, 53, 0.7);
+    };
+    && span:first-child{
+        font-size: 22px;
+        color: rgba(50, 49, 53, 0.7);
+        
+    }
+
+}
+
+.ButtonCard:hover{
+    background: #f6f5f5;
+}

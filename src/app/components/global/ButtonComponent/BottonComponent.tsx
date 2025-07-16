@@ -4,11 +4,12 @@ import Styles from './bottonComponent.module.css'
 
 interface props {
     title:string
+    onClick?:()=>void;
 }
 
-function BottonComponent({title}:props) {
+function BottonComponent({title,onClick}:props) {
   return (
-    <div className={Styles.btn}>
+    <div onClick={onClick} className={Styles.btn}>
       <p>{title}</p>
     </div>
   )

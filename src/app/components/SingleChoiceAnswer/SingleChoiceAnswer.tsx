@@ -32,7 +32,8 @@ function SingleChoiceAnswer({options}:props) {
     }
 
     const Coices = options.map((choice,index)=>{
-            return <span 
+            return <span
+                    title={choice.label}
                     key={index} 
                     onClick={()=>setSelectedChoice(choice.value)} 
                     style={handelChoicesStyles(choice.value)}

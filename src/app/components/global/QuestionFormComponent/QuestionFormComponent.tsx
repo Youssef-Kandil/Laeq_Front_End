@@ -1,0 +1,305 @@
+"use client";
+import React, { useState, ReactNode } from "react";
+import Styles from "./QuestionFormComponent.module.css";
+import app_identity from "@/app/config/identity";
+
+import { QuestionFormComponentProps, FieldType, btnCardProps } from "./QuestionFormComponent_Types";
+
+import CheckBoxComponent from '@/app/components/global/CheckBoxComponent/CheckBoxComponent';
+import SingleChoiceAnswer from "../../SingleChoiceAnswer/SingleChoiceAnswer";
+import InputComponent from "@/app/components/global/InputComponent/InputComponent";
+import DropListComponent from "@/app/components/global/DropListComponent/DropListComponent";
+
+import { LuTrash2 } from "react-icons/lu";
+import { FiEdit2 } from "react-icons/fi";
+import { RxDragHandleDots1 } from "react-icons/rx";
+
+
+import { TbNumber123 } from "react-icons/tb";
+import { MdTextFields, MdOutlineAddPhotoAlternate, MdEvent, MdDateRange, MdAccessTime } from "react-icons/md";
+import { BsChatRightText } from "react-icons/bs";
+import { VscGithubAction } from "react-icons/vsc";
+import { HiOutlineCalendarDateRange } from "react-icons/hi2";
+import { TfiPulse } from "react-icons/tfi";
+import { FaMapLocationDot } from "react-icons/fa6";
+import { PiSignatureDuotone } from "react-icons/pi";
+
+const MAX_CHECKBOX_OPTIONS_LIMIT = 25;
+
+function QuestionFormComponent({
+  index,
+  title,
+  fields,
+  onSubmitNewType,
+  onRemoveField,
+  onRemoveQuestion,
+}: QuestionFormComponentProps) {
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [checkboxOptions, setCheckboxOptions] = useState<string[]>([]);
+  const [mcqOptions, setMcqOptions] = useState<string[]>(["Yes", "No", "N/A"]);
+  const [editingFieldId, setEditingFieldId] = useState<string | number | null>(null);
+
+  const existingTypes = fields.map((f) => f.type);
+  const sortedFields = [...fields].sort((a, b) => (a.type === "single" ? -1 : b.type === "single" ? 1 : 0));
+
+  const renderField = (field: FieldType, i: number) => {
+    const commonProps = {
+      key: field.id,
+      onRemove: () => onRemoveField(index, field.id),
+      listLength: fields.length,
+    };
+
+    const map: { [key: string]: [string, ReactNode] } = {
+      short_text: ["Short Text", <MdTextFields />],
+      comment: ["Comment", <BsChatRightText />],
+      images: ["Images", <MdOutlineAddPhotoAlternate />],
+      action: ["Action", <VscGithubAction />],
+      time: ["Time", <MdAccessTime />],
+      number: ["Number", <TbNumber123 />],
+      date_time: ["Date & Time", <MdEvent />],
+      date_range: ["Date Range", <HiOutlineCalendarDateRange />],
+      date: ["Date", <MdDateRange />],
+      score: ["Score", <TfiPulse />],
+      location: ["Location", <FaMapLocationDot />],
+      signature: ["Signature", <PiSignatureDuotone />],
+      checkbox: ["Checkbox", <BsChatRightText />],
+      single: ["Single Choice", <BsChatRightText />],
+    };
+
+    const data = map[field.type];
+    if (!data) return <p key={i}>Unsupported field type: {field.type}</p>;
+
+    if (field.type === "checkbox" && field.options) {
+      return (
+        <div key={field.id} style={{ display: 'flex', flexDirection: 'column', position: "relative", width: '100%' }}>
+          <h3>Choose</h3>
+          {field.options.map((option, idx) => (
+            <CheckBoxComponent key={idx} disable={true} label={option.label} />
+          ))}
+          {fields.length > 1 && (
+            <div style={{ color: app_identity.secondary_color, display: 'flex', alignItems: 'center', gap: 10, position: 'absolute', right: 0 }}>
+              <FiEdit2
+                style={{ cursor: 'pointer', fontSize: '18px' }}
+                onClick={() => {
+                  setSelectedType("checkbox");
+                  setEditingFieldId(field.id);
+                  setCheckboxOptions(field.options?.map(opt => opt.label) || []);
+                }}
+              />
+              <LuTrash2 style={{ cursor: 'pointer', fontSize: '18px' }} onClick={commonProps.onRemove} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (field.type === "single" && field.options) {
+      return (
+        <div key={field.id} style={{ width: '100%', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <SingleChoiceAnswer
+            options={field.options.map((opt) => ({ label: opt.label, value: opt.value }))}
+          />
+          {fields.length > 1 && (
+            <div style={{ color: app_identity.secondary_color, display: 'flex', alignItems: 'center', gap: 10 }}>
+              <FiEdit2
+                style={{ cursor: 'pointer', fontSize: '18px' }}
+                onClick={() => {
+                  setSelectedType("single");
+                  setEditingFieldId(field.id);
+                  setMcqOptions(field.options?.map(opt => opt.label) || []);
+                }}
+              />
+              <LuTrash2 style={{ cursor: 'pointer', fontSize: '18px' }} onClick={commonProps.onRemove} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return <ButtonCard title={data[0]} icon={data[1]} {...commonProps} />;
+  };
+
+  const handleAddCheckboxOption = () => {
+    if (checkboxOptions.length < MAX_CHECKBOX_OPTIONS_LIMIT) {
+      setCheckboxOptions((prev) => [...prev, ""]);
+    }
+  };
+
+  const handleCheckboxOptionChange = (value: string, i: number) => {
+    setCheckboxOptions((prev) => {
+      const updated = [...prev];
+      updated[i] = value;
+      return updated;
+    });
+  };
+
+  const handleRemoveCheckboxOption = (i: number) => {
+    setCheckboxOptions((prev) => prev.filter((_, idx) => idx !== i));
+  };
+
+  const canSubmitCheckbox =
+    selectedType === "checkbox" &&
+    checkboxOptions.length > 0 &&
+    checkboxOptions.every((opt) => opt.trim() !== "");
+
+  const canSubmitMCQ =
+    selectedType === "single" &&
+    mcqOptions.length > 0 &&
+    mcqOptions.every((opt) => opt.trim() !== "");
+
+  const isMCQAlreadyExist = fields.some((f) => f.type === "single" && f.id !== editingFieldId);
+
+  return (
+    <div style={{ position: "relative" }} className={Styles.questionBox}>
+      <div>
+        {onRemoveQuestion && (
+          <div className={Styles.deleteQuestionBtn} onClick={onRemoveQuestion}>×</div>
+        )}
+        <h3>Question {index + 1}:</h3>
+      </div>
+
+      <InputComponent
+        isTextArea
+        label=""
+        placeholder="Please enter your Question"
+        value={title}
+        onTyping={() => {}}
+      />
+
+      <section style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
+        {sortedFields.map(renderField)}
+      </section>
+
+      <section className={Styles.actionsRow}>
+        <DropListComponent
+          label="Other responses"
+          placeholder="Choose Other responses"
+          onSelect={(val) => {
+            const value = val?.value || null;
+            if (value === "single" && isMCQAlreadyExist) return;
+            setSelectedType(value);
+            if (value === "single") {
+              setMcqOptions(["Yes", "No", "N/A"]);
+            }
+          }}
+          list={[
+            { id: 1, value: "short_text", title: "short text" },
+            { id: 6, value: "number", title: "number" },
+            { id: 2, value: "comment", title: "comment" },
+            { id: 13, value: "checkbox", title: "Checkbox" },
+            { id: 14, value: "single", title: "MCQ" },
+            { id: 4, value: "action", title: "action" },
+            { id: 3, value: "images", title: "images" },
+            { id: 9, value: "date", title: "date" },
+            { id: 5, value: "time", title: "time" },
+            { id: 7, value: "date_time", title: "date time" },
+            { id: 8, value: "date_range", title: "date range" },
+            { id: 11, value: "location", title: "location" },
+            { id: 12, value: "signature", title: "signature" },
+            { id: 10, value: "score", title: "score" },
+          ]}
+        />
+
+        {selectedType === "checkbox" && checkboxOptions.length < MAX_CHECKBOX_OPTIONS_LIMIT && (
+          <button type="button" onClick={handleAddCheckboxOption} className={Styles.addOptionBtn}>+</button>
+        )}
+
+          <button
+            type="button"
+            onClick={() => {
+              if (selectedType === "checkbox") {
+                if (!canSubmitCheckbox) return;
+                const newField: FieldType = {
+                  id: editingFieldId ?? Date.now(),
+                  type: "checkbox",
+                  options: checkboxOptions.map((opt, i) => ({ id: i, label: opt, value: opt })),
+                };
+                if (editingFieldId) onRemoveField(index, editingFieldId);
+                onSubmitNewType(index, newField);
+              } else if (selectedType === "single") {
+                if (!canSubmitMCQ) return;
+                const newField: FieldType = {
+                  id: editingFieldId ?? Date.now(),
+                  type: "single",
+                  options: mcqOptions.map((opt, i) => ({ id: i, label: opt, value: i === 0 ? 1 : i === 1 ? 0 : -1 })),
+                };
+                if (editingFieldId) onRemoveField(index, editingFieldId);
+                onSubmitNewType(index, newField);
+              } else if (selectedType && !existingTypes.includes(selectedType)) {
+                onSubmitNewType(index, { id: Date.now(), type: selectedType });
+              }
+
+              setSelectedType(null);
+              setCheckboxOptions([]);
+              setMcqOptions(["Yes", "No", "N/A"]);
+              setEditingFieldId(null);
+            }}
+            className={Styles.submitBtn}
+            disabled={
+              (selectedType === "checkbox" && !canSubmitCheckbox) ||
+              (selectedType === "single" && !canSubmitMCQ)
+            }
+          >
+            Submit
+          </button>
+      </section>
+
+      {selectedType === "checkbox" && (
+        <div style={{ marginTop: 20 }}>
+          {checkboxOptions.map((opt, i) => (
+            <div key={i} className={Styles.checkboxOptionWrapper}>
+              <InputComponent
+                label={`Option ${i + 1}`}
+                value={opt}
+                onTyping={(val) => handleCheckboxOptionChange(val, i)}
+                placeholder="Enter checkbox option"
+              />
+              <div className={Styles.deleteBtn} onClick={() => handleRemoveCheckboxOption(i)}>×</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {selectedType === "single" && (
+        <div style={{ marginTop: 20 }}>
+          {mcqOptions.map((opt, i) => (
+            <div key={i} className={Styles.MCQOptionWrapper}>
+              <InputComponent
+                label={`Option ${i + 1}`}
+                value={opt}
+                onTyping={(val) => {
+                  const updated = [...mcqOptions];
+                  updated[i] = val;
+                  setMcqOptions(updated);
+                }}
+                placeholder={i == 0 ?"Enter 'Yes' option":i == 1 ?"Enter 'NO' option":"Enter 'N/A' option"}
+              />
+              <RxDragHandleDots1
+                style={{
+                  color:i == 0 ?'rgba(104, 166, 166, 1)'
+                    :i == 1 ?'rgba(229, 21, 25, 1)'
+                    :'rgba(238, 201, 12, 1)',
+                  fontSize:58,
+                  marginTop: 15,
+                  marginLeft: -10,
+                  opacity: 0.7,
+                }}/>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default QuestionFormComponent;
+
+function ButtonCard({ title, icon, listLength, onRemove }: btnCardProps) {
+  return (
+    <div className={Styles.ButtonCard}>
+      <span>{icon}</span>
+      <span>{title}</span>
+      {listLength !== 1 && <div onClick={onRemove}>×</div>}
+    </div>
+  );
+}

@@ -57,6 +57,8 @@ function Table({
     titles,
     data,
     rowsFlex,
+    filter,
+    dateFilter,
     navButtonTitle,
     navButtonAction,
     navButton2Title,
@@ -227,82 +229,85 @@ function Table({
                     <input type="text" placeholder={t("search")} id="" />
                 </div>
 
-
-                <div id={Style.datePiker} className={Style.input_container}  >
-                    <span className={Style.dateLable}>{t("date")}</span>
-                    <div>
-                        {/* <span>{`${formatDate(new Date(startData))} - ${formatDate(new Date(endData))}`}</span> */}
-                        <span>{`${formatDate(new Date(range[0].startDate ?? new Date()))} - ${formatDate(new Date(range[0].endDate ?? new Date()))}`}</span>
-                    </div>
-                    <span onClick={() => {
-                        setShowDatePicker(!showDatePicker);
-                        setShowFilterPicker(false);
-                    }} style={{cursor:'pointer'}}><MdOutlineKeyboardArrowDown/></span>
-                    {/* ========= */}
-                        {showDatePicker && (
-                            <div className={Style.dateRange}>
-                                <DateRange
-                                editableDateInputs={true}
-                                // onChange={(item: { selection: dateRang }) => setRange([item.selection])}
-                                onChange={(rangesByKey) => handleDateRangeChange(rangesByKey, setRange)}
-                                moveRangeOnFirstSelection={false}
-                                ranges={range}
-                                rangeColors={[app_identity.secondary_color]}
-                                />
+                    {dateFilter&&(
+                        <div id={Style.datePiker} className={Style.input_container}  >
+                            <span className={Style.dateLable}>{t("date")}</span>
+                            <div>
+                                {/* <span>{`${formatDate(new Date(startData))} - ${formatDate(new Date(endData))}`}</span> */}
+                                <span>{`${formatDate(new Date(range[0].startDate ?? new Date()))} - ${formatDate(new Date(range[0].endDate ?? new Date()))}`}</span>
                             </div>
-                        )}
-                    {/* ================== */}
-                </div>
-
-                <div id={Style.FiltersPiker}  className={Style.input_container}>
-                    <HiAdjustmentsHorizontal onClick={()=>{
-                        setShowFilterPicker(!showFilterPicker)
-                        setShowDatePicker(false);
-                    }}/>
-                    <div onClick={()=>{
-                        setShowFilterPicker(!showFilterPicker)
-                        setShowDatePicker(false);
-                    }}>
-                        {t("filter")}
-                    </div>
-
-                    {showFilterPicker && (
-                        <div className={Style.filterOptions}>
-                            <div className={Style.title}>
-                                <p>{t("filter_status.title")}</p>
-                                <p className={Style.reset} onClick={()=>handleResetStatusFilter()}>{t("filter_status.reset")}</p>
-                            </div>
-
-                            <FormGroup className={Style.checkBoxGroup}>
-                                {Status.map((status, index) => {
-                                    return (
-                                        <FormControlLabel
-                                        key={index} 
-                                        control={<Checkbox 
-                                                    value={status.title} 
-                                                    checked={status.checked} 
-                                                    onChange={()=>handleStatusFilterChange(status.title? status.title:"")}   
-                                                    sx={{color:app_identity.secondary_color, '&.Mui-checked':{color:app_identity.secondary_color} }} />} 
-                                        label={<span className={Style.label}>{t(`filter_status.${status.title}`)}</span>} />
-
-                                    )
-                                })}
-                       
-                            </FormGroup>
+                            <span onClick={() => {
+                                setShowDatePicker(!showDatePicker);
+                                setShowFilterPicker(false);
+                            }} style={{cursor:'pointer'}}><MdOutlineKeyboardArrowDown/></span>
+                            {/* ========= */}
+                                {showDatePicker && (
+                                    <div className={Style.dateRange}>
+                                        <DateRange
+                                        editableDateInputs={true}
+                                        // onChange={(item: { selection: dateRang }) => setRange([item.selection])}
+                                        onChange={(rangesByKey) => handleDateRangeChange(rangesByKey, setRange)}
+                                        moveRangeOnFirstSelection={false}
+                                        ranges={range}
+                                        rangeColors={[app_identity.secondary_color]}
+                                        />
+                                    </div>
+                                )}
+                            {/* ================== */}
                         </div>
                     )}
-                </div>
+                    
+                    {filter&&(
+                        <div id={Style.FiltersPiker}  className={Style.input_container}>
+                            <HiAdjustmentsHorizontal onClick={()=>{
+                                setShowFilterPicker(!showFilterPicker)
+                                setShowDatePicker(false);
+                            }}/>
+                            <div onClick={()=>{
+                                setShowFilterPicker(!showFilterPicker)
+                                setShowDatePicker(false);
+                            }}>
+                                {t("filter")}
+                            </div>
+
+                            {showFilterPicker && (
+                                <div className={Style.filterOptions}>
+                                    <div className={Style.title}>
+                                        <p>{t("filter_status.title")}</p>
+                                        <p className={Style.reset} onClick={()=>handleResetStatusFilter()}>{t("filter_status.reset")}</p>
+                                    </div>
+
+                                    <FormGroup className={Style.checkBoxGroup}>
+                                        {Status.map((status, index) => {
+                                            return (
+                                                <FormControlLabel
+                                                key={index} 
+                                                control={<Checkbox 
+                                                            value={status.title} 
+                                                            checked={status.checked} 
+                                                            onChange={()=>handleStatusFilterChange(status.title? status.title:"")}   
+                                                            sx={{color:app_identity.secondary_color, '&.Mui-checked':{color:app_identity.secondary_color} }} />} 
+                                                label={<span className={Style.label}>{t(`filter_status.${status.title}`)}</span>} />
+
+                                            )
+                                        })}
+                            
+                                    </FormGroup>
+                                </div>
+                            )}
+                        </div>
+                    )}
             </div>
             
             {navButton2Title && (
                 <div className={Style.button2}>
-                    <button onClick={navButton2Action}>{t(`client_dashboard.${navButtonTitle}.button_title2`)}</button>
+                    <button style={{cursor:"pointer"}} onClick={navButton2Action}>{t(`client_dashboard.${navButtonTitle}.button_title2`)}</button>
                 </div>
             )}
 
             {navButtonTitle && (
                 <div className={Style.button}>
-                    <button onClick={navButtonAction}>{t(`client_dashboard.${navButtonTitle}.button_title`)}</button>
+                    <button style={{cursor:"pointer"}} onClick={navButtonAction}>{t(`client_dashboard.${navButtonTitle}.button_title`)}</button>
                 </div>
             )}
 

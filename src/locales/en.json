@@ -58,9 +58,11 @@
 
         "dashboard":"Dashboard",
         "checklist":"Checklist",
+        "tasks":"Tasks",
         "reports":"Reports",
         "actions":"Actions",
         "assets":"Assets",
+        "notifications":"Notifications",
 
         "users":"Users",
         "roles":"Roles",
@@ -97,28 +99,127 @@
             "previous":"Previous",
             "next":"Next"
         },
-            "client_dashboard":{
-                "reports":{
-                    "tb_headers":{
-                        "id":"Report ID",
-                        "name":"Report Name",
-                        "company":"Company",
-                        "site":"Site",
-                        "submitted_by":"Submitted By",
-                        "date":"Date",
+        "client_dashboard":{
+
+            "employees":{
+                "tb_headers":{
+                    "id":"#",
+                    "name":"Employee",
+                    "email":"Email",
+                    "site":"Site",
+                    "role":"Role",
+                    "status":"Status"
+                },
+                "button_title":"Add New User"         
+            },
+
+            "chooseUser":{
+                "tb_headers":{
+                    "id":"ID",
+                    "employee":"Employee",
+                    "email":"Email",
+                    "site":"Site",
+                    "company":"Company",
+                    "role":"Role"
+                },
+                "button_title":"Send",
+                "button_title2":"Automation"
+            },
+
+            "reports":{
+                "tb_headers":{
+                    "id":"Report ID",
+                    "name":"Report Name",
+                    "company":"Company",
+                    "site":"Site",
+                    "submitted_by":"Submitted By",
+                    "date":"Date",
                         "score":"Score",
                         "status":"Status"
                     },
                     "button_title":"Print",
                     "button_title2":"Automation"
                 },
-                "actions":{},
-                "assets":{},
-                "roles":{},
-                "company":{},
-                "department":{},
-                "inspector_requests":{}
+
+            "actions":{
+                "tb_headers":{
+                    "id":"Action ID",
+                    "name":"Action name",
+                    "company":"Company",
+                    "site":"Site",
+                    "date":"Date",
+                    "submitted_by":"Submitted by ",
+                    "status":"Status",
+                    "assign":"Assign"
+                },
+                "button_title":"Create action"
+            },
+
+            "tasks":{
+                    "tb_headers":{
+                        "employee":"Employee",
+                        "checklist":"Checklist",
+                        "repeated":"Repeated",
+                        "company":"Company",
+                        "site":"Site",
+                        "status":"Status",
+                        "date":"Date"
+                    }
+            },
+
+            "assets":{
+                    "tb_headers":{
+                        "name":"Asset Name",
+                        "model":"Model",
+                        "category":"Category",
+                        "brand":"Brand",
+                        "warranty":"Warranty",
+                        "company":"Company",
+                        "site":"Site"
+                    },
+                    "button_title":"Add New Asset"
+            },
+
+            "roles":{
+                    "tb_headers":{
+                        "name":"Role Name",
+                        "department":"Department",
+                        "description":"Description",
+                        "size":"Size"
+                    },
+                    "button_title":"Add New Role"
+            },
+
+            "company":{
+                    "tb_headers":{
+                        "name":"Company name",
+                        "sectorType":"Sector type",
+                        "site":"Site",
+                        "size":"Size"
+                    },
+                    "button_title":"Add New Company"
+            },
+
+            "department":{
+                    "tb_headers":{
+                        "name":"Department name",
+                        "company":"Company",
+                        "site":"Site"
+                    },
+                    "button_title":"Add New Department"
+            },
+
+            "inspector_requests":{
+                "tb_headers":{
+                    "id":"Report ID",
+                    "company":"Company",
+                    "site":"Site",
+                    "date":"Date",
+                    "status":"Status"
+                },
+                "button_title":"Add New Request"
             }
+        }
     },
 
     "nave_bar_component":{
