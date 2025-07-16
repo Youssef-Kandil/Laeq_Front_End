@@ -1,10 +1,10 @@
 "use client";
 import React, { ReactNode } from 'react'
 // import {useLocale} from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { FaRegEye } from "react-icons/fa";
+// import { useRouter } from 'next/navigation';
 
-import Styles from './quiz_card.module.css'
+
+import Styles from './CheckList_Card.module.css'
 import Image from 'next/image'
 
 
@@ -16,7 +16,7 @@ interface props {
 }
 
 function Quiz_card({title,questionsCount,imgSrc,icon}:props) {
-      const router = useRouter();
+      // const router = useRouter();
       // const current_lang = useLocale();
   return (
     <div className={Styles.parent}>

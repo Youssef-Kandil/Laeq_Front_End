@@ -9,6 +9,7 @@ import aside_titles from '@/app/config/aside_titles';
 
 
 
+
 function Aside() {
     const current_lang = useLocale();
     const t = useTranslations('aside_component');
@@ -51,7 +52,7 @@ function Aside() {
   return (
     <div className={Styles.parent} lang={current_lang}>
        <div className={Styles.main_title}>
-          <Image src={""} alt='' loading="lazy" width={30} height={30} />
+          <Image src={"/images/laeq_icon.png"} style={{borderRadius:"50%"}} alt='' loading="lazy" width={30} height={30} />
           {/* <h3>{t("title")}</h3> */}
           <h3>LAEQ365</h3>
        </div>

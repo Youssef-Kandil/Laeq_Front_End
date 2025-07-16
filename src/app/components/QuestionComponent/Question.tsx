@@ -8,12 +8,18 @@ import ScoreInputComponent from '../global/ScoreInputComponent/ScoreInputCompone
 import InputComponent from '../global/InputComponent/InputComponent';
 import MultimageInputComponent from '../global/MultimageInputComponent/MultimageInputComponent';
 import CheckBoxListComponent from '../global/CheckBoxListComponent/CheckBoxListComponent';
+import DateRangeComponent from '../global/DateRangeComponent/DateRangeComponent';
+import DateInputComponent from '../global/DateInputComponent/DateInputComponent';
+import TimeInputComponent from '../global/TimeInputComponent/TimeInputComponent';
+import DateTimeInputComponent from '../global/DateTimeInputComponent/DateTimeInputComponent';
 
+
+import DropListComponent from '../global/DropListComponent/DropListComponent';
 
 
 interface opthionsType{
     label:string;
-    value?:number
+    value?:number | string | null
 }
 
 interface fieldType{
@@ -55,6 +61,8 @@ function Question({questionNumber,title,fields}:props) {
     const DateField = getFieldByType(fields,'date');
     const TimeField = getFieldByType(fields,'time');
 
+    const ScoreField = getFieldByType(fields,'score');
+
 
 
   return (
@@ -90,9 +98,16 @@ function Question({questionNumber,title,fields}:props) {
                             value=''
                             onTyping={()=>{}}
                        />}
+        
+        {DateRangeField&&<DateRangeComponent/> }
+        {DateField&& <DateInputComponent onChange={()=>{}}/>}
+        {TimeField&& <TimeInputComponent onChange={()=>{}}/>}
+        {DateTimeField&& <DateTimeInputComponent onChange={()=>{}}/>}
+
+            <DropListComponent label='test' list={[{id:1,value:"test1"},{id:2,value:"test2"},]}/>
 
 
-        <ScoreInputComponent/>
+        {ScoreField&&<ScoreInputComponent/>}
     </div>
   )
 }

@@ -7,12 +7,15 @@ import app_identity from '@/app/config/identity';
 
 interface props{
     label:string;
+    disable?:boolean
+    onCheck?:()=>void;
 }
 
-function CheckBoxComponent({label}:props) {
+function CheckBoxComponent({label,disable=false}:props) {
   return (
       <FormControlLabel 
             control={<Checkbox 
+                        disabled={disable}
                         // defaultChecked
                         // checked={isAllChecked}
                         // onChange={handelCheckAll}

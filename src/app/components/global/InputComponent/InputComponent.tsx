@@ -14,7 +14,7 @@ interface props{
 function InputComponent({label,placeholder,type,value,onTyping,isTextArea=false}:props) {
   return (
     <div  className={Styles.input}>
-    <label className={Styles.lacel} htmlFor='input'>{label}</label>
+    <label className={Styles.label} htmlFor='input'>{label}</label>
     {isTextArea? 
       <textarea
        id='input'

@@ -7,7 +7,7 @@ import login_services from '@/app/services/website/login_services';
 import regex from '@/app/utils/regex';
 import encryption from '@/app/utils/encryption';
 // === Components ===
-import { redirect } from 'next/navigation';
+import { redirect ,useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from "next/link";
 import {useTranslations,useLocale} from 'next-intl';
@@ -16,6 +16,7 @@ import {useTranslations,useLocale} from 'next-intl';
 
 function Login() {
   const lang = useLocale();
+  const router = useRouter();
   console.log("Current Lang --> ",lang)
   const t = useTranslations('login_screen')
 
@@ -81,7 +82,8 @@ function Login() {
       console.log("Login successful");
       localStorage.setItem('clickedAsideTitle', "dashboard");
       // Redirect to the dashboard or perform any other action
-      redirect(`/${lang}/Screens/dashboard/summeries`);
+       router.push(`/${lang}/Screens/dashboard/summeries`);
+      // redirect(`/${lang}/Screens/dashboard/summeries`);
     }else{
       setAlertState(true);
       setAlertSeverity("error")

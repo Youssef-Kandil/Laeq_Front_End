@@ -31,14 +31,20 @@ function Nave() {
   }, [nave_Title, pathname, router])
 
 
-
+console.log('HIII :  ' , )
 
 
   return (
     <div className={Styles.parent} lang={current_lang}>
-      <h2>{t(nave_Title === "summeries" ? "dashboard" : nave_Title || "dashboard")}</h2>
+      {nave_Title == "notifications"?
+        <h2>{t("notifications")}</h2>
+        :<h2>{t(nave_Title === "summeries" ? "dashboard" : nave_Title || "dashboard")}</h2>
+      }
+      
        <div>
-          <NotificationsOutlinedIcon/>
+          <div style={{cursor:"pointer"}} onClick={()=>router.push(`/${current_lang}/Screens/dashboard/notifications`)}>
+            <NotificationsOutlinedIcon/>
+          </div>
           <Image src={""} alt='' loading="lazy" width={50} height={50} />
        </div>
     </div>

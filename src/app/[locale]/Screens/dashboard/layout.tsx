@@ -50,16 +50,24 @@ export default async function DashboardLayout({
     const token =  cookieStore.get('token')?.value;
 
   
-  if (!token) {
+  // if (!token) {
     
-      const res = await Check_Authenticated.Protected_page_verify()
-      const isAuthenticated = await res.isAuthenticated
+  //     const res = await Check_Authenticated.Protected_page_verify()
+  //     const isAuthenticated = await res.isAuthenticated
     
-      if (!isAuthenticated) {
-        // console.log("isAuthenticated : ",isAuthenticated)
-          redirect(`/${locale}/Screens/forms/login`);
-      }
-  }
+  //     if (!isAuthenticated) {
+  //       // console.log("isAuthenticated : ",isAuthenticated)
+  //         redirect(`/${locale}/Screens/forms/login`);
+  //     }
+  // }
+
+  // const res = await Check_Authenticated.Protected_page_verify();
+  // const isAuthenticated = res?.isAuthenticated;
+
+  // if (!isAuthenticated) {
+  //   redirect(`/${locale}/Screens/forms/login`);
+  // }
+
 
 
 

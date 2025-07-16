@@ -7,6 +7,8 @@ import { TbReportAnalytics ,TbUserShield } from "react-icons/tb";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { BsBuildingCheck } from "react-icons/bs";
+import { MdTaskAlt } from "react-icons/md";
+
 
 
 
@@ -24,6 +26,13 @@ const aside_titles =[
         title:"checklist",
         href:"/checklist",
         icon:<GoChecklist style={{fontSize:iconSize}}/>,
+        isActive:false,
+        hasChild:false,
+    },
+    {
+        title:"tasks",
+        href:"/tasks",
+        icon:<MdTaskAlt style={{fontSize:iconSize}}/>,
         isActive:false,
         hasChild:false,
     },

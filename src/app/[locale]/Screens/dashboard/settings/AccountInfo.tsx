@@ -12,8 +12,25 @@ import FileInputComponent from '@/app/components/global/FileInputComponent/FileI
 
 import FormGroup from '@mui/material/FormGroup';
 import CheckBoxComponent from '@/app/components/global/CheckBoxComponent/CheckBoxComponent';
+import LocationInputComponent from '@/app/components/global/LocationInputComponent/LocationInputComponent';
+import SignatureInputComponent from '@/app/components/global/SignatureInputComponent/SignatureInputComponent';
+
 
 function AccountInfo() {
+
+    const [location, setLocation] = React.useState("");
+
+
+
+  const [signature, setSignature] = React.useState("");
+    const handleSubmit = () => {
+    if (signature) {
+      console.log("✅ تم حفظ التوقيع:", signature);
+      alert("تم حفظ التوقيع بنجاح ✅");
+    } else {
+      alert("من فضلك قم بإدخال التوقيع أولاً ✍️");
+    }
+  };
 
 
 
@@ -44,6 +61,20 @@ function AccountInfo() {
           <CheckBoxComponent label='Access all reports and data'/>
 
       </div>
+<LocationInputComponent
+  label="اختر موقعك"
+  placeholder="اضغط لاختيار الموقع من الخريطة"
+  value={location}
+  onChange={(val) => setLocation(val)}
+/>
+
+      <SignatureInputComponent
+        label="التوقيع"
+        placeholder="اضغط للتوقيع"
+        value={signature}
+        onChange={(val) => setSignature(val)}
+      />
+
 
       <div className={Styles.btnContainer}>
         <BottonComponent title='Update Profile'/>
