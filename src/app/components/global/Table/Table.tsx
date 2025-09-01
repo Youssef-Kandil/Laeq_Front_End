@@ -16,8 +16,7 @@ import { IoIosSearch } from "react-icons/io";
 import { HiAdjustmentsHorizontal } from "react-icons/hi2";
 import {useTranslations,useLocale} from 'next-intl';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import { IoMdArrowBack } from "react-icons/io";
-import { IoMdArrowForward } from "react-icons/io";
+
 
 import { DateRange, Range, RangeKeyDict } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // style الأساسي
@@ -364,7 +363,7 @@ function Table({
                                         </p>
                                     )}
     {/* RENDER STATUS & NORMAL CELLS */}
-                            {titles.map((title, i) => {
+                            {titles.map((_, i) => {
                             const key = Object.keys(row)[i]; // افترض إن ترتيب المفاتيح في الكائن زي ترتيب العناوين
                             return (
                                 <p key={i} title={""+row[key]} className={Style.cell}  style={rowsFlex?.length == 0 || rowsFlex == undefined ?{flex:1}:{flex:rowsFlex[i]}}>
@@ -386,7 +385,7 @@ function Table({
 
         </section>
 
-        <footer>
+        {/* <footer>
             <button type="button"><IoMdArrowBack/>{t("tbfooter.previous")}</button>
             <div className={Style.pageNumbers}>
                 <span>1</span>
@@ -398,7 +397,7 @@ function Table({
                 <span>10</span>
             </div>
             <button type="button">{t("tbfooter.next")}<IoMdArrowForward/></button>
-        </footer>
+        </footer> */}
     </div>
   )
 }

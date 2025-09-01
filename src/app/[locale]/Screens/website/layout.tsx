@@ -1,6 +1,7 @@
 // === WEBSITE LAYOUT ===
 // import { ReactNode } from 'react';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
+import ReactQueryProvider from '@/app/providers/ReactQueryProvider';
 import {notFound} from 'next/navigation';
 import { routing } from '../../../../i18n/routing';
 // import { Rubik } from "next/font/google";
@@ -52,9 +53,11 @@ export default async function WebsiteLayout({
   return (
     <div style={{fontFamily:app_identity.primary_font}}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Nave/>
-          {children}
-          <Footer/>
+          <ReactQueryProvider>
+            <Nave/>
+            {children}
+            <Footer/>
+          </ReactQueryProvider>
         </NextIntlClientProvider>
         <div style={{borderTop:'1px #323135 solid', opacity:'10%'}}></div>
             <p style={{color:"#32313580",height:'50px',padding:'10px 5px',textAlign:'center'}}>© {current_year} All Rights Reserved</p>

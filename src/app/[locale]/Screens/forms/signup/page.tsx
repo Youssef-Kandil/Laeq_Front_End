@@ -3,14 +3,16 @@ import React from 'react'
 import Styles from './signup.module.css'
 import { CircularProgress,Alert ,AlertTitle,Stack} from '@mui/material';
 // import { usePathname, useRouter } from "next/navigation"; 
-import signup_services from '@/app/services/website/signup_services';
+import {getFutureDate } from '@/app/utils/date';
 import regex from '@/app/utils/regex';
 import { signInWithGoogle } from "../../../../lib/firebase";
 // === Components ===
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import {useTranslations,useLocale} from 'next-intl';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useAdminAccount } from '@/app/Hooks/useAdminAccount';
 
 
 
@@ -19,6 +21,7 @@ function Signup() {
   //   const pathname = usePathname();
   //  const router = useRouter();
    const current_lang = useLocale();
+   const router = useRouter();
    const t = useTranslations('signup_screen');
    const t_alerts = useTranslations('alerts');
 
@@ -29,7 +32,6 @@ function Signup() {
    const [password,setPassword] = React.useState("");
    const [confirm_password,setConfirmPassword] = React.useState("");
    const [alertMSG,setAlertMSG] = React.useState("");
-   const [isLoading,setIsLoading] = React.useState<boolean>(false);
    const [alertSeverity,setAlertSeverity] = React.useState<"success" | "info" | "warning" | "error">("warning");
    const[ alertState,setAlertState] = React.useState<boolean>(false);
 
@@ -79,6 +81,8 @@ function Signup() {
    } 
 
  // === Handle Submit ===
+   const queryClient = useQueryClient();
+ const { mutate, isPending, isSuccess,isError,error, data } = useAdminAccount();
     async function handleSubmit(){
       setAlertState(true);
           const isValide :boolean =  validationFunctions();
@@ -86,18 +90,47 @@ function Signup() {
           if (!isValide) {
               return;
             }
+          if(isError){
+            console.error(' error!',error); 
+          }
 
-            setAlertState(false);
-            setIsLoading(true);
+          setAlertState(false);
+
           // === Call the API ===
-          const response = await signup_services.createAcount(email,password,full_name,phone);
-          console.log("Response from API : ",response);
-          setIsLoading(false);
-          if(response){
+          console.warn(getFutureDate(1).toISOString())
+          console.warn(new Date(Date.now()).toISOString())
+            mutate({
+              email:email,
+              password:password,
+              register_with_google:0,
+              role: "admin",
+              full_name: full_name,
+              phone: phone,
+              plan_id: 0,
+              plan_type: "7Days-free",
+              start_date:new Date(Date.now()).toISOString(),
+              end_date: getFutureDate(7).toISOString(),
+            }, 
+            {
+              onSuccess: (data)=>{
+                queryClient.setQueryData(["adminAccountInfo"], data);
+                router.push(`/${current_lang}/Screens/dashboard/payments_plans`);
+
+              }
+            }
+          );
+            if(isSuccess){
+                console.warn(data)
             // === redirect to the dashboard ===
-            redirect(`${current_lang}/Screens/dashboard/summeries`);
+            // redirect(`${current_lang}/Screens/dashboard/summeries`);
           }
     }
+
+    console.warn("✅ Data ready:", data); // ✅ هنا هتكون البيانات موجودة
+React.useEffect(() => {
+  if (isSuccess && data) {
+  }
+}, [isSuccess, data]);
 
 
 
@@ -157,7 +190,7 @@ function Signup() {
         {/* === signup Button === */}
         <div className={Styles.signup_btn} onClick={handleSubmit}>
          {t("submit_button") }
-         {isLoading && <CircularProgress className={Styles.laoder} size={25} />}
+         {isPending && <CircularProgress className={Styles.laoder} size={25} />}
         </div>
 
         <span className={Styles.span}>{t("OR")}</span>

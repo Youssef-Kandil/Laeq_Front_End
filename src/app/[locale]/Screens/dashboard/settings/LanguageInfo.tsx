@@ -3,7 +3,6 @@ import React from 'react';
 import DropListComponent from '@/app/components/global/DropListComponent/DropListComponent';
 import {useLocale} from 'next-intl';
 import {usePathname, useRouter } from "next/navigation"; 
-import { SelectChangeEvent } from '@mui/material';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 import Styles from './settings.module.css'
 
@@ -31,7 +30,7 @@ function LanguageInfo() {
         placeholder='Choose Language'
         list={[
           { id: 1, value: "en", title: "English" },
-          { id: 2, value: "ar", title: "Arabic" }
+          // { id: 2, value: "ar", title: "Arabic" }
         ]}
         defaultOption={current_lang === "ar"
           ? { id: 2, value: "ar", title: "Arabic" }

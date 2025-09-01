@@ -12,3 +12,22 @@ export function formatDate(date:Date) {
     const year = date.getFullYear();
     return `${day}, ${month} ${year}`;
 };
+
+
+
+export function getFutureDate(days: number): Date {
+  const result = new Date();
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function getFutureDateString(days: number): string {
+  const result = new Date();
+  result.setDate(result.getDate() + days);
+
+  const year = result.getFullYear();
+  const month = String(result.getMonth() + 1).padStart(2, "0");
+  const day = String(result.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}

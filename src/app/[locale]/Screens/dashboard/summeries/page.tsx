@@ -1,29 +1,30 @@
 "use client";
 import React from 'react'
-import {useTranslations,useLocale} from 'next-intl';
+import {useTranslations} from 'next-intl';
 import Styles from './summeries.module.css'
-import Stack from '@mui/material/Stack';
+// import Stack from '@mui/material/Stack';
 // import { Gauge } from '@mui/x-charts/Gauge';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
-import { Typography } from '@mui/material';
+// import { Typography } from '@mui/material';
 
 import { FaSquarePollVertical } from "react-icons/fa6";
 import { MdSell } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
 import { SiReaddotcv } from "react-icons/si";
 import { LuPackagePlus } from "react-icons/lu";
-import {formatDate} from '@/app/utils/date';
-import { IoIosSearch } from "react-icons/io";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { useQueryClient } from '@tanstack/react-query';
+// import {formatDate} from '@/app/utils/date';
+// import { IoIosSearch } from "react-icons/io";
+// import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 
-import { DateRange, Range, RangeKeyDict } from 'react-date-range';
+import {  Range, RangeKeyDict } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // style الأساسي
 import 'react-date-range/dist/theme/default.css'; // الثيم
-import app_identity from '@/app/config/identity';
+// import app_identity from '@/app/config/identity';
 
 
-import Popup from '@/app/components/global/Popup/Popup';
+// import Popup from '@/app/components/global/Popup/Popup';
 
 interface  dateRang{
     startDate: Date;
@@ -34,6 +35,10 @@ interface  dateRang{
  function Dashboard() {
 
         // const current_lang = useLocale();
+        const queryClient = useQueryClient();
+        const adminAccount =  queryClient.getQueryData(["adminAccountInfo"]);
+        console.log(adminAccount);
+
         const t = useTranslations('table_component');
 
         const boxColors = [

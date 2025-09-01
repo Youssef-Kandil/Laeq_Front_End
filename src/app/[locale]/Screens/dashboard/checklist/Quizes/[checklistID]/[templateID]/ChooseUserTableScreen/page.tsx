@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
 import {ClientOnlyTable} from '@/app/components/global/Table/Table';
-import { HiOutlineDotsVertical } from "react-icons/hi";
+// import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useParams ,useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl';
 
@@ -37,7 +37,7 @@ function ChooseUserTableScreen() {
             data={modifiedData}
             rowsFlex={[0.5,1,1,1,1,1]}
             navButtonTitle='chooseUser'
-            navButton2Title='chooseUser'
+            // navButton2Title='chooseUser'
             navButton2Action={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${templateID}/${checklistID}/ChooseUserTableScreen/AutomationForm`)}
             
             useCheckRows

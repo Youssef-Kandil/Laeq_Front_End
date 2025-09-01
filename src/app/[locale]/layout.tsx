@@ -1,4 +1,5 @@
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
+import ReactQueryProvider from '../providers/ReactQueryProvider';
 import {notFound} from 'next/navigation';
 import { routing } from '../../i18n/routing';
 import { Roboto,Outfit } from "next/font/google";
@@ -37,7 +38,11 @@ export default async function LocaleLayout({
   return (
     <html  lang={locale}>
       <body className={`${robotoSans.variable} ${outfitSans.variable} antialiased`} >
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <ReactQueryProvider>
+              {children}
+          </ReactQueryProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

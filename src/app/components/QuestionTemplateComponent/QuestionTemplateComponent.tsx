@@ -44,7 +44,7 @@ interface props{
 }
 
 function QuestionTemplateComponent({questionNumber,title,fields}:props) {
-
+  
     function getFieldByType(fields: unknown[], type: string): any | null {
         return fields.find(
             (f) =>
@@ -68,8 +68,8 @@ function QuestionTemplateComponent({questionNumber,title,fields}:props) {
     const DateField = getFieldByType(fields,'date');
     const TimeField = getFieldByType(fields,'time');
     const ScoreField = getFieldByType(fields,'score');
-    const LocationField = getFieldByType(fields,'score');
-    const SignatureField = getFieldByType(fields,'score');
+    const LocationField = getFieldByType(fields,'location');
+    const SignatureField = getFieldByType(fields,'signature');
   return (
     <div className={Styles.Question} >
       <h2>{questionNumber} - {title}</h2>
