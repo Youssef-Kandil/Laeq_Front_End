@@ -1,9 +1,11 @@
 "use client";
 import React from 'react'
 import {ClientOnlyTable} from '@/app/components/global/Table/Table';
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { useParams ,useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl';
+import { useRole } from '@/app/Hooks/useRole';
+import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
+import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
@@ -11,27 +13,42 @@ import { FiEdit2 } from "react-icons/fi";
 function Roles() {
         const router = useRouter();
         const current_lang = useLocale();
+        const AdminInfo = getAdminAccountInfo(); 
+        const local_var = "roles.tb_headers";
+        const {data,isLoading,error} = useRole(AdminInfo?.userDetails.id ?? 0);
+        console.warn("data : ",data)
+              if (isLoading) return <SkeletonLoader variant="table" tableColumns={6} tableRows={8} />;
+              if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
+              if (!data) return <div>لا توجد بيانات</div>;
 
 
-      const originalData=[
-        {id:1,name:"name 1",department:"department 1",description:"description 1"},
-        {id:2,name:"name 2",department:"department 2",description:"description 2"},
-        {id:3,name:"name 3",department:"department 3",description:"description 3"},
-      ];
 
-      const local_var = "roles.tb_headers";
       //=== Add Action To The Table Rows
-      const modifiedData = originalData.map(({ id,...rest }) => ({
-        ...rest,
+      // Define a type for the role data
+
+      type Role = {
+        id: number;
+        admin_id:number;
+        role_name: string;
+        description: string;
+        date_created: string;
+        role_permissions: [];
+        // Add other fields as needed
+      };
+
+      // Ensure 'data' is typed as Role[]
+      const modifiedData = (data as Role[]).map(({ role_name,description}) => ({
+        role_name,
+        description,
          delete_action:<LuTrash2 style={{fontSize:20}}/>,
          edit_action:<FiEdit2 style={{fontSize:20}}/>
       }));
   return (
     <div>
         <ClientOnlyTable 
-            titles={[`${local_var}.name`,`${local_var}.department`,`${local_var}.description`,"",""]}
+            titles={[`${local_var}.name`,`${local_var}.description`,"",""]}
             data={modifiedData}
-            rowsFlex={[1,1,1,0.2,0.2]}
+            rowsFlex={[1,1,0.2,0.2]}
             navButtonTitle='roles'
             navButtonAction={()=>router.push(`/${current_lang}/Screens/dashboard/roles/AddRoleForm`)}
          />

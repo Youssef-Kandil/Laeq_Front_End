@@ -27,9 +27,17 @@
             font-size: 8rem;
         }
 
-        & p{
+        .title,.subTitle{
             font-weight: 500;
             font-size: 1.8rem;
+        }
+
+        .subTitle{
+            /* margin: -25px 15px 0 5px; */
+            margin-top: -25px;
+            padding: 0px 20px 0px;
+            font-weight: 500;
+            font-size: 1.3rem;
         }
     }
 }

@@ -1,6 +1,6 @@
 .card{
     width :350px;
-    height: 721px;
+    height: 741px;
     /* background-color: var(--Primary-color); */
     background-color: #FFFFFF;
     color: white;
@@ -31,6 +31,10 @@
       & h1{
             font-weight: 600;
             font-size: 56px;
+            & span{
+                font-weight: 700;
+                font-size: 44.8px;
+             }
         }
         & p{
             font-weight: 300;

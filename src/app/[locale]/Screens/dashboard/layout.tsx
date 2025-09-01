@@ -1,4 +1,4 @@
-// === WEBSITE LAYOUT ===
+// === Dashboard LAYOUT ===
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
 import { routing } from '@/i18n/routing';
@@ -7,9 +7,7 @@ import type { Metadata } from "next";
 import "../../../globals.css";
 import app_identity from '@/app/config/identity';
 
-import  Check_Authenticated  from '@/app/services/jwt_verify'
-import { redirect  } from 'next/navigation';
-import { cookies } from 'next/headers';
+// import { cookies } from 'next/headers';
 
 
 export const metadata: Metadata = {
@@ -46,8 +44,8 @@ export default async function DashboardLayout({
 
 
   // === Get Token From Cookies ==
-    const cookieStore = await cookies();
-    const token =  cookieStore.get('token')?.value;
+    // const cookieStore = await cookies();
+    // const token =  cookieStore.get('token')?.value;
 
   
   // if (!token) {
@@ -74,11 +72,11 @@ export default async function DashboardLayout({
   return (
     <div style={{fontFamily:app_identity.primary_font,overflow:'hidden'}}  className={Styles.main_layout} lang={locale}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Aside/>
-          <Nave/>
-          <main style={{gridColumn:2,background:"#EEEEEE80",overflow:'auto'}}>
-            {children}
-          </main>
+            <Aside/>
+            <Nave/>
+            <main style={{gridColumn:2,background:"#EEEEEE80",overflow:'auto'}}>
+              {children}
+            </main>
         </NextIntlClientProvider>
 
     </div>

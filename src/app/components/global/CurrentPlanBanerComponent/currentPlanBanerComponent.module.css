@@ -1,0 +1,48 @@
+.baner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    margin: 30px 24px 0px 18px;
+    padding: 18px 15px;
+    border-radius: 10px;
+    /* box-shadow: -1px 1px 7px 0px #A7A7A7; */
+    & section{
+        display: flex;
+        align-items: center;
+         gap: 20px;
+        .banerIconBox{
+            background-color: #f5fff4;
+            /* background-color: #101010; */
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            font-size: 21px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .banerText{
+            text-align: left;
+            & h3{
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 4px;
+            }
+            & p{
+                margin: 0;
+                padding: 0;
+                font-size: 14px;
+                color: #6D7081;
+            }
+        }
+    }
+
+    & button{
+        border: solid #f45b5b 2px;
+        color:#f45b5b ;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+}

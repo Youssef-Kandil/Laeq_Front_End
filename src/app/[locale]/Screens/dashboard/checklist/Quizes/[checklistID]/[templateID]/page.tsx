@@ -2,13 +2,14 @@
 import React from 'react'
 import Styles from './template.module.css'
 import { useParams ,useRouter } from 'next/navigation';
+import { QuestionType } from '@/app/Types/checklistTypes';
 // import { useLocale } from 'next-intl';
 
 // import Question from '@/app/components/QuestionComponent/Question';
 import QuestionTemplateComponent from '@/app/components/QuestionTemplateComponent/QuestionTemplateComponent';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 
-
+import { useGetQuestionsByTemplatesId } from '../../../../../../../Hooks/useTemplateQuestions';
 
 const TestData = [
   {
@@ -105,12 +106,12 @@ function CheckList() {
       // Start Sceleton Loading..
       //  Get Checklist ID From Params
       const params = useParams(); 
-      const   { checklistID } = params;
+      const   { templateID } = params;
       let title: string | undefined = undefined;
       let id: string | number | undefined = undefined;
 
-      if (checklistID) {
-        const raw = Array.isArray(checklistID) ? checklistID[0] : checklistID;
+      if (templateID) {
+        const raw = Array.isArray(templateID) ? templateID[0] : templateID;
         const lastDashIndex = raw.lastIndexOf("-");
         
         if (lastDashIndex !== -1) {
@@ -121,16 +122,23 @@ function CheckList() {
           id = isNaN(Number(rawId)) ? rawId : Number(rawId);
         }
       }
+
+      const { data, isLoading, error } = useGetQuestionsByTemplatesId(Number(id));
+              if (isLoading) return <div>جاري التحميل...</div>;
+              if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
+              if (!data) return <div>لا توجد بيانات</div>;
       // === Looping On Data === 
 
-      const Questions = TestData.map((question,index)=>{
+      const Questions = data.map((question:QuestionType,index:number)=>{
             return  <QuestionTemplateComponent
                          key={index} 
                          questionNumber={(index+1)}
-                          title={question.text}
-                          fields={question.fields}
+                          title={question.question_title}
+                          fields={question.question_fields}
                         />
-      })
+              })
+
+
   return (
     <div>
       <nav className={Styles.nav}>
@@ -140,7 +148,7 @@ function CheckList() {
              <BottonComponent title='Use This Template'/>
         </div>
       </nav>
-      {Questions}
+      {Questions}aaaa
     </div>
   )
 }

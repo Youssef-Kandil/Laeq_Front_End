@@ -19,8 +19,8 @@ L.Icon.Default.mergeOptions({
 interface Props {
   label: string;
   placeholder: string;
-  onChange: (value: string) => void;
-  value: string;
+  onChange: (value: {lat:string,long:string}) => void;
+  value: {lat:string,long:string};
 }
 
 export default function LocationInputComponent({
@@ -42,7 +42,7 @@ export default function LocationInputComponent({
   const saveLocation = () => {
     if (tempLocation) {
       const [lat, lng] = tempLocation as [number, number];
-      onChange(`lat: ${lat.toFixed(5)}, lng: ${lng.toFixed(5)}`);
+      onChange({lat: lat.toFixed(5), long:lng.toFixed(5)});
     }
     setIsModalOpen(false);
   };
@@ -105,7 +105,7 @@ export default function LocationInputComponent({
         }}
         onClick={openModal}
       >
-        <span>{value || placeholder}</span>
+        <span>{value.lat?`lat:${value.lat},long:${value.long}` : placeholder}</span>
         <FaMapMarkerAlt style={{ fontSize: "20px", color: "#10b981" }} />
       </div>
 

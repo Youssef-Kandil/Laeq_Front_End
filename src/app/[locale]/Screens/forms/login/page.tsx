@@ -1,24 +1,29 @@
 "use client";
 import React ,{useState}from 'react'
 import Styles from './login.module.css'
-import { CircularProgress,Alert ,AlertTitle,Stack} from '@mui/material';
+import { Alert ,AlertTitle,Stack} from '@mui/material';
 import { signInWithGoogle } from "../../../../lib/firebase";
 import login_services from '@/app/services/website/login_services';
 import regex from '@/app/utils/regex';
 import encryption from '@/app/utils/encryption';
 // === Components ===
-import { redirect ,useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from "next/link";
 import {useTranslations,useLocale} from 'next-intl';
+
+import { useLogin } from '@/app/Hooks/useLogin';
+
+import { useQueryClient } from '@tanstack/react-query';
 
 
 
 function Login() {
   const lang = useLocale();
   const router = useRouter();
-  console.log("Current Lang --> ",lang)
   const t = useTranslations('login_screen')
+
+
 
 
   //  START STATE ===
@@ -31,65 +36,58 @@ function Login() {
   //  END STATE ===
 
   // START FUNCTIONS ===
+  const queryClient = useQueryClient();
+const { mutate } = useLogin();
 
-  const handleLogin = async () => {
-    setAlertState(false);
-    setAlertSeverity("warning");
-    // Check if the email and password are not empty
-    if (!email || !password) {
+const handleLogin = () => {
+  setAlertState(false);
+  setAlertSeverity("warning");
 
-      setAlertState(true);
-      setError("Please enter both email and password.");
-      return;
-    }
-    if(email.length == 0 || password.length == 0){
-      setAlertState(true);
-      setError("Please enter both email and password.");
-      return;
-    }
-    if(email.trim() == "" || password.trim() == ""){
-      setAlertState(true);
-      setError("Please enter both email and password.");
-      return;
-    }
-    // Check if the email is valid
-    if (regex.email.test(email) == false) {
-      setAlertState(true);
-      setError("Please enter a valid email address.");
-           return;
-    }
-    // Check if the password is valid
-    // if (regex.password.test(password) == false) {
-    //       setAlertState(true);
-    //       setError("Please enter a valid password.");
-    //        return;
-    // }
-
-    // Hash the Data
-    // const hashed_Email : string = encryption.encryption(email,process.env.NEXT_PUBLIC_HASH_KEY as string)
-    // const hashed_Password : string = encryption.encryption(password,process.env.NEXT_PUBLIC_HASH_KEY as string)
-    
-    // If all checks pass, proceed with login
-    setError("");
-    // console.log("Login with email: ",email," and password: ",password);
-    // console.log("Login with hashed_Email: ",hashed_Email," and hashed_Password: ",hashed_Password);
-    // Call the login service
-    // const result = await login_services.login(hashed_Email,hashed_Password)
-    const result = await login_services.login(email,password)
-    console.log("Login : ",result);
-    // Check if the login was successful And Go To Dashboard
-    if(result){
-      console.log("Login successful");
-      localStorage.setItem('clickedAsideTitle', "dashboard");
-      // Redirect to the dashboard or perform any other action
-       router.push(`/${lang}/Screens/dashboard/summeries`);
-      // redirect(`/${lang}/Screens/dashboard/summeries`);
-    }else{
-      setAlertState(true);
-      setAlertSeverity("error")
-      setError("فشل تسجيل الدخول")
-    }
+  if (!email || !password || email.trim() === "" || password.trim() === "") {
+    setAlertState(true);
+    setError("Please enter both email and password.");
+    return;
   }
+
+  if (!regex.email.test(email)) {
+    setAlertState(true);
+    setError("Please enter a valid email address.");
+    return;
+  }
+
+      setError("");
+
+      mutate(
+        { email, password },
+        {
+          onSuccess: (data) => {
+            console.warn(data);
+            // خزّن البيانات في الكاش
+            if (data) {
+               if (data?.role) {   
+                  queryClient.setQueryData(["AccountInfo"], data);
+                  const token = JSON.stringify(data);
+                  const key = process.env.NEXT_PUBLIC_HASH_KEY || ""
+                 const info =  encryption.encryption(token,key)
+                 console.warn("INFOOO :: ",info)
+                  localStorage.setItem("AccountInfo",info)
+                  router.push(`/${lang}/Screens/dashboard/summeries`);
+                }
+            }else{
+              setAlertState(true);
+              setError("Please enter a valid email address OR password.");
+            }
+          },
+          onError: () => {
+            setAlertState(true);
+            setAlertSeverity("error");
+            setError("فشل تسجيل الدخول");
+          },
+        }
+      );
+
+};
+
   console.log(error)
 
 // Example of the loggedInUser.providerData[0] object returned from Google Sign-In
