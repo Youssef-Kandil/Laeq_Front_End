@@ -1,5 +1,8 @@
 import { AccountInfo } from "../Types/AccountsType";
 import encryption from "./encryption";
+import Cookies from "js-cookie";
+
+
 
 // export function getAdminAccountInfo(): AccountInfo | null {
 //   if (typeof window === "undefined") return null; // منع الكراش في السيرفر
@@ -10,17 +13,15 @@ import encryption from "./encryption";
 
 export function getAdminAccountInfo(localStorage_Key: string) : AccountInfo | null {
 
-  if (typeof window === "undefined") {
-    return null; 
-  }
 
-  const token = localStorage.getItem(localStorage_Key);
+  // const token = localStorage.getItem(localStorage_Key);
+  const token =  Cookies.get(localStorage_Key);
+  console.warn("token :: ",token);
   if (!token) return null;
 
   const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
   try {
     const decryption = encryption.decryption(token, key);
-    console.error("decryption : ",JSON.parse(decryption));
     return JSON.parse(decryption);
   } catch (err) {
     console.error("Decryption failed:", err);

@@ -8,11 +8,18 @@ import Styles from './checklists.module.css'
 import Card from '@/app/components/global/TemplateCard/Card';
 import {useTranslations} from 'next-intl';
 import { IoIosSearch } from "react-icons/io";
+import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
+import { AccountInfo } from '@/app/Types/AccountsType';
 
 function CheckLists() {
     const current_lang = useLocale();
     const router = useRouter();
     const t = useTranslations('table_component');
+    React.useEffect(()=>{
+        localStorage.setItem('clickedAsideTitle',"checklist");
+    },[])
+    const info = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
+    const isEmployee = info?.role === "employee";    
       /*TEST DATA*/ //const dataTest = [{id:"1",title:"Food Safty & Hygiene 1",img:"https/drive.google.com/iewmd12881.png"},{id:"2",title:"Food Safty & Hygiene 2",img:"https/drive.google.com/iewmd12881.png"},{id:"3",title:"Food Safty & Hygiene 3",img:"https/drive.google.com/iewmd12881.png"},]
       
       const { data, isLoading, error } = useCheckList();
@@ -44,7 +51,8 @@ function CheckLists() {
                 </div>
             </div>
           {/* === START BTN */}  
-              <button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm`)} className={Styles.button} >Add New Checklist</button>
+          {!isEmployee&& <button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm`)} className={Styles.button} >Add New Checklist</button>}
+             
         </nav>
 
       <section>

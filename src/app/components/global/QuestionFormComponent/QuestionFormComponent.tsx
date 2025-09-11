@@ -5,10 +5,10 @@ import app_identity from "@/app/config/identity";
 
 import { QuestionFormComponentProps, FieldType, btnCardProps } from "./QuestionFormComponent_Types";
 
-import CheckBoxComponent from '@/app/components/global/CheckBoxComponent/CheckBoxComponent';
+import CheckBoxComponent from '@/app/components/global/InputsComponents/CheckBoxComponent/CheckBoxComponent';
 import SingleChoiceAnswer from "../../SingleChoiceAnswer/SingleChoiceAnswer";
-import InputComponent from "@/app/components/global/InputComponent/InputComponent";
-import DropListComponent from "@/app/components/global/DropListComponent/DropListComponent";
+import InputComponent from "@/app/components/global/InputsComponents/InputComponent/InputComponent";
+import DropListComponent from "@/app/components/global/InputsComponents/DropListComponent/DropListComponent";
 
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
@@ -50,20 +50,20 @@ function QuestionFormComponent({
     };
 
     const map: { [key: string]: [string, ReactNode] } = {
-      short_text: ["Short Text", <MdTextFields />],
-      comment: ["Comment", <BsChatRightText />],
-      images: ["Images", <MdOutlineAddPhotoAlternate />],
-      action: ["Action", <VscGithubAction />],
-      time: ["Time", <MdAccessTime />],
-      number: ["Number", <TbNumber123 />],
-      date_time: ["Date & Time", <MdEvent />],
-      date_range: ["Date Range", <HiOutlineCalendarDateRange />],
-      date: ["Date", <MdDateRange />],
-      score: ["Score", <TfiPulse />],
-      location: ["Location", <FaMapLocationDot />],
-      signature: ["Signature", <PiSignatureDuotone />],
-      checkbox: ["Checkbox", <BsChatRightText />],
-      single: ["Single Choice", <BsChatRightText />],
+      short_text: ["Short Text", <MdTextFields key="short_text" />],
+      comment: ["Comment", <BsChatRightText key="comment" />],
+      images: ["Images", <MdOutlineAddPhotoAlternate key="images" />],
+      action: ["Action", <VscGithubAction key="action" />],
+      time: ["Time", <MdAccessTime key="time" />],
+      number: ["Number", <TbNumber123 key="number" />],
+      date_time: ["Date & Time", <MdEvent key="date_time" />],
+      date_range: ["Date Range", <HiOutlineCalendarDateRange key="date_range" />],
+      date: ["Date", <MdDateRange key="date" />],
+      score: ["Score", <TfiPulse key="score" />],
+      location: ["Location", <FaMapLocationDot key="Location"/>],
+      signature: ["Signature", <PiSignatureDuotone key="Signature" />],
+      checkbox: ["Checkbox", <BsChatRightText key="Checkbox"/>],
+      single: ["Single Choice", <BsChatRightText key="Single Choice"/>],
     };
 
     const data = map[field.type];
@@ -97,7 +97,7 @@ function QuestionFormComponent({
       return (
         <div key={field.id} style={{ width: '100%', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <SingleChoiceAnswer
-            options={field.options.map((opt) => ({ label: opt.label, value: opt.value }))}
+            options={field.options.map((opt) => ({ label: opt.label, value: Number(opt.value) }))}
           />
           {fields.length > 1 && (
             <div style={{ color: app_identity.secondary_color, display: 'flex', alignItems: 'center', gap: 10 }}>

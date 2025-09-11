@@ -35,6 +35,7 @@ interface TableProps {
     dateFilter?: boolean;
 
     useCheckRows?:boolean;
+    onCheckedChange?: (ids: (number | string)[]) => void;
 
     navButtonTitle?: string;
     navButtonAction?:()=>void;
@@ -62,7 +63,7 @@ function Table({
     navButtonAction,
     navButton2Title,
     navButton2Action,
-    useCheckRows}:TableProps) {
+    useCheckRows,onCheckedChange}:TableProps) {
     
     
     const current_lang = useLocale();
@@ -208,11 +209,13 @@ function Table({
 
     }
 
-    React.useEffect(()=>{
-        console.log(checkedRows)
 
-    },[checkedRows])
-    
+    React.useEffect(() => {
+        const ids = checkedRows.map(r => r.id);
+        console.log("Checked IDs ::", ids);
+        if (onCheckedChange) onCheckedChange(ids); // 👈 هنا بيرجع الـ IDs للـ parent
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [checkedRows]);
       
 
 

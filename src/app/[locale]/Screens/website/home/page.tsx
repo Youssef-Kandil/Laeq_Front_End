@@ -18,6 +18,9 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
 
  function Home() {
+    React.useEffect(()=>{
+      localStorage.setItem('clickedTitle', "home");
+    },[])
     const current_lang = useLocale();
       const t = useTranslations('website.home_screen');
 

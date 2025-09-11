@@ -10,16 +10,17 @@ import { signInWithGoogle } from "../../../../lib/firebase";
 import Image from 'next/image';
 import Link from 'next/link';
 import {useTranslations,useLocale} from 'next-intl';
-import { useQueryClient } from '@tanstack/react-query';
+// import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAdminAccount } from '@/app/Hooks/useAdminAccount';
+
+import Cookies from 'js-cookie';
 
 
 
 
 function Signup() {
-  //   const pathname = usePathname();
-  //  const router = useRouter();
+
    const current_lang = useLocale();
    const router = useRouter();
    const t = useTranslations('signup_screen');
@@ -81,7 +82,7 @@ function Signup() {
    } 
 
  // === Handle Submit ===
-   const queryClient = useQueryClient();
+
  const { mutate, isPending, isSuccess,isError,error, data } = useAdminAccount();
     async function handleSubmit(){
       setAlertState(true);
@@ -112,21 +113,21 @@ function Signup() {
               end_date: getFutureDate(7).toISOString(),
             }, 
             {
-              onSuccess: (data)=>{
-                queryClient.setQueryData(["adminAccountInfo"], data);
-                router.push(`/${current_lang}/Screens/dashboard/payments_plans`);
+              onSuccess: ()=>{
+                     // localStorage.setItem("AccountInfo",info)
+                     Cookies.remove("AccountInfo");
+                     router.replace(`/${current_lang}/Screens/forms/login`);
+              },
 
+              onError:(error)=>{
+                setAlertState(true);
+                setAlertSeverity("error");
+                setAlertMSG(`Please enter Your valid Info . ${error.message}`);
               }
             }
           );
-            if(isSuccess){
-                console.warn(data)
-            // === redirect to the dashboard ===
-            // redirect(`${current_lang}/Screens/dashboard/summeries`);
-          }
     }
 
-    console.warn("✅ Data ready:", data); // ✅ هنا هتكون البيانات موجودة
 React.useEffect(() => {
   if (isSuccess && data) {
   }

@@ -82,7 +82,7 @@ function Nave() {
                         disableUnderline
                     >
                         <MenuItem value={"en"}>EN</MenuItem>
-                        <MenuItem value={"ar"}>AR</MenuItem>
+                        {/* <MenuItem value={"ar"}>AR</MenuItem> */}
                     </Select>
             </FormControl>
 

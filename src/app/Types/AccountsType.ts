@@ -23,18 +23,20 @@ export interface EmpAccountInfo  {
 };
 export interface AccountInfo  {
   id: number;
-  roll:  "admin"|"employee";
+  role:  "admin"|"employee";
+  email:string;
   userDetails: {
     full_name: string;
     id: number;
     phone: string;
+    plan_id?: number;
     plan_type?: string;
     start_date?: string;
     end_date?: string;
     admin_id?:number;
-    admin_account_limits?:[{
-      max_companies:number,
-      max_site:number,
+    permissions?:string[]
+    admin_account_limits?:{
+      max_branches:number,
       max_users:number,
       max_custom_checklists:number,
       max_Corrective_action:number,
@@ -42,7 +44,7 @@ export interface AccountInfo  {
       Arabic_language_support:number,
       Access_to_training_programs:number,
       Daily_monitoring_sheets:number,
-    }]
+    }
   };
 };
 

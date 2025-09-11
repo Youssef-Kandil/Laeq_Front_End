@@ -4,13 +4,13 @@ import Styles from "./AddNewTemplateForm.module.css";
 
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
 import QuestionFormComponent from "@/app/components/global/QuestionFormComponent/QuestionFormComponent";
-import InputComponent from "@/app/components/global/InputComponent/InputComponent";
+import InputComponent from "@/app/components/global/InputsComponents/InputComponent/InputComponent";
 
 
 interface FieldType {
   id: string | number;
   type: string;
-  options?: { id: string | number; label: string; value: any }[];
+  options?: { id: string | number; label: string; value: string | number }[];
 }
 
 interface questionType {

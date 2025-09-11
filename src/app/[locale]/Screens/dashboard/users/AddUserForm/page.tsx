@@ -1,29 +1,31 @@
 "use client";
 import React from 'react'
 
-// import {useLocale} from 'next-intl';
+//You@Laeq123
 import { useRouter } from "next/navigation"; 
 // import { SelectChangeEvent } from '@mui/material';
 import { useGetCompaniesByUserId } from '@/app/Hooks/useCompany';
 import { useRole } from '@/app/Hooks/useRole';
-import { useCreateEmployee } from '@/app/Hooks/useEmployees';
+import { useCreateEmployee ,useEmployees} from '@/app/Hooks/useEmployees';
 import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 
-import InputComponent from '@/app/components/global/InputComponent/InputComponent';
-import DropListComponent from '@/app/components/global/DropListComponent/DropListComponent';
+import InputComponent from '@/app/components/global/InputsComponents/InputComponent/InputComponent';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 import { DropListType } from '@/app/Types/DropListType';
+import { AccountInfo } from '@/app/Types/AccountsType';
 
 function AddUserForm() {
 
     // const current_lang = useLocale();
     const router = useRouter();
-    const AdminInfo = getAdminAccountInfo("AccountInfo");
-    const limits = AdminInfo?.userDetails?.admin_account_limits ?? [];
-    const [maxْEmployees] = React.useState(limits[0]?.max_users?? 0); 
+    const AdminInfo = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
+    const limits = AdminInfo?.userDetails?.admin_account_limits;
+    const maxEmployees = limits?.max_users ?? 0;
     const Companies = useGetCompaniesByUserId(AdminInfo?.userDetails.id ?? 0);
     const Roles = useRole(AdminInfo?.userDetails.id ?? 0);
-    const {mutate} = useCreateEmployee();
+    const { mutate } = useCreateEmployee();
+    const Employees = useEmployees(AdminInfo?.userDetails.id ?? 0);
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
       id: item.id,
       value: String(item.id),
@@ -53,7 +55,7 @@ function AddUserForm() {
         value: item.id,
         title: item.site_name,
       }));
-      console.warn("Sites :: ",SitesList)
+
 
       return company ? SitesList : [];
     }
@@ -106,7 +108,7 @@ function AddUserForm() {
                     Employees limit in your plan
                   </p>
                   <strong style={{ fontSize: "16px", color: "#08ab95" }}>
-                    {maxْEmployees} / 0
+                    {maxEmployees} / {Employees?.data?.length??0}
                   </strong>
                 </div>
               </div>

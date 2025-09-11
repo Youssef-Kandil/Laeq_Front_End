@@ -2,7 +2,7 @@
 import React from 'react'
 import Styles from './settings.module.css'
 
-import InputComponent from '@/app/components/global/InputComponent/InputComponent';
+import InputComponent from '@/app/components/global/InputsComponents/InputComponent/InputComponent';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 // import ImagInput from '@/app/components/global/ImagInputComponent/ImagInputComponent';
 

@@ -3,9 +3,9 @@ import React from 'react'
 
 import {useRouter } from "next/navigation"; 
 
-import DateInputComponent from '@/app/components/global/DateInputComponent/DateInputComponent';
-import TimeInputComponent from '@/app/components/global/TimeInputComponent/TimeInputComponent';
-import DropListComponent from '@/app/components/global/DropListComponent/DropListComponent';
+import DateInputComponent from '@/app/components/global/InputsComponents/DateInputComponent/DateInputComponent';
+import TimeInputComponent from '@/app/components/global/InputsComponents/TimeInputComponent/TimeInputComponent';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 
 

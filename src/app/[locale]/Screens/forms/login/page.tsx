@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from "next/link";
 import {useTranslations,useLocale} from 'next-intl';
+import Cookies from "js-cookie";
 
 import { useLogin } from '@/app/Hooks/useLogin';
 
@@ -70,8 +71,13 @@ const handleLogin = () => {
                   const key = process.env.NEXT_PUBLIC_HASH_KEY || ""
                  const info =  encryption.encryption(token,key)
                  console.warn("INFOOO :: ",info)
-                  localStorage.setItem("AccountInfo",info)
-                  router.push(`/${lang}/Screens/dashboard/summeries`);
+                  // localStorage.setItem("AccountInfo",info)
+                  Cookies.set("AccountInfo", info, { expires: 90 });
+                  if (data?.role == "admin") {
+                    router.replace(`/${lang}/Screens/dashboard/payments_plans`);
+                  }else{
+                    router.replace(`/${lang}/Screens/dashboard/tasks`);
+                  }
                 }
             }else{
               setAlertState(true);

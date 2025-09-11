@@ -9,6 +9,9 @@ import { useLocale } from 'next-intl';
 function Report() {
   const router = useRouter();
   const current_lang = useLocale();
+  React.useEffect(()=>{
+      localStorage.setItem('clickedAsideTitle',"reports");
+  },[])
 
   const originalData=[
     {id:1,name:"Report 1",company:"Company 1",site:"Site 1",submitted_by:"User 1",date:"2023-10-01",score:85,status:"Completed"},

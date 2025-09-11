@@ -1,36 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Styles from "./currentPlanBanerComponent.module.css";
 import { FaSuperpowers } from "react-icons/fa";
-import { decryptionLocalStorage } from "@/app/utils/decryptionLocalstorageINFO";
+// import { getAdminAccountInfo } from "@/app/utils/getAccountInfo"; 
 
-type AccountInfo = {
-  userDetails: {
-    plan_type: string;
-    end_date: string;
-  };
-};
+import { AccountInfo } from "@/app/Types/AccountsType";
 
-function CurrentPlanBanerComponent() {
-  const [info, setInfo] = useState<AccountInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+interface CurrentPlanBanerComponentProps {
+  info: AccountInfo | null | undefined;
+}
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const decrypted = decryptionLocalStorage("AccountInfo");
-      if (decrypted) {
-        setInfo(JSON.parse(decrypted));
-      }
-    } catch (err) {
-      console.error("Failed to parse AccountInfo:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  if (loading) {
-    return <div className={Styles.baner}>Loading...</div>;
+function CurrentPlanBanerComponent({ info }: CurrentPlanBanerComponentProps) {
+  if (!info) {
+    return <div className={Styles.baner}>Error To Get Your Plan Try Refresh Page !</div>;
   }
 
   const endDate = info?.userDetails?.end_date
@@ -65,7 +47,7 @@ function CurrentPlanBanerComponent() {
         </div>
       </section>
 
-      {isExpired && info?.userDetails?.plan_type !== "7Days-free" && (
+      {isExpired && (!info?.userDetails?.plan_type?.includes("free")) && (
         <button type="button">Renew</button>
       )}
     </div>

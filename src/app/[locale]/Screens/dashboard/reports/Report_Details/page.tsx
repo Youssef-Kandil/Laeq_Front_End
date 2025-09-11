@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
-import Styles from './Report_Details.module.css'
-import { useParams ,useRouter } from 'next/navigation';
+// import Styles from './Report_Details.module.css'
+// import { useParams ,useRouter } from 'next/navigation';
 
 
 import QuestionReportTemplateComponent from '@/app/components/QuestionReportTemplateComponent/QuestionReportTemplateComponent';

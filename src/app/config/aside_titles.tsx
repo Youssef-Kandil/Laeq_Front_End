@@ -18,6 +18,7 @@ const aside_titles =[
     {
         title:"dashboard", // This Title Is A Key Fom Locale Folder
         href:"/summeries",
+        permission_name:"show summeries",
         icon:<HiOutlineViewGridAdd  style={{fontSize:iconSize}} />,
         isActive:true,
         hasChild:false,
@@ -25,6 +26,7 @@ const aside_titles =[
     {
         title:"checklist",
         href:"/checklist",
+        permission_name:"assign checklist to users",
         icon:<GoChecklist style={{fontSize:iconSize}}/>,
         isActive:false,
         hasChild:false,
@@ -32,6 +34,7 @@ const aside_titles =[
     {
         title:"tasks",
         href:"/tasks",
+        permission_name:"ask tasks",
         icon:<MdTaskAlt style={{fontSize:iconSize}}/>,
         isActive:false,
         hasChild:false,
@@ -39,6 +42,7 @@ const aside_titles =[
     {
         title:"reports",
         href:"/reports",
+        permission_name:"show checklists reports",
         icon:<TbReportAnalytics style={{fontSize:iconSize}}/>,
         isActive:false,
         hasChild:false,
@@ -46,6 +50,7 @@ const aside_titles =[
     // {
     //     title:"actions",
     //     href:"/actions",
+    //     permission_name:"show actions",
     //     icon:<MdOutlinePendingActions style={{fontSize:iconSize}}/>,
     //     isActive:false,
     //     hasChild:false,
@@ -53,6 +58,7 @@ const aside_titles =[
     // {
     //     title:"assets",
     //     href:"/assets",
+    //     permission_name:"show assets",
     //     icon:<HiOutlineArchiveBox style={{fontSize:iconSize}}/>,
     //     isActive:false,
     //     hasChild:false,
@@ -60,6 +66,7 @@ const aside_titles =[
     {
         title:"users",
         href:"/users",
+        permission_name:"show users",
         icon:<FaRegUser style={{fontSize:iconSize}}/>,
         isActive:false,
         hasChild:false,
@@ -67,6 +74,7 @@ const aside_titles =[
     {
         title:"roles",
         href:"/roles",
+        permission_name:"roles",
         icon:<TbUserShield style={{fontSize:iconSize}}/>,
         isActive:false,
         hasChild:false,
@@ -74,6 +82,7 @@ const aside_titles =[
     {
         title:"company",
         href:"/company",
+        permission_name:"show companies",
         icon:<GoChecklist style={{fontSize:iconSize }}/>,
         isActive:false,
         hasChild:false,
@@ -81,6 +90,7 @@ const aside_titles =[
     // {
     //     title:"department",
     //     href:"/department",
+    //     permission_name:"department",
     //     icon:<LuBuilding style={{fontSize:iconSize }}/>,
     //     isActive:false,
     //     hasChild:false,
@@ -88,6 +98,7 @@ const aside_titles =[
     // {
     //     title:"inspector_requests",
     //     href:"/inspector_requests",
+    //     permission_name:"ask inspector requests",
     //     icon:<BsBuildingCheck style={{fontSize:iconSize }}/>,
     //     isActive:false,
     //     hasChild:false,
@@ -95,6 +106,7 @@ const aside_titles =[
     {
         title:"payments_plans",
         href:"/payments_plans",
+        permission_name:"show current payment plan",
         icon:<GoCreditCard style={{fontSize:iconSize }}/>,
         isActive:false,
         hasChild:false,
@@ -102,6 +114,7 @@ const aside_titles =[
     {
         title:"settings",
         href:"/settings",
+        permission_name:"settings",
         icon:<IoSettingsOutline style={{fontSize:iconSize }}/>,
         isActive:false,
         hasChild:false,

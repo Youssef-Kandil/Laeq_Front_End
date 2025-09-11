@@ -9,6 +9,9 @@ import Link from 'next/link'
 
 
 function About_us() {
+  React.useEffect(()=>{
+    localStorage.setItem('clickedTitle', "about_us");
+  },[])
     const current_lang = useLocale();
       const t = useTranslations('website.about_us_screen');
 
