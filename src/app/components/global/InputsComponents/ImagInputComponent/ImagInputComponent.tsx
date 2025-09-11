@@ -2,6 +2,7 @@
 import React from 'react'
 import { LuImagePlus } from "react-icons/lu";
 import Styles from './imagInputComponent.module.css'
+import Image from 'next/image';
 
 
 interface props {
@@ -36,8 +37,8 @@ function ImagInputComponent({lable,defaultValue,onChange}:props) {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const img = document.createElement('img');
       img.onload = () => {
         if (img.width > maxWidth || img.height > maxHeight) {
           setError(`أبعاد الصورة يجب أن تكون ${maxWidth}×${maxHeight} بكسل أو أقل.`);
@@ -88,10 +89,13 @@ function ImagInputComponent({lable,defaultValue,onChange}:props) {
 
       {preview && (
         <div onClick={openFilePicker} style={{}}>
-          <img
-            src={preview?preview:defaultValue}
+          
+          <Image
+            src={preview ?? defaultValue ?? ""}
             alt="معاينة الصورة"
             loading='lazy'
+            width={100}
+            height={100}
             style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px',objectFit:'contain' }}
           />
         </div>

@@ -1,17 +1,20 @@
 "use client";
 import React from 'react'
 import {ClientOnlyTable} from '@/app/components/global/Table/Table';
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { useParams ,useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl';
+// import { CheckIsExpired } from '@/app/utils/CheckIsExpired';
 
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
 
 
 function Assets() {
-        const router = useRouter();
-        const current_lang = useLocale();
+    const router = useRouter();
+    const current_lang = useLocale();
+    React.useEffect(()=>{
+        localStorage.setItem('clickedAsideTitle',"assets");
+    },[])
 
 
       const originalData=[
@@ -20,6 +23,7 @@ function Assets() {
 
       const local_var = "assets.tb_headers";
       //=== Add Action To The Table Rows
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const modifiedData = originalData.map(({ id,...rest }) => ({
         ...rest,
          delete_action:<LuTrash2 style={{fontSize:20}}/>,

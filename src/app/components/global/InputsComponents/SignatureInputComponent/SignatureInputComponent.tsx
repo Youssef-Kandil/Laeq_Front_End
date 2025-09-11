@@ -4,6 +4,7 @@ import SignaturePad from "react-signature-canvas";
 import Modal from "react-modal";
 import Styles from "./SignatureInputComponent.module.css";
 import { FaTrashAlt } from "react-icons/fa";
+import Image from "next/image";
 
 interface Props {
   label: string;
@@ -52,7 +53,7 @@ export default function SignatureInputComponent({
       >
         {value ? (
           <>
-            <img src={value} alt="التوقيع" style={{ maxHeight: "100px" }} />
+            <Image src={value} alt="التوقيع" style={{ maxHeight: "100px" }} />
             <button className={Styles.deleteBtn} onClick={(e) => {
               e.stopPropagation();
               deleteSignature();

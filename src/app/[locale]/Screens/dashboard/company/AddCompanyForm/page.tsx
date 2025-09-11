@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import Styles from "./AddCompanyForm.module.css";
 
 import { useRouter } from "next/navigation";
-import InputComponent from "@/app/components/global/InputComponent/InputComponent";
-import DropListComponent from "@/app/components/global/DropListComponent/DropListComponent";
-import LocationInputComponent from "@/app/components/global/LocationInputComponent/LocationInputComponent";
+import InputComponent from "@/app/components/global/InputsComponents/InputComponent/InputComponent";
+import DropListComponent from "@/app/components/global/InputsComponents/DropListComponent/DropListComponent";
+import LocationInputComponent from "@/app/components/global/InputsComponents/LocationInputComponent/LocationInputComponent";
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
 import { useCreateCompany } from "@/app/Hooks/useCompany";
 import { useGetCompaniesByUserId } from '@/app/Hooks/useCompany';
@@ -25,12 +25,10 @@ export interface siteType {
 function AddCompanyForm() {
   const router = useRouter();
   const AdminInfo = getAdminAccountInfo("AccountInfo");
-  const limits = AdminInfo?.userDetails?.admin_account_limits ?? [];
-  const [maxCompanies] = useState(limits[0]?.max_companies?? 0); 
-  const [currentCompanies] = useState(1); // شركة واحدة حالياً
-  console.log(AdminInfo);
-
-  const [maxSites] = useState(limits[0]?.max_site ?? 0); // خطة المستخدم
+  const limits = AdminInfo?.userDetails?.admin_account_limits ?? {max_branches:0};
+  const [maxBranches] = useState(limits?.max_branches?? 0); 
+  // const [currentCompanies] = useState(1); // شركة واحدة حالياً
+// خطة المستخدم
   const [sites, setSites] = useState<siteType[]>([
     {
       admin_id: AdminInfo?.userDetails.id??0,
@@ -41,20 +39,22 @@ function AddCompanyForm() {
       long: "",
     },
   ]);
-
-  const { data, isLoading, error } = useGetCompaniesByUserId(AdminInfo?.userDetails.id??0);
-          if (isLoading) return <div>Loading...</div>;
-          if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
-          if (!data) return <div>لا توجد بيانات</div>;
-          console.error("COMP :: ",data[0].sites.length)
-
+  
   const [companyName, setCompanyName] = useState<string>("");
   const [companySector, setCompanySector] = useState<DropListType|null>(null);
   const [companyEmail, setCompanyEmail] = useState<string>("");
   const [companyWebSite, setCompanyWebSite] = useState<string>("");
 
+  const { mutate } = useCreateCompany();
+  const { data, isLoading, error } = useGetCompaniesByUserId(AdminInfo?.userDetails.id??0);
+          if (isLoading) return <div>Loading...</div>;
+          if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
+          if (!data) return <div>لا توجد بيانات</div>;
+          console.warn("data LLLL",data)
+
+
   const handleAddSite = () => {
-    if (sites.length < maxSites) {
+    if (sites.length < maxBranches) {
       setSites((prev) => [
         ...prev,
         {
@@ -81,7 +81,6 @@ function AddCompanyForm() {
     );
   };
 
-  const { mutate } = useCreateCompany();
   const handel_createNewCompany = () => {
     if (
       companyName.length == 0
@@ -132,15 +131,7 @@ function AddCompanyForm() {
               Companies in your plan
             </p>
             <strong style={{ fontSize: "16px", color: "#08ab95" }}>
-              {currentCompanies} / {Number(data.length)+maxCompanies}
-            </strong>
-          </div>
-          <div style={{ textAlign: "left" }}>
-            <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>
-              Sites in your plan
-            </p>
-            <strong style={{ fontSize: "16px", color: "#08ab95" }}>
-              {sites.length} / {Number(data[0].sites.length)+maxSites}
+              {maxBranches} / {Number(data?.length??0)}
             </strong>
           </div>
         </div>
@@ -202,7 +193,7 @@ function AddCompanyForm() {
       ))}
 
       {/* Add Site Button */}
-      {sites.length < maxSites && (
+      {sites.length < maxBranches && (
         <button
           className={Styles.addSiteButton}
           type="button"

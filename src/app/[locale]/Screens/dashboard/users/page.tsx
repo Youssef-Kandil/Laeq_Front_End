@@ -6,18 +6,32 @@ import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import {useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
+import Popup from '@/app/components/global/Popup/Popup';
 
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
+import { FaArrowTrendUp } from "react-icons/fa6";
 
 function Users() {
+      React.useEffect(()=>{
+          localStorage.setItem('clickedAsideTitle',"users");
+      },[])
         const router = useRouter();
         const current_lang = useLocale();
-        const AdminInfo = getAdminAccountInfo();
-        const { data, isLoading, error } = useEmployees(AdminInfo?.userDetails?.id ?? 0);
-          if (isLoading) return <SkeletonLoader variant="table" tableColumns={4} tableRows={5} />;
-          if (error) return <p>حصل خطأ!</p>;
-        console.warn("USERS : ",data)
+        const info = getAdminAccountInfo("AccountInfo");
+        const limits = info?.userDetails?.admin_account_limits as { max_users?: number } ?? {};
+        const [maxEmps] = React.useState(limits.max_users ?? 0);
+        const [showPopup, setShowPopup] = React.useState(false);
+        const isEmployee = info?.role === "employee";    
+        const targetId  =
+                isEmployee
+                  ? info?.userDetails?.admin_id
+                  : info?.userDetails?.id;
+
+        const { data, isLoading, error } = useEmployees(targetId ?? 0);
+        if (isLoading) return <SkeletonLoader variant="table" tableColumns={4} tableRows={5} />;
+        if (error) return <p>حصل خطأ!</p>;
+        console.warn("USERS : ",maxEmps <= data.length)
 
 
       const local_var = "employees.tb_headers";
@@ -28,23 +42,40 @@ function Users() {
         sites: { site_name: string };
         roles: { role_name: string };
       }
-
-      const modifiedData = data?.map(({ full_name, users, sites, roles }: Employee) => ({
-        full_name,
-        email: users.email,
-        site: sites.site_name,
-        role: roles.role_name,
-        delete_action: <LuTrash2 style={{ fontSize: 20 }} />,
-        edit_action: <FiEdit2 style={{ fontSize: 20 }} />
-      }));
+      const modifiedData = data?.map(({ full_name, users, sites, roles }: Employee) => {
+        return {
+          full_name,
+          email: users.email,
+          site: sites.site_name,
+          role: roles.role_name,
+          delete_action: isEmployee ? null : <LuTrash2 style={{ fontSize: 20 }} />,
+          edit_action: isEmployee ? null : <FiEdit2 style={{ fontSize: 20 }} />,
+        };
+      });
   return (
     <div>
+      {showPopup&&<Popup 
+        icon={<FaArrowTrendUp/>} 
+        title="You’ve reached " 
+        subTitle="the limit allowed in your plan." 
+        btnTitle="Upgrade to unlock higher limits"
+        btnFunc={()=>router.push(`/${current_lang}/Screens/dashboard/payments_plans`)}
+        onClose={()=>setShowPopup(false)}/>}
+
+
         <ClientOnlyTable 
             titles={[`${local_var}.name`,`${local_var}.email`,`${local_var}.site`,`${local_var}.role`,"",""]}
             data={modifiedData}
             rowsFlex={[1,1,1,1,0.2,0.2]}
-            navButtonTitle='employees'
-            navButtonAction={()=>router.push(`/${current_lang}/Screens/dashboard/users/AddUserForm`)}
+            navButtonTitle={isEmployee?"":'employees'}
+            navButtonAction={()=>{
+                if(maxEmps <= data.length){
+                  console.log("maxCompanies");
+                  setShowPopup(true)
+                }else{
+                  router.push(`/${current_lang}/Screens/dashboard/users/AddUserForm`)
+                }
+            }}
          />
     </div>
   )

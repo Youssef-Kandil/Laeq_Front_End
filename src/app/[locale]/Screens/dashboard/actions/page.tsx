@@ -5,11 +5,16 @@ import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
+// import { CheckIsExpired } from '@/app/utils/CheckIsExpired';
 
 function Actions() {
     const router = useRouter();
     const current_lang = useLocale();
+
     const local_var = "actions.tb_headers";
+    React.useEffect(()=>{
+        localStorage.setItem('clickedAsideTitle',"actions");
+    },[])
   
   return (
     <div>

@@ -11,9 +11,12 @@ import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
 
 function Roles() {
+        React.useEffect(()=>{
+            localStorage.setItem('clickedAsideTitle',"roles");
+        },[])
         const router = useRouter();
         const current_lang = useLocale();
-        const AdminInfo = getAdminAccountInfo(); 
+        const AdminInfo = getAdminAccountInfo("AccountInfo"); 
         const local_var = "roles.tb_headers";
         const {data,isLoading,error} = useRole(AdminInfo?.userDetails.id ?? 0);
         console.warn("data : ",data)

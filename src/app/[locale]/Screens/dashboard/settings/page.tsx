@@ -6,6 +6,9 @@ import AccountInfo from './AccountInfo';
 import LanguageInfo from './LanguageInfo';
 
 function Settings() {
+    React.useEffect(()=>{
+        localStorage.setItem('clickedAsideTitle',"settings");
+    },[])
     const settingsTabs = ["Account Setting","Language"];
     const [SelectedTab,setSelectedTab] = React.useState("Account Setting");
   return (

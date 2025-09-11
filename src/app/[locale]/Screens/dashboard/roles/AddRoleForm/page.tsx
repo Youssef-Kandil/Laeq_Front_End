@@ -1,8 +1,8 @@
 "use client";
 import React from 'react';
 
-import InputComponent from '@/app/components/global/InputComponent/InputComponent';
-import CheckBoxComponent from '@/app/components/global/CheckBoxComponent/CheckBoxComponent';
+import InputComponent from '@/app/components/global/InputsComponents/InputComponent/InputComponent';
+import CheckBoxComponent from '@/app/components/global/InputsComponents/CheckBoxComponent/CheckBoxComponent';
 import { useRouter } from "next/navigation"; 
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 import app_identity from '@/app/config/identity';
@@ -10,13 +10,15 @@ import { usePermissions } from '@/app/Hooks/usePermissions';
 import { useCreateRole } from '@/app/Hooks/useRole';
 import { getAdminAccountInfo } from '../../../../../utils/getAccountInfo';
 import { RolePayload } from '@/app/Types/RoleType';
+import { AccountInfo } from '@/app/Types/AccountsType';
+
 
 
 function AddRoleForm() {
     const router = useRouter();
-    const AdminInfo = getAdminAccountInfo()
+    const AdminInfo = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
     const RoleMutation =  useCreateRole();
-    const {data,isLoading,isError,error,isSuccess} = usePermissions();
+    const {data} = usePermissions();
 
     const [roleName,setRoleName] = React.useState<string>("");
     const [roleDescription,setRoleDescription] = React.useState<string>("");

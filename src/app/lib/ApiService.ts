@@ -28,14 +28,14 @@ export default class ApiService {
     return this.request(endpoint, { method: "GET" });
   }
 
-  public post(endpoint: string, body: any) {
+  public post(endpoint: string, body: unknown) {
     return this.request(endpoint, {
       method: "POST",
       body: JSON.stringify(body),
     });
   }
 
-  public update(endpoint: string, body: any) {
+  public update(endpoint: string, body: unknown) {
     return this.request(endpoint, {
       method: "PUT",
       body: JSON.stringify(body),

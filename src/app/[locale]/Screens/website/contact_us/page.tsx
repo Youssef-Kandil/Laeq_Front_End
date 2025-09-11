@@ -1,7 +1,11 @@
+"use client" 
 import React from 'react'
 import Styles from './contact_us.module.css'
 import ContactUs from '../../forms/contactUs/page'
 function Contact_us() {
+      React.useEffect(()=>{
+        localStorage.setItem('clickedTitle', "contact_us");
+      },[])
   return (
     <div className={Styles.parent}>
 

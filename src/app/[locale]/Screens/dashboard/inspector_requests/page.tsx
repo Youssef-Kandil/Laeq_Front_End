@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import {useLocale} from 'next-intl';
-import {usePathname, useRouter } from "next/navigation"; 
+import {useRouter } from "next/navigation"; 
 import {ClientOnlyTable} from '@/app/components/global/Table/Table'
 import { MdDeleteOutline } from "react-icons/md";
 
@@ -11,7 +11,10 @@ import { MdDeleteOutline } from "react-icons/md";
 function Inspector_requests() {
     const current_lang = useLocale();
     const router = useRouter();
-    const pathname = usePathname();
+    // const pathname = usePathname();
+    React.useEffect(()=>{
+          localStorage.setItem('clickedAsideTitle',"inspector_requests");
+    },[])
 
   const originalData=[
     {id:1,company:"Company 1",site:"Site 1",date:"2023-10-01",status:"Completed"},

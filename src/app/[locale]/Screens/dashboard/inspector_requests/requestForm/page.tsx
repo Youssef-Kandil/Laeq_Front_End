@@ -1,16 +1,16 @@
 "use client";
 import React from 'react';
-import DropListComponent from '@/app/components/global/DropListComponent/DropListComponent';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 import {useLocale} from 'next-intl';
-import {usePathname, useRouter } from "next/navigation"; 
-import { SelectChangeEvent } from '@mui/material';
+import { useRouter } from "next/navigation"; 
+// import { SelectChangeEvent } from '@mui/material';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
-import Styles from './settings.module.css'
+// import Styles from './settings.module.css'
 
-function page() {
+function RequestForm() {
     const current_lang = useLocale();
     const router = useRouter();
-    const pathname = usePathname();
+    // const pathname = usePathname();
 
     const [lang,setLang] = React.useState<string>(current_lang)
   return (
@@ -77,4 +77,4 @@ function page() {
   )
 }
 
-export default page
+export default RequestForm

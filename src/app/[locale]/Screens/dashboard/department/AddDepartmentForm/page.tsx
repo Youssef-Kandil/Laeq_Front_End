@@ -1,16 +1,17 @@
 "use client";
 import React from 'react'
 
-import {useLocale} from 'next-intl';
-import {usePathname, useRouter } from "next/navigation"; 
-import { SelectChangeEvent } from '@mui/material';
+// import {useLocale} from 'next-intl';
+// import {usePathname, useRouter } from "next/navigation"; 
+// import { SelectChangeEvent } from '@mui/material';
+import { useRouter } from "next/navigation"; 
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 
-import InputComponent from '@/app/components/global/InputComponent/InputComponent';
-import DropListComponent from '@/app/components/global/DropListComponent/DropListComponent';
+import InputComponent from '@/app/components/global/InputsComponents/InputComponent/InputComponent';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 
 function AddDepartmentForm() {
-    const current_lang = useLocale();
+    // const current_lang = useLocale();
     const router = useRouter();
 
   return (

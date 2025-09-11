@@ -4,6 +4,7 @@ import { LuImagePlus } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Styles from './MultimageInputComponent.module.css';
 import { resizeAndConvert } from '@/app/utils/imageHelpers';
+import Image from 'next/image';
 
 interface Props {
   label: string;
@@ -100,7 +101,7 @@ export default function MultimageInputComponent({
               <div className={Styles.deleteIcon} onClick={() => removeImage(i)}>
                 <RiDeleteBinLine size={20} color='red'/>
               </div>
-              <img src={src} alt={`Preview ${i + 1}`} />
+              <Image src={src} alt={`Preview ${i + 1}`} width={100} height={100} loading='lazy'  />
             </div>
           ))}
         </div>

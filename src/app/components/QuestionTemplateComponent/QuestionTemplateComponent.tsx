@@ -45,6 +45,7 @@ interface props{
 
 function QuestionTemplateComponent({questionNumber,title,fields}:props) {
   
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function getFieldByType(fields: unknown[], type: string): any | null {
         return fields.find(
             (f) =>

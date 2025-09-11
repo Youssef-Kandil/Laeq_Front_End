@@ -23,8 +23,8 @@ function ScoreInputComponent() {
     <div className={Styles.ScoreInput}>
       <span>Score</span>
       <div  className={Styles.boxsContainer}>
-        {Boxs.map((boxValue)=>{
-          return <Box isSelected={SelectedBox == boxValue} onClick={()=>setSelectedBox(boxValue)} value={boxValue}/>
+        {Boxs.map((boxValue , i)=>{
+          return <Box key={i} isSelected={SelectedBox == boxValue} onClick={()=>setSelectedBox(boxValue)} value={boxValue}/>
         })}
       </div>
     </div>

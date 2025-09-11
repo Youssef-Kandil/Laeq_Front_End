@@ -8,8 +8,17 @@ export const usePaymentPlans = () => {
   return useQuery({
     queryKey: ["plans"],
     queryFn: async () => {
-      const res = await api.get("/get_all_plans");
-      return res; 
+      try {
+        const res = await api.get("/get_all_plans");
+        if (!res) throw new Error("No response from server");
+        return res;
+      } catch (err) {
+        // ارمي الخطأ عشان React Query تعرف فيه مشكلة
+        throw err;
+      }
     },
+    retry: false, // تمنع إعادة المحاولة التلقائية
   });
 };
+
+

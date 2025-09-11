@@ -4,7 +4,8 @@ import app_identity from '@/app/config/identity';
 import { MdDone , MdClose } from "react-icons/md";
 
 import { useTapCheckout  } from '@/app/Hooks/useTapPay';
-import { decryptionLocalStorage } from '@/app/utils/decryptionLocalstorageINFO';
+import { getAdminAccountInfo } from "@/app/utils/getAccountInfo"; 
+import { AccountInfo } from "@/app/Types/AccountsType"; 
 
 interface Feature {
   feature_id: number;
@@ -18,6 +19,7 @@ interface FeatureData {
 }
 
 interface PricingCardProps {
+  id:number;
   title: string;
   subtitle: string;
   buttonTitle?:string;
@@ -30,8 +32,7 @@ interface PricingCardProps {
 const arrayOfFeatures = [
   "Arabic language support",
   "Corrective action features",
-  "Brand included",
-  "Sites included",
+  "Branches included",
   "Users included",
   "Custom checklist fee",
   "Free onsite inspections",
@@ -39,44 +40,60 @@ const arrayOfFeatures = [
   "Daily monitoring sheets",
 ];
 
-function Pricing_Card({title,subtitle,buttonTitle,price,duration,features,isRecommended }:PricingCardProps) {
-      const [info, setInfo] = React.useState<{ email: string  , userDetails: { full_name: string} } | null>(null);
+
+function Pricing_Card({id,title,subtitle,buttonTitle,price,duration,features,isRecommended }:PricingCardProps) {
+      const [info, setInfo] = React.useState<AccountInfo | null>(null);
       React.useEffect(() => {
-        const Account = decryptionLocalStorage("AccountInfo");
+        const Account = getAdminAccountInfo("AccountInfo");
         if (Account) {
-          setInfo(JSON.parse(Account));
+          setInfo(Account);
         }
       }, []);
 
 
   const {mutate} = useTapCheckout();
   function pay(){
+  // === SET PLAN INFO
+    localStorage?.setItem("planInfo",JSON.stringify({
+        id,
+       title,
+       price,
+       duration:duration == 'Month' ? 30:365,
+       plan_features:features
+   }));  
+   // === SET PAY TYPE 
+    if (buttonTitle == "renew") {
+      localStorage?.setItem("operationType","renew")
+    }else{
+      localStorage?.setItem("operationType","upgrade")
+    }
+    // === PAY ====
     mutate(
       {
-        amount:Number(price),
-        currency:"SAR",
-        customer:{
-          first_name:info?.userDetails?.full_name||"unKnwon",
-          last_name:"",
-          email:info?.email || "unKnwon",
-        },
-        source: { id: "src_all" },
-        redirect:{
-          url:"http://localhost:3000/en/Screens/dashboard/payments_plans"
-        },
-        description:"safwef",
-        charges:[
-          {
-            description:"Payment for subscription",
-            amount:Number(price),
-            
-          }
-        ]
-    },
-    {onSuccess:(data)=>{
-        console.warn(data.transaction.url)
-    }}
-  )
+          amount:Number(price),
+          currency:"SAR",
+          customer:{
+            first_name:info?.userDetails?.full_name||"unKnwon",
+            last_name:"",
+            email:info?.email || "unKnwon",
+          },
+          source: { id: "src_all" },
+          redirect:{
+            url:"http://localhost:3000/en/Screens/dashboard/payments_plans"
+          },
+          description:"safwef",
+          charges:[
+            {
+              description:"Payment for subscription",
+              amount:Number(price),
+              
+            }
+          ]
+      },
+      {onSuccess:(data)=>{
+          console.warn(data.transaction.url)
+      }}
+    )
   }
   
 

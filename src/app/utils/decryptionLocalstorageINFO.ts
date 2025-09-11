@@ -1,4 +1,6 @@
 import encryption from "./encryption";
+import Cookies from "js-cookie";
+
 
 export function decryptionLocalStorage(localStorage_Key: string) {
 
@@ -6,12 +8,11 @@ export function decryptionLocalStorage(localStorage_Key: string) {
     return null; 
   }
 
-  const token = localStorage.getItem(localStorage_Key);
+  const token = Cookies.get(localStorage_Key);
   if (!token) return null;
 
   const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
   try {
-     console.error("decryption : ",JSON.parse(encryption.decryption(token, key)));
     return encryption.decryption(token, key);
   } catch (err) {
     console.error("Decryption failed:", err);

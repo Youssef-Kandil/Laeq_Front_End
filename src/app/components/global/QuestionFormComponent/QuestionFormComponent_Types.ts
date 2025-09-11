@@ -3,7 +3,7 @@ import {ReactNode} from "react";
 export interface FieldType {
   id: string | number;
   type: string;
-  options?: { id: string | number; label: string; value: any }[];
+  options?: { id: string | number; label: string; value:  string | number }[];
 }
 
 

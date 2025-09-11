@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import DropListComponent from '@/app/components/global/DropListComponent/DropListComponent';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 import {useLocale} from 'next-intl';
 import {usePathname, useRouter } from "next/navigation"; 
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';

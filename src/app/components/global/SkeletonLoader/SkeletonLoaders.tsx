@@ -40,6 +40,7 @@ function ShimmerRect({ className = "", style = {} }: { className?: string; style
   return (
     <div
       className={`skeleton-shimmer ${className}`}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       style={{ ...style, ["--skeleton-base" as any]: defaults.base, ["--skeleton-highlight" as any]: defaults.highlight }}
     />
   );

@@ -12,14 +12,28 @@ import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import Popup from '@/app/components/global/Popup/Popup';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 import { FaArrowTrendUp } from "react-icons/fa6";
+import { AccountInfo } from '@/app/Types/AccountsType';
+
 
 function Company() {
         const router = useRouter();
         const current_lang = useLocale();
-        const AdminInfo = getAdminAccountInfo("AccountInfo");
-        const limits = AdminInfo?.userDetails?.admin_account_limits ?? [];
-        const [maxCompanies] = React.useState(limits[0]?.max_companies ?? 0);
-        const [showPopup,setShowPopup] = React.useState(false);
+        const info = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
+        const isEmployee = info?.role === "employee";    
+        const targetId  =
+                isEmployee
+                  ? info?.userDetails?.admin_id
+                  : info?.userDetails?.id;
+        const limits = info?.userDetails?.admin_account_limits;
+        console.log("limits ::: COMPANYESSS >>> ", limits);
+        const [maxCompanies] = React.useState<number>(
+            typeof limits?.max_branches === "number" ? limits.max_branches : 0
+        );
+        const [showPopup, setShowPopup] = React.useState(false);
+
+        React.useEffect(() => {
+            localStorage.setItem('clickedAsideTitle', "company");
+        },[])
 
 // company_name - sector_type - sites
       const local_var = "company.tb_headers";
@@ -30,7 +44,7 @@ function Company() {
         sites: [];
       }
 
-      const { data, isLoading, error } = useGetCompaniesByUserId(AdminInfo?.userDetails.id??0);
+      const { data, isLoading, error } = useGetCompaniesByUserId(targetId??-1);
               if (isLoading) return <SkeletonLoader variant="table" tableColumns={6} tableRows={8} />;
               if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
               if (!data) return <div>لا توجد بيانات</div>;
@@ -39,8 +53,8 @@ function Company() {
           company_name,
           sector_type,
           sites: sites.length, // عدد المواقع
-          delete_action: <LuTrash2 style={{ fontSize: 20 }} />,
-          edit_action: <FiEdit2 style={{ fontSize: 20 }} />
+          delete_action: isEmployee? null: <LuTrash2 style={{ fontSize: 20 }} />,
+          edit_action: isEmployee? null: <FiEdit2 style={{ fontSize: 20 }} />
       }));
   return (
     <div>
@@ -56,8 +70,8 @@ function Company() {
         <ClientOnlyTable 
             titles={[`${local_var}.name`,`${local_var}.sectorType`,`${local_var}.site`,"",""]}
             data={modifiedData}
-            rowsFlex={[1,1,1,0.2,0.2]}
-            navButtonTitle='company'
+            rowsFlex={isEmployee?[1,1,1,0,0]:[1,1,1,0.2,0.2]}
+            navButtonTitle={isEmployee?"":'company'}
             navButtonAction={()=>{
               if(maxCompanies <= data.length){
                   console.log("maxCompanies");
