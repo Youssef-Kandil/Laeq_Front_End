@@ -1,4 +1,3 @@
-
 export { default as InputComponent } from './InputComponent/InputComponent';
 export { default as ScoreInputComponent } from './ScoreInputComponent/ScoreInputComponent';
 export { default as SignatureInputComponent } from './SignatureInputComponent/SignatureInputComponent';
@@ -9,3 +8,5 @@ export { default as DateInputComponent } from './DateInputComponent/DateInputCom
 export { default as TimeInputComponent } from './TimeInputComponent/TimeInputComponent';
 export { default as DateTimeInputComponent } from './DateTimeInputComponent/DateTimeInputComponent';
 export { default as MultimageInputComponent } from './MultimageInputComponent/MultimageInputComponent';
+export { default as SingleChoiceAnswer } from './SingleChoiceAnswer/SingleChoiceAnswer';
+

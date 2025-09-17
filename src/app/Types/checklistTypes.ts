@@ -1,7 +1,14 @@
 
+interface OptionType {
+    id?:number;
+    label: string;
+    value:string ;
+  }
+
 export interface FieldType{
     id:number;
     type:string;
+    question_field_options:OptionType[]
 };
 
 export interface QuestionType{

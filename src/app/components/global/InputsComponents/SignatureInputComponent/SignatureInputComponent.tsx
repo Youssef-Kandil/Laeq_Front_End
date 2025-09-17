@@ -1,16 +1,17 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useRef, useState } from "react";
 import SignaturePad from "react-signature-canvas";
 import Modal from "react-modal";
 import Styles from "./SignatureInputComponent.module.css";
 import { FaTrashAlt } from "react-icons/fa";
-import Image from "next/image";
+// import Image from "next/image";
 
 interface Props {
   label: string;
   placeholder: string;
-  onChange: (value: string) => void;
-  value: string;
+  onChange: (value: Blob | null) => void; // ✅ بقينا نرجع Blob بدل string
+  value: Blob | null; // ✅ القيمة دلوقتي Blob
 }
 
 export default function SignatureInputComponent({
@@ -28,9 +29,12 @@ export default function SignatureInputComponent({
   const saveSignature = () => {
     const sigPad = sigPadRef.current;
     if (sigPad && !sigPad.isEmpty()) {
-      const dataUrl = sigPad.getTrimmedCanvas().toDataURL("image/webp"); // 👈 WebP هنا
-      onChange(dataUrl);
-      closeModal();
+      sigPad.getTrimmedCanvas().toBlob((blob) => {
+        if (blob) {
+          onChange(blob); // ✅ رجع Blob للأب
+        }
+        closeModal();
+      }, "image/webp"); // 👈 نحفظ كـ WebP
     }
   };
 
@@ -39,7 +43,7 @@ export default function SignatureInputComponent({
   };
 
   const deleteSignature = () => {
-    onChange("");
+    onChange(null); // ✅ نحذف التوقيع
   };
 
   return (
@@ -52,15 +56,23 @@ export default function SignatureInputComponent({
         style={{ cursor: "pointer", position: "relative" }}
       >
         {value ? (
-          <>
-            <Image src={value} alt="التوقيع" style={{ maxHeight: "100px" }} />
-            <button className={Styles.deleteBtn} onClick={(e) => {
-              e.stopPropagation();
-              deleteSignature();
-            }}>
+          <div style={{ maxHeight: "100px", maxWidth: "300px", position: "relative" }}>
+            <img
+              src={URL.createObjectURL(value)} // ✅ حول Blob → URL
+              alt="التوقيع"
+              // fill
+              style={{ objectFit: "contain" }}
+            />
+            <button
+              className={Styles.deleteBtn}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteSignature();
+              }}
+            >
               <FaTrashAlt color="#ef4444" />
             </button>
-          </>
+          </div>
         ) : (
           <span style={{ color: "#888" }}>{placeholder}</span>
         )}
@@ -77,21 +89,21 @@ export default function SignatureInputComponent({
             borderRadius: "12px",
             overflow: "hidden",
             padding: 0,
-            maxHeight:300,
-            maxWidth:360,
-            display:"flex",
-            flexDirection:"column",
-            justifyContent:"center",
-            alignItems:"center",
-            marginLeft:"auto",
-            marginRight:"auto",
+            maxHeight: 300,
+            maxWidth: 360,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginLeft: "auto",
+            marginRight: "auto",
           },
         }}
       >
         <div style={{ padding: "16px" }}>
           <SignaturePad
             ref={sigPadRef}
-            canvasProps={{ width: 300, height:200, className: Styles.signatureCanvas }}
+            canvasProps={{ width: 300, height: 200, className: Styles.signatureCanvas }}
           />
         </div>
 

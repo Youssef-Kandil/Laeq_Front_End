@@ -3,6 +3,7 @@
     grid-template-columns: 280px 1fr;
     grid-template-rows: 80px 1fr;
     height: 100vh;
+    overflow:hidden;
   }
   
   @media (max-width: 1000px) {
@@ -10,4 +11,20 @@
       grid-template-columns: 60px 1fr;
     }
   }
+  .mainComponent{
+    overflow:auto ;
+  }
   
+  @media print {
+    html, body {  
+      height: auto !important;
+      overflow: visible !important;
+    }
+    .mainComponent{
+      overflow:visible ;
+    }
+    .main_layout {
+      overflow:visible ;
+    }
+
+  }

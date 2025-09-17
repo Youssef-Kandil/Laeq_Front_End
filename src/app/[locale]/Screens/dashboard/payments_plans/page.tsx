@@ -64,6 +64,7 @@ function Payments_plans() {
   
     const searchParams = useSearchParams();
     const transaction_id = searchParams.get("tap_id");
+    console.log("transaction_id >> ",transaction_id)
     const { mutate:Supscipe , data  } = useHandelPayStatus();
           
       useEffect(()=>{
@@ -195,6 +196,7 @@ function Payments_plans() {
           buttonTitle = "Upgrade";
         }
       }
+
   
       return (
         <Pricing_Card

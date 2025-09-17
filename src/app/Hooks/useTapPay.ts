@@ -39,6 +39,7 @@ export const useHandelPayStatus = () => {
     mutationFn: async (payload: HandelSubscripationType) => {
       try {
         const res = await api.post("/pay_check", payload);
+        console.log("CHECK :: ",res)
         if (!res) throw new Error("No response from server");
         return res;
       } catch (err) {

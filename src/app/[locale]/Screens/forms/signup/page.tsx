@@ -108,9 +108,9 @@ function Signup() {
               full_name: full_name,
               phone: phone,
               plan_id: 0,
-              plan_type: "7Days-free",
+              plan_type: "14Days-free",
               start_date:new Date(Date.now()).toISOString(),
-              end_date: getFutureDate(7).toISOString(),
+              end_date: getFutureDate(14).toISOString(),
             }, 
             {
               onSuccess: ()=>{

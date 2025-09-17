@@ -28,7 +28,7 @@ import { PiSignatureDuotone } from "react-icons/pi";
 
 interface opthionsType{
     label:string;
-    value?:number | string | null
+    value?: string | null
 }
 
 interface fieldType{
@@ -60,7 +60,7 @@ function QuestionTemplateComponent({questionNumber,title,fields}:props) {
     const CommentField = getFieldByType(fields,'comment');
     const ActionField = getFieldByType(fields,'action');
 
-    const SingleChoiceField  = getFieldByType(fields,'single');
+    const SingleChoiceField  = getFieldByType(fields,'mcq');
     const CheckboxField = getFieldByType(fields,'checkbox');
 
     const ImagesField = getFieldByType(fields,'images');
@@ -82,7 +82,7 @@ function QuestionTemplateComponent({questionNumber,title,fields}:props) {
         {CommentField&&<ButtonCard title='Comment' icon={<BsChatRightText size={16}/>}/>}
         {ActionField&&<ButtonCard title='Action' icon={<VscGithubAction/>}/>}
 
-        {SingleChoiceField&&<ButtonCard title='Single Choice' icon={<GiChoice size={16}/>}/>}
+        {SingleChoiceField&&<ButtonCard title='MCQ Choice' icon={<GiChoice size={16}/>}/>}
         {CheckboxField&&<ButtonCard title='Checkbox' icon={<RiListCheck3/>}/>}
 
         {ImagesField&&<ButtonCard title='Photo' icon={<MdOutlineAddPhotoAlternate/>}/>}
