@@ -6,7 +6,6 @@ import app_identity from "@/app/config/identity";
 import { QuestionFormComponentProps, FieldType, btnCardProps } from "./QuestionFormComponent_Types";
 
 import CheckBoxComponent from '@/app/components/global/InputsComponents/CheckBoxComponent/CheckBoxComponent';
-import SingleChoiceAnswer from "../../SingleChoiceAnswer/SingleChoiceAnswer";
 import InputComponent from "@/app/components/global/InputsComponents/InputComponent/InputComponent";
 import DropListComponent from "@/app/components/global/InputsComponents/DropListComponent/DropListComponent";
 
@@ -19,10 +18,11 @@ import { TbNumber123 } from "react-icons/tb";
 import { MdTextFields, MdOutlineAddPhotoAlternate, MdEvent, MdDateRange, MdAccessTime } from "react-icons/md";
 import { BsChatRightText } from "react-icons/bs";
 import { VscGithubAction } from "react-icons/vsc";
-import { HiOutlineCalendarDateRange } from "react-icons/hi2";
+// import { HiOutlineCalendarDateRange } from "react-icons/hi2";
 import { TfiPulse } from "react-icons/tfi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { PiSignatureDuotone } from "react-icons/pi";
+import { SingleChoiceAnswer } from "../InputsComponents";
 
 const MAX_CHECKBOX_OPTIONS_LIMIT = 25;
 
@@ -33,6 +33,7 @@ function QuestionFormComponent({
   onSubmitNewType,
   onRemoveField,
   onRemoveQuestion,
+  onUpdateTitle,
 }: QuestionFormComponentProps) {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [checkboxOptions, setCheckboxOptions] = useState<string[]>([]);
@@ -40,7 +41,7 @@ function QuestionFormComponent({
   const [editingFieldId, setEditingFieldId] = useState<string | number | null>(null);
 
   const existingTypes = fields.map((f) => f.type);
-  const sortedFields = [...fields].sort((a, b) => (a.type === "single" ? -1 : b.type === "single" ? 1 : 0));
+  const sortedFields = [...fields].sort((a, b) => (a.type === "mcq" ? -1 : b.type === "mcq" ? 1 : 0));
 
   const renderField = (field: FieldType, i: number) => {
     const commonProps = {
@@ -57,13 +58,13 @@ function QuestionFormComponent({
       time: ["Time", <MdAccessTime key="time" />],
       number: ["Number", <TbNumber123 key="number" />],
       date_time: ["Date & Time", <MdEvent key="date_time" />],
-      date_range: ["Date Range", <HiOutlineCalendarDateRange key="date_range" />],
+      // date_range: ["Date Range", <HiOutlineCalendarDateRange key="date_range" />],
       date: ["Date", <MdDateRange key="date" />],
       score: ["Score", <TfiPulse key="score" />],
       location: ["Location", <FaMapLocationDot key="Location"/>],
       signature: ["Signature", <PiSignatureDuotone key="Signature" />],
       checkbox: ["Checkbox", <BsChatRightText key="Checkbox"/>],
-      single: ["Single Choice", <BsChatRightText key="Single Choice"/>],
+      mcq: ["MCQ", <BsChatRightText key="MCQ"/>],
     };
 
     const data = map[field.type];
@@ -93,18 +94,18 @@ function QuestionFormComponent({
       );
     }
 
-    if (field.type === "single" && field.options) {
+    if (field.type === "mcq" && field.options) {
       return (
         <div key={field.id} style={{ width: '100%', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <SingleChoiceAnswer
-            options={field.options.map((opt) => ({ label: opt.label, value: Number(opt.value) }))}
+            options={field.options.map((opt) => ({ label: opt.label, value: String(opt.value) }))}
           />
           {fields.length > 1 && (
             <div style={{ color: app_identity.secondary_color, display: 'flex', alignItems: 'center', gap: 10 }}>
               <FiEdit2
                 style={{ cursor: 'pointer', fontSize: '18px' }}
                 onClick={() => {
-                  setSelectedType("single");
+                  setSelectedType("mcq");
                   setEditingFieldId(field.id);
                   setMcqOptions(field.options?.map(opt => opt.label) || []);
                 }}
@@ -143,11 +144,11 @@ function QuestionFormComponent({
     checkboxOptions.every((opt) => opt.trim() !== "");
 
   const canSubmitMCQ =
-    selectedType === "single" &&
+    selectedType === "mcq" &&
     mcqOptions.length > 0 &&
     mcqOptions.every((opt) => opt.trim() !== "");
 
-  const isMCQAlreadyExist = fields.some((f) => f.type === "single" && f.id !== editingFieldId);
+  const isMCQAlreadyExist = fields.some((f) => f.type === "mcq" && f.id !== editingFieldId);
 
   return (
     <div style={{ position: "relative" }} className={Styles.questionBox}>
@@ -163,7 +164,7 @@ function QuestionFormComponent({
         label=""
         placeholder="Please enter your Question"
         value={title}
-        onTyping={() => {}}
+        onTyping={(val) => onUpdateTitle(index, val)}
       />
 
       <section style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
@@ -176,9 +177,9 @@ function QuestionFormComponent({
           placeholder="Choose Other responses"
           onSelect={(val) => {
             const value = val?.value || null;
-            if (value === "single" && isMCQAlreadyExist) return;
+            if (value === "mcq" && isMCQAlreadyExist) return;
             setSelectedType(value);
-            if (value === "single") {
+            if (value === "mcq") {
               setMcqOptions(["Yes", "No", "N/A"]);
             }
           }}
@@ -187,13 +188,13 @@ function QuestionFormComponent({
             { id: 6, value: "number", title: "number" },
             { id: 2, value: "comment", title: "comment" },
             { id: 13, value: "checkbox", title: "Checkbox" },
-            { id: 14, value: "single", title: "MCQ" },
+            { id: 14, value: "mcq", title: "MCQ" },
             { id: 4, value: "action", title: "action" },
             { id: 3, value: "images", title: "images" },
             { id: 9, value: "date", title: "date" },
             { id: 5, value: "time", title: "time" },
             { id: 7, value: "date_time", title: "date time" },
-            { id: 8, value: "date_range", title: "date range" },
+            // { id: 8, value: "date_range", title: "date range" },
             { id: 11, value: "location", title: "location" },
             { id: 12, value: "signature", title: "signature" },
             { id: 10, value: "score", title: "score" },
@@ -216,12 +217,12 @@ function QuestionFormComponent({
                 };
                 if (editingFieldId) onRemoveField(index, editingFieldId);
                 onSubmitNewType(index, newField);
-              } else if (selectedType === "single") {
+              } else if (selectedType === "mcq") {
                 if (!canSubmitMCQ) return;
                 const newField: FieldType = {
                   id: editingFieldId ?? Date.now(),
-                  type: "single",
-                  options: mcqOptions.map((opt, i) => ({ id: i, label: opt, value: i === 0 ? 1 : i === 1 ? 0 : -1 })),
+                  type: "mcq",
+                  options: mcqOptions.map((opt, i) => ({ id: i, label: opt, value: i === 0 ? "1" : i === 1 ? "0" : "-1" })),
                 };
                 if (editingFieldId) onRemoveField(index, editingFieldId);
                 onSubmitNewType(index, newField);
@@ -237,7 +238,7 @@ function QuestionFormComponent({
             className={Styles.submitBtn}
             disabled={
               (selectedType === "checkbox" && !canSubmitCheckbox) ||
-              (selectedType === "single" && !canSubmitMCQ)
+              (selectedType === "mcq" && !canSubmitMCQ)
             }
           >
             Submit
@@ -260,13 +261,13 @@ function QuestionFormComponent({
         </div>
       )}
 
-      {selectedType === "single" && (
+      {selectedType === "mcq" && (
         <div style={{ marginTop: 20 }}>
           {mcqOptions.map((opt, i) => (
             <div key={i} className={Styles.MCQOptionWrapper}>
               <InputComponent
                 label={`Option ${i + 1}`}
-                value={opt}
+                value={String(opt)}
                 onTyping={(val) => {
                   const updated = [...mcqOptions];
                   updated[i] = val;

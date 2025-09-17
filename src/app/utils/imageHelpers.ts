@@ -34,7 +34,8 @@ export async function resizeAndConvert_OLD(file: File, maxWidth = 500, maxHeight
     ctx.drawImage(img, 0, 0, width, height);
   
     // 5. استخرج WebP Data URL (جودة 0.8)
-    const webpDataUrl = canvas.toDataURL('image/webp', 0.8);
+    // const webpDataUrl = canvas.toDataURL('image/webp', 0.8);
+    const webpDataUrl = canvas.toDataURL('image/png', 0.8);
   
     // 6. حول لـ Blob عشان ترفعه
     const webpBlob = await (await fetch(webpDataUrl)).blob();
@@ -84,7 +85,8 @@ export async function resizeAndConvert_OLD(file: File, maxWidth = 500, maxHeight
     ctx.drawImage(img, 0, 0, width, height);
   
     // 5. استخرج WebP Data URL باستخدام الجودة الممررة
-    const webpDataUrl = canvas.toDataURL('image/webp', quality);
+    // const webpDataUrl = canvas.toDataURL('image/webp', quality);
+    const webpDataUrl = canvas.toDataURL('image/jpeg', quality);
   
     // 6. حول الـ Data URL إلى Blob
     const webpBlob = await (await fetch(webpDataUrl)).blob();

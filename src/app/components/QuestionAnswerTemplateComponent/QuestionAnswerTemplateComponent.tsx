@@ -5,8 +5,10 @@ import Styles from "./QuestionAnswerTemplateComponent.module.css";
 import {
   InputComponent,
   ScoreInputComponent,
+  CheckBoxListComponent,
   SignatureInputComponent,
   LocationInputComponent,
+  SingleChoiceAnswer,
 //   DateRangeComponent,
   DateInputComponent,
   TimeInputComponent,
@@ -14,26 +16,32 @@ import {
   MultimageInputComponent,
 } from "../global/InputsComponents";
 
+
+
+
 // =============================
 // 📝 Types
 // =============================
 interface OptionType {
+  id?:number;
   label: string;
-  value?: number | string | null;
+  value:string ;
 }
 
 interface FieldType {
   id: number;
   type: string;
-  options?: OptionType[];
+  question_field_options: OptionType[];
 }
 
 // نفس الـ Answer اللي عندك في الأب
 interface Answer {
   userID: number;
+  task_id?:number;
+  admin_id?:number;
   questionID: number;
   fieldID: number;
-  value: string;
+  value: string | Blob;
   type: string;
 }
 
@@ -41,19 +49,19 @@ interface Answer {
 // 📝 خريطة الترتيب للحقول
 // =============================
 const fieldOrder: Record<string, number> = {
-  number: 1,
+  mcq: 1,
   short_text: 2,
-  comment: 3,
-  action: 4,
-  single: 5,
-  checkbox: 6,
-  images: 7,
-  date_range: 8,
-  date_time: 9,
-  date: 10,
-  time: 11,
-  location: 12,
-  signature: 13,
+  number: 3,
+  comment:4,
+  action: 5,
+  images: 6,
+  date_range: 7,
+  date_time: 8,
+  date: 9,
+  time: 10,
+  location: 11,
+  signature: 12,
+  checkbox: 13,
   score: 14,
 };
 
@@ -74,6 +82,9 @@ type QuestionProps = {
     title: string;
     fields: FieldType[];
     questionID: number;
+    userID: number;
+    task_id: number;
+    admin_id: number;
     onAnswerChange: (newAnswer: Answer) => void;
     answers: Answer[]; // ✅ نضيف الاجابات الحالية
   };
@@ -83,6 +94,9 @@ type QuestionProps = {
     title,
     fields,
     questionID,
+    userID,
+    task_id,
+    admin_id,
     onAnswerChange,
     answers,
   }) => {
@@ -104,19 +118,35 @@ type QuestionProps = {
   
         <div className="space-y-4">
           {sortedFields.map((field) => {
-            const handleChange = (value: unknown) => {
-              onAnswerChange({
-                userID: 1, // مؤقت
-                questionID,
-                fieldID: field.id,
-                value: typeof value === "string" ? value : JSON.stringify(value),
-                type: field.type,
-              });
-            };
+            const  handleChange = async (value: unknown) => {
+                console.log("Value ::: ", value);
+                if(value !== undefined){
+                    const processedValue =
+                    value instanceof Blob ? value : typeof value === "string" ? value : JSON.stringify(value);
+                  onAnswerChange({
+                    userID, // مؤقت
+                    task_id,
+                    admin_id,
+                    questionID,
+                    fieldID: field.id,
+                    value: processedValue,
+                    type: field.type,
+                  });
+                };
+            }
   
             const currentValue = getFieldValue(field.id); // ✅ نجيب القيمة الحالية
   
             switch (field.type) {
+              case "mcq":
+                return (
+                  <SingleChoiceAnswer
+                    key={field.id}
+                    options={field.question_field_options}
+                    onChoose={(val)=>handleChange(val)}
+                  />
+                );
+
               case "number":
                 return (
                   <InputComponent
@@ -124,7 +154,7 @@ type QuestionProps = {
                     type="number"
                     label="Answer"
                     placeholder="Please enter your Answer"
-                    value={currentValue} // ✅ بقت dynamic
+                    value={typeof currentValue === "string" ? currentValue : ""} // ✅ بقت dynamic
                     onTyping={handleChange}
                   />
                 );
@@ -135,7 +165,7 @@ type QuestionProps = {
                     key={field.id}
                     label="Answer"
                     placeholder="Please enter your Answer"
-                    value={currentValue}
+                    value={typeof currentValue === "string" ? currentValue : ""}
                     onTyping={handleChange}
                   />
                 );
@@ -147,7 +177,7 @@ type QuestionProps = {
                     isTextArea
                     label="Comments"
                     placeholder="Please enter your comment"
-                    value={currentValue}
+                    value={typeof currentValue === "string" ? currentValue : ""}
                     onTyping={handleChange}
                   />
                 );
@@ -159,7 +189,7 @@ type QuestionProps = {
                     isTextArea
                     label="Actions"
                     placeholder="Follow up notes*"
-                    value={currentValue}
+                    value={typeof currentValue === "string" ? currentValue : ""}
                     onTyping={handleChange}
                   />
                 );
@@ -170,7 +200,8 @@ type QuestionProps = {
                     key={field.id}
                     label="Photos"
                     placeholder="Upload Photo"
-                    onChange={handleChange}
+                    asPdf={true}
+                    onChange={(_,blobs)=>handleChange(blobs[0])}
                     // value={currentValue} // ✅ لو الكومبوننت بيدعمها
                   />
                 );
@@ -208,7 +239,7 @@ type QuestionProps = {
                     key={field.id}
                     label="Location"
                     placeholder=""
-                    value={currentValue ? JSON.parse(currentValue) : { lat: "", long: "" }}
+                    value={currentValue ? JSON.parse(typeof currentValue === "string" ? currentValue : "") : { lat: "", long: "" }}
                     onChange={handleChange}
                   />
                 );
@@ -219,7 +250,16 @@ type QuestionProps = {
                     key={field.id}
                     label="Signature"
                     placeholder=""
-                    value={currentValue}
+                    value={typeof currentValue === "string" ? null : currentValue}
+                    onChange={handleChange}
+                  />
+                );
+
+              case "checkbox":
+                return (
+                  <CheckBoxListComponent
+                    key={field.id}
+                    list={field.question_field_options}
                     onChange={handleChange}
                   />
                 );
@@ -228,8 +268,7 @@ type QuestionProps = {
                 return (
                   <ScoreInputComponent
                     key={field.id}
-                    // onChange={handleChange}
-                    // value={currentValue}
+                    onChange={handleChange}
                   />
                 );
   

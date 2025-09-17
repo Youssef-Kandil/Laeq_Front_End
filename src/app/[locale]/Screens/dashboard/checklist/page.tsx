@@ -19,12 +19,22 @@ function CheckLists() {
         localStorage.setItem('clickedAsideTitle',"checklist");
     },[])
     const info = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
-    const isEmployee = info?.role === "employee";    
+    const isEmployee = info?.role === "employee"; 
+    const targetId  =
+    isEmployee
+          ? info?.userDetails?.admin_id
+          : info?.userDetails?.id;   
       /*TEST DATA*/ //const dataTest = [{id:"1",title:"Food Safty & Hygiene 1",img:"https/drive.google.com/iewmd12881.png"},{id:"2",title:"Food Safty & Hygiene 2",img:"https/drive.google.com/iewmd12881.png"},{id:"3",title:"Food Safty & Hygiene 3",img:"https/drive.google.com/iewmd12881.png"},]
       
-      const { data, isLoading, error } = useCheckList();
+      const {mutate:getCheckLists, data, isPending, error } = useCheckList();
+      React.useEffect(()=>{
+        getCheckLists({
+            admin_id:Number(targetId)??-1
+          })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      },[])
 
-        if (isLoading) {
+        if (isPending) {
           return <div>جاري التحميل...</div>;
         }
 
@@ -35,6 +45,7 @@ function CheckLists() {
         if (!data || data.length === 0) {
           return <div>لا توجد بيانات</div>;
         }
+
       const Cards = data.map((card:{id:number,checklist_title:string,admin_id:number},indx:number)=>{
         return <Card key={indx} title={card.checklist_title} imgSrc={""} cardInfo={card}/>
       })

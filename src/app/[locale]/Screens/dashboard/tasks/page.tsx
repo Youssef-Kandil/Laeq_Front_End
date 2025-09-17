@@ -51,7 +51,7 @@ function Tasks() {
         {
           onSuccess: () => {
             router.replace(
-              `/${current_lang}/Screens/dashboard/tasks/${template_title}-${template_id}`
+              `/${current_lang}/Screens/dashboard/tasks/${task_id}-${template_title}-${template_id}`
             );
           },
         }

@@ -20,13 +20,15 @@ L.Icon.Default.mergeOptions({
 interface Props {
   label: string;
   placeholder: string;
-  onChange: (value: {lat:string,long:string}) => void;
-  value: {lat:string,long:string};
+  disabled?: boolean;
+  onChange: (value: { lat: string; long: string }) => void;
+  value: { lat: string; long: string };
 }
 
 export default function LocationInputComponent({
   label,
   placeholder,
+  disabled = false,
   value,
   onChange,
 }: Props) {
@@ -34,16 +36,37 @@ export default function LocationInputComponent({
   const [tempLocation, setTempLocation] = useState<LatLngExpression | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    setIsModalOpen(true);
+    let coords: LatLngExpression | null = null;
+
+    if (value.lat && value.long) {
+      coords = [parseFloat(value.lat), parseFloat(value.long)];
+      setTempLocation(coords);
+    }
+
+    // بعد ما الماب يترندر شوية، نعمل flyTo
+    setTimeout(() => {
+      if (coords && mapRef.current) {
+        mapRef.current.flyTo(coords, 15, {
+          animate: true,
+          duration: 1.5,
+        });
+      }
+    }, 300);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
-    setTempLocation(null);
+    if (!disabled) {
+      setTempLocation(null);
+    }
   };
 
   const saveLocation = () => {
     if (tempLocation) {
       const [lat, lng] = tempLocation as [number, number];
-      onChange({lat: lat.toFixed(5), long:lng.toFixed(5)});
+      onChange({ lat: lat.toFixed(5), long: lng.toFixed(5) });
     }
     setIsModalOpen(false);
   };
@@ -51,7 +74,9 @@ export default function LocationInputComponent({
   const LocationPicker = () => {
     useMapEvents({
       click(e) {
-        setTempLocation([e.latlng.lat, e.latlng.lng]);
+        if (!disabled) {
+          setTempLocation([e.latlng.lat, e.latlng.lng]);
+        }
       },
     });
     return null;
@@ -80,7 +105,7 @@ export default function LocationInputComponent({
         if (mapRef.current) {
           mapRef.current.flyTo(coords, 15, {
             animate: true,
-            duration: 1.5
+            duration: 1.5,
           });
         }
       },
@@ -106,14 +131,16 @@ export default function LocationInputComponent({
         }}
         onClick={openModal}
       >
-        <span>{value.lat?`lat:${value.lat},long:${value.long}` : placeholder}</span>
+        <span>
+          {value.lat ? `lat:${value.lat}, long:${value.long}` : placeholder}
+        </span>
         <FaMapMarkerAlt style={{ fontSize: "20px", color: "#10b981" }} />
       </div>
 
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel="اختر الموقع"
+        contentLabel={disabled ? "الموقع" : "اختر الموقع"}
         ariaHideApp={false}
         style={{
           content: {
@@ -132,70 +159,82 @@ export default function LocationInputComponent({
           >
             <MapSetup />
             <TileLayer
-              attribution='&copy; OpenStreetMap contributors'
+              attribution="&copy; OpenStreetMap contributors"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <LocationPicker />
-            {tempLocation && <Marker position={tempLocation} />}
+            {(tempLocation || (value.lat && value.long)) && (
+              <Marker
+                position={
+                  tempLocation || [parseFloat(value.lat), parseFloat(value.long)]
+                }
+              />
+            )}
           </MapContainer>
 
-          <button
-            onClick={handleUseCurrentLocation}
-            style={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              background: "#10b981",
-              color: "#fff",
-              border: "none",
-              padding: "8px 14px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              zIndex: 1000,
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            <FaLocationArrow />
-            استخدم موقعي الحالي
-          </button>
+          {disabled == false && (
+            <button
+              onClick={handleUseCurrentLocation}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                background: "#10b981",
+                color: "#fff",
+                border: "none",
+                padding: "8px 14px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                zIndex: 1000,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <FaLocationArrow />
+              استخدم موقعي الحالي
+            </button>
+          )}
         </div>
 
-        <div style={{
-          height: "15%",
-          padding: "10px 20px",
-          display: "flex",
-          justifyContent: "space-between",
-          backgroundColor: "#f3f4f6",
-          borderTop: "1px solid #e5e7eb"
-        }}>
+        <div
+          style={{
+            height: "15%",
+            padding: "10px 20px",
+            display: "flex",
+            justifyContent: "space-between",
+            backgroundColor: "#f3f4f6",
+            borderTop: "1px solid #e5e7eb",
+          }}
+        >
           <button
             style={{
               padding: "10px 20px",
               background: "#d1d5db",
               border: "none",
               borderRadius: "6px",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={closeModal}
           >
             إلغاء
           </button>
-          <button
-            style={{
-              padding: "10px 20px",
-              background: "#10b981",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}
-            onClick={saveLocation}
-            disabled={!tempLocation}
-          >
-            حفظ الموقع
-          </button>
+          {disabled == false && (
+            <button
+              style={{
+                padding: "10px 20px",
+                background: "#10b981",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+              onClick={saveLocation}
+              disabled={!tempLocation}
+            >
+              حفظ الموقع
+            </button>
+          )}
         </div>
       </Modal>
     </div>

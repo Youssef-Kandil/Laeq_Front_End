@@ -45,4 +45,15 @@ export default class ApiService {
   public delete(endpoint: string) {
     return this.request(endpoint, { method: "DELETE" });
   }
+    // === New: POST multipart/form-data ===
+  public postFormData(endpoint: string, formData: FormData) {
+      return fetch(`${this.baseUrl}${endpoint}`, {
+        method: "POST",
+        body: formData, // 👈 نخلي البودي هو الـ FormData مباشرة
+        // مفيش content-type هنا، المتصفح هيحددها تلقائي
+      }).then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        return res.json();
+      });
+    }
 }

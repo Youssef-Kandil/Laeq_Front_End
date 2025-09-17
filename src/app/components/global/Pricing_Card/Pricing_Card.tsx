@@ -73,13 +73,13 @@ function Pricing_Card({id,title,subtitle,buttonTitle,price,duration,features,isR
           amount:Number(price),
           currency:"SAR",
           customer:{
-            first_name:info?.userDetails?.full_name||"unKnwon",
-            last_name:"",
+            first_name:info?.userDetails?.full_name??"Null",
+            last_name:"Null",
             email:info?.email || "unKnwon",
           },
           source: { id: "src_all" },
           redirect:{
-            url:"http://localhost:3000/en/Screens/dashboard/payments_plans"
+            url:location.href??""
           },
           description:"safwef",
           charges:[

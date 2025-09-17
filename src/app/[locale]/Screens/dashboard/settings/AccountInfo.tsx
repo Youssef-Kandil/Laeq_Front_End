@@ -5,6 +5,7 @@ import Styles from './settings.module.css'
 import InputComponent from '@/app/components/global/InputsComponents/InputComponent/InputComponent';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 // import ImagInput from '@/app/components/global/ImagInputComponent/ImagInputComponent';
+import { MultimageInputComponent } from '@/app/components/global/InputsComponents';
 
 
 
@@ -30,6 +31,8 @@ function AccountInfo() {
           <InputComponent label='Password' placeholder='Please enter your password' type='text' value='' onTyping={()=>{}}/>
         </div>
       </section>
+
+      <MultimageInputComponent label='Images' placeholder='Upload Your Images'  asPdf onChange={(previews, blobs) => console.log("PDF Blob:", blobs[0],"  ---  ","previews: ",previews)}/>
 
 
       <div className={Styles.btnContainer}>

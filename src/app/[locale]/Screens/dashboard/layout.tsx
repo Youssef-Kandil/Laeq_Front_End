@@ -109,11 +109,11 @@ export default async function DashboardLayout({
 
 
   return (
-    <div style={{fontFamily:app_identity.primary_font,overflow:'hidden'}}  className={Styles.main_layout} lang={locale}>
+    <div style={{fontFamily:app_identity.primary_font}}  className={Styles.main_layout} lang={locale}>
         <NextIntlClientProvider locale={locale} messages={messages}>
             <Aside/>
             <Nave/>
-            <main style={{gridColumn:2,background:"#EEEEEE80",overflow:'auto'}}>
+            <main className={Styles.mainComponent} style={{gridColumn:2,background:"#EEEEEE80"}}>
               <ExpirationGuard locale={locale}>
                 {children}
               </ExpirationGuard>
