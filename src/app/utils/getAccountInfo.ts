@@ -29,4 +29,23 @@ export function getAdminAccountInfo(localStorage_Key: string) : AccountInfo | nu
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function setAdminAccountInfo(localStorage_Key: string,value:any) : boolean {
+
+  const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
+
+  try {
+    const stringified = JSON.stringify(value);
+    const encrypted = encryption.encryption(stringified, key);
+
+    // تخزين في الكوكيز
+    Cookies.set(localStorage_Key, encrypted, { expires: 30 }); 
+    return true;
+    // expires = 7 يعني الكوكي هيقعد أسبوع (تقدر تغيرها)
+  } catch (err) {
+    console.error("Encryption failed:", err);
+    return false;
+  }
+}
+
 

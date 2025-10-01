@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Style from './DropListComponent.module.css';
 import { IoIosArrowDown } from "react-icons/io";
 import FormGroup from '@mui/material/FormGroup';
@@ -6,7 +6,7 @@ import FormGroup from '@mui/material/FormGroup';
 interface listType {
   id: number;
   value: string;
-  title?: string; // ✅ عرض هذا فقط
+  title?: string;
 }
 
 interface props {
@@ -14,8 +14,8 @@ interface props {
   list: listType[];
   placeholder?: string;
   defaultOption?: listType;
-  value?: listType | null; // ✅ القيمة المتحكم فيها من الخارج
-  onSelect?: (val: listType) => void; // ✅ عند اختيار عنصر جديد
+  value?: listType | null;
+  onSelect?: (val: listType) => void;
 }
 
 function DropListComponent({
@@ -28,6 +28,7 @@ function DropListComponent({
 }: props) {
   const [SelectedValue, setSelectedValue] = React.useState<listType | null>(defaultOption ?? null);
   const [showPicker, setShowPicker] = React.useState<boolean>(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   // ✅ التحديث عند استلام قيمة من الخارج
   useEffect(() => {
@@ -44,28 +45,57 @@ function DropListComponent({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultOption]);
 
+  // ✅ اغلاق القائمة عند الضغط خارجها
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setShowPicker(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   function handelSelectValue(value: listType) {
     setSelectedValue(value);
-    onSelect?.(value); // ✅ بلّغ الأب بالتغيير
+    onSelect?.(value);
     setShowPicker(false);
   }
 
   return (
-    <div className={Style.input_wrapper} onClick={() => setShowPicker(!showPicker)}>
+    <div 
+      onClick={() => {
+        if(list.length != 0){
+          setShowPicker(!showPicker)
+        }
+      }} 
+      className={Style.input_wrapper} ref={wrapperRef}>
+    {/* ================ */}
+
       <label className={Style.input_label}>{label}</label>
       <div id={Style.piker} className={Style.input_container}>
         <div
           className={Style.selected_value}
-          onClick={() => setShowPicker(!showPicker)}
+          onClick={() => {
+            if(list.length != 0){
+              setShowPicker(!showPicker)
+            }
+          }} 
         >
           {SelectedValue?.title ?? placeholder}
         </div>
-        <IoIosArrowDown onClick={() => setShowPicker(!showPicker)} />
+        <IoIosArrowDown 
+          onClick={() => {
+            if(list.length != 0){
+              setShowPicker(!showPicker)
+            }
+          }} 
+        />
 
         {showPicker && (
           <div className={Style.options}>
             <div className={Style.title}>
-              <p>{label}</p>
+              <p>{list.length != 0?label:"Error No Data In The List"}</p>
             </div>
 
             <FormGroup className={Style.list}>

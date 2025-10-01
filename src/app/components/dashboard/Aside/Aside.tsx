@@ -8,11 +8,16 @@ import aside_titles from "@/app/config/aside_titles";
 import Cookies from "js-cookie";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import { AccountInfo } from "@/app/Types/AccountsType";
+// import { CiLogout } from "react-icons/ci";
+import { FaPowerOff } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+
 
 function Aside() {
   const info :AccountInfo = getAdminAccountInfo("AccountInfo") as AccountInfo;
   console.log("Nave INFo ", info);
-
+const router = useRouter();
   const current_lang = useLocale();
   const t = useTranslations("aside_component");
 
@@ -112,7 +117,22 @@ function Aside() {
         />
         <h3>LAEQ365</h3>
       </div>
-      <div className={Styles.titlesList}>{titles}</div>
+      <div className={Styles.titlesList}>
+        {titles}
+      {/*=======  LOGOUT ====== */}
+        <div
+          onClick={()=>{
+              localStorage.clear();
+              Cookies.remove("AccountInfo")
+              signOut();
+              router.replace(`/${current_lang}/Screens/forms/login`);
+          }}  
+          className={Styles.title} 
+          style={{textDecoration:"underline",color:"rgba(199, 8, 8, 0.5)"}}>
+            <FaPowerOff style={{fontSize:20}}/>
+            <p>logout</p>
+          </div>
+      </div>
     </div>
   );
 }

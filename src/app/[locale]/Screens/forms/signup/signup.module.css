@@ -22,6 +22,7 @@
 .form{
     flex: 2;
     height: 100vh;
+    overflow: auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,7 +35,7 @@
     position: relative;
 
     & h2{
-        font-size: 2.5rem;
+        font-size: clamp(25px, 3vw, 40px);
         font-weight: 700;
         margin-bottom: 20px;
         margin-bottom: 0.5rem;
@@ -46,7 +47,7 @@
         min-width: 90%;
         align-items: flex-start;
         &  label{
-            font-size: 1.1rem;
+            font-size: clamp(17px, 3vw, 18px);
             margin-bottom: 5px;
             color: #424242;
             font-weight: 500;
@@ -72,7 +73,7 @@
         color: white;
         border-radius: 12px;
         height: 49px;
-        width: 90%;
+        width: 100%;
         padding: 16px 10px;
         font-size: 1.1rem;
         font-weight: 500;
@@ -89,6 +90,7 @@
         display: inline-block;
         margin: 13px 0;
         color: #BDBDBD;
+        width: 100%;
     }
     
     & .span::before{
@@ -116,7 +118,7 @@
     }
 
     .google_signup{
-        width: 90%;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;

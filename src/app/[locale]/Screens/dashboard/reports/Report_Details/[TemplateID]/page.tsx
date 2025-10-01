@@ -7,15 +7,24 @@ import { useGetReportDetails } from "@/app/Hooks/useGetReportDetails";
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
 
 
+
 function Report_Details() {
   const router = useRouter();
-  const params = useParams();
-  const { TemplateID } = params; // 👈 لازم اسم البارام يكون زي اللي معرفه في الراوت
-  const { data, isLoading, error } = useGetReportDetails(Number(TemplateID));
+  // const params = useParams();
+  const params = useParams() as { TemplateID?: string };
+
+
+  let template_id: number | null = null;
+  let task_id: number | null = null;
+  
+  if (params.TemplateID) {
+    [template_id, task_id] = params.TemplateID.split("-").map(Number);
+  }// 👈 لازم اسم البارام يكون زي اللي معرفه في الراوت
+  const { data, isLoading, error } = useGetReportDetails(Number(template_id),Number(task_id));
   
   if (isLoading) return <div>جاري تحميل التقرير...</div>;
   if (error) router.back();
-  if (!data) return <div>لا توجد تفاصيل للتقرير</div>;
+  if (!data || data.length == 0) return router.back();;
   console.log("REPO DET :: ",data)
 
   // === Looping On Data ===

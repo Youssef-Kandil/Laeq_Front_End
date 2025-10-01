@@ -42,9 +42,13 @@ export default class ApiService {
     });
   }
 
-  public delete(endpoint: string) {
-    return this.request(endpoint, { method: "DELETE" });
+  public delete(endpoint: string, body?: unknown) {
+    return this.request(endpoint, {
+      method: "DELETE",
+      body: body ? JSON.stringify(body) : undefined,
+    });
   }
+  
     // === New: POST multipart/form-data ===
   public postFormData(endpoint: string, formData: FormData) {
       return fetch(`${this.baseUrl}${endpoint}`, {
@@ -56,4 +60,17 @@ export default class ApiService {
         return res.json();
       });
     }
+    // === New: POST multipart/form-data ===
+    public updateFormData(endpoint: string, formData: FormData) {
+      return fetch(`${this.baseUrl}${endpoint}`, {
+        method: "PUT",
+        body: formData, // 👈 نخلي البودي هو الـ FormData مباشرة
+        // مفيش content-type هنا، المتصفح هيحددها تلقائي
+      }).then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        return res.json();
+      });
+    }
 }
+  
+

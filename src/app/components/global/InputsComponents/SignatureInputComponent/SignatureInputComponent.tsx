@@ -27,16 +27,23 @@ export default function SignatureInputComponent({
   const closeModal = () => setIsModalOpen(false);
 
   const saveSignature = () => {
-    const sigPad = sigPadRef.current;
-    if (sigPad && !sigPad.isEmpty()) {
-      sigPad.getTrimmedCanvas().toBlob((blob) => {
-        if (blob) {
-          onChange(blob); // ✅ رجع Blob للأب
-        }
-        closeModal();
-      }, "image/webp"); // 👈 نحفظ كـ WebP
+    try {
+      const sigPad = sigPadRef.current;
+      if (sigPad && !sigPad.isEmpty()) {
+        sigPad.getTrimmedCanvas().toBlob((blob) => {
+          if (blob) {
+            onChange(blob); // ✅ رجع Blob للأب
+          }
+          closeModal();
+        }, "image/webp"); // 👈 نحفظ كـ WebP
+      }
+      
+    } catch (error) {
+      console.error(error)
     }
   };
+
+  
 
   const clearSignature = () => {
     sigPadRef.current?.clear();
@@ -108,9 +115,9 @@ export default function SignatureInputComponent({
         </div>
 
         <div className={Styles.buttonsContainer}>
-          <button onClick={clearSignature} className={Styles.clearBtn}>مسح</button>
-          <button onClick={closeModal} className={Styles.cancelBtn}>إلغاء</button>
-          <button onClick={saveSignature} className={Styles.saveBtn}>حفظ</button>
+          <button type='button' onClick={clearSignature} className={Styles.clearBtn}>مسح</button>
+          <button type='button' onClick={closeModal} className={Styles.cancelBtn}>إلغاء</button>
+          <button type='button' onClick={saveSignature} className={Styles.saveBtn}>حفظ</button>
         </div>
       </Modal>
     </div>

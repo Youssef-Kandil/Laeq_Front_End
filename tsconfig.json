@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // "typeRoots": ["./node_modules/@types", "./global.d.ts"],
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -26,6 +27,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/components/global/InputsComponents/TimeInputComponent"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/components/global/InputsComponents/TimeInputComponent", "public/workers/pdf.worker.min.js"],
   "exclude": ["node_modules"]
 }

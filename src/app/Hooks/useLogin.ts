@@ -15,3 +15,14 @@ export const useLogin = () => {
        },
   });
 };
+
+export const useGoogleLogin = () => {
+  return useMutation({
+    mutationFn: (credentials: { email: string;}) =>
+      api.post("/login_with_google", credentials).then(res => res),
+       onSuccess: (data) => {
+         // خزّن الداتا في الكاش
+            queryClient.setQueryData(["adminAccountInfo"], data);
+       },
+  });
+};

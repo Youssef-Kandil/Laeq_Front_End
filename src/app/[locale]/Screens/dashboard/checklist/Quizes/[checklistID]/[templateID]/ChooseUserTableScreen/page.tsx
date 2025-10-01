@@ -8,6 +8,10 @@ import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 import { useEmployees } from '@/app/Hooks/useEmployees';
 import { useAssignTask } from '@/app/Hooks/useTasks';
+import Popup from '@/app/components/global/Popup/Popup';
+import Lottie from 'lottie-react';
+import ErrorIcon from '@/app/Lottie/wrong.json'
+// import encryption from '@/app/utils/encryption';
 
 interface Employee {
   id:number;
@@ -34,6 +38,9 @@ interface AssignTaskPayload {
 function ChooseUserTableScreen() {
       const router = useRouter();
       const current_lang = useLocale();
+
+      const [showErrorPopup,setShowErrorPopup] = React.useState<boolean>(false);
+      const [ErrorPopupMSG,setErrorPopupMSG] = React.useState<{title:string,subTitle:string}>({title:"",subTitle:""});
 
     // Start Sceleton Loading..
     //  Get template ID  From Params
@@ -72,11 +79,24 @@ function ChooseUserTableScreen() {
     const [selectedUserIds ,setSelectedUserIds]  = React.useState<AssignTaskPayload[]>([]);
 
 
-      const {mutate:SendTask} = useAssignTask();
 
-      const { data, isLoading, error } = useEmployees(targetId ?? 0);
+      const {mutate:SendTask,isPending} = useAssignTask();
+
+      const { data, isLoading,isError, error } = useEmployees(targetId ?? 0);
       if (isLoading) return <SkeletonLoader variant="table" tableColumns={4} tableRows={5} />;
-      if (error) return <p>حصل خطأ!</p>;
+      if (isError) return <p>حصل خطأ! : {error.message}</p>;
+      if (data == null) return <p>حصل خطأ!</p>;
+
+      // ==== CHECK USER TABLE ====
+      if (data.length == 0) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"Can't Send Task",
+          subTitle:"must have at least one user."
+        })
+      }
+
+
 
 
 
@@ -94,13 +114,20 @@ function ChooseUserTableScreen() {
 
   return (
     <div>
+        {showErrorPopup&&<Popup 
+              icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={true}/>} 
+              title={ErrorPopupMSG.title} 
+              btnTitle='add User' 
+              btnFunc={()=>router.replace(`/${current_lang}/Screens/dashboard/users/AddUserForm`)} 
+              subTitle={ErrorPopupMSG.subTitle} 
+              onClose={()=>{}}/>}
         <ClientOnlyTable 
             titles={[`${local_var}.id`,`${local_var}.employee`,`${local_var}.email`,`${local_var}.site`,`${local_var}.company`,`${local_var}.role`]}
             data={modifiedData}
             rowsFlex={[0.5,1,1,1,1,1]}
             navButtonTitle='chooseUser'
             navButtonAction={()=>{
-              if(selectedUserIds.length != 0){
+              if(selectedUserIds.length != 0 && !isPending){
                 SendTask(selectedUserIds,{
                     onSuccess:()=>{
                       router.push(`/${current_lang}/Screens/dashboard/checklist`);
@@ -116,23 +143,34 @@ function ChooseUserTableScreen() {
 
 
             
-            // navButton2Title='chooseUser'
-            navButton2Action={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${templateID}/${checklistID}/ChooseUserTableScreen/AutomationForm`)}
+            navButton2Title='chooseUser'
+            navButton2Action={()=>{
+              if(selectedUserIds.length != 0 && !isPending){
+                router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${templateID}-${JSON.stringify(selectedUserIds)}/ChooseUserTableScreen/AutomationForm`)
+              }
+            }}
             
-            useCheckRows
-            onCheckedChange={(ids) => {
-              const selected = data
-                .filter((emp: Employee) => ids.includes(emp.id))
-                .map((emp: Employee) => ({
-                  user_id: emp.user_id,                  // ده هو نفسه id الموظف
-                  site_id: emp.site_id,       // من الجدول sites
-                  company_id: emp.company_id, // من الجدول companies
-                  admin_id: targetId, // من الانفو بتاع الادمن
-                  template_id:temp_id!
-                }));
-            
-              setSelectedUserIds(selected);
-              console.log("Selected Users (compact):: ", selected);
+            useRadioRow
+            onRadioChange={(ids) => {
+              if(ids){
+                const selected = data.find((emp:Employee)=> emp.id === ids);
+                console.log("Selected Users (compact):: ", selected);
+                if(selected){
+                 const modifiing  =  [selected]
+                                  .map((emp: Employee) => ({
+                                      user_id: emp.user_id??-1,                  // ده هو نفسه id الموظف
+                                      site_id: emp?.site_id??1-1,       // من الجدول sites
+                                      company_id: emp.company_id??-1, // من الجدول companies
+                                      admin_id: targetId??-1, // من الانفو بتاع الادمن
+                                      template_id:temp_id!
+                                    })); 
+                  console.log("Selected Users (modifiing):: ", modifiing);
+                  setSelectedUserIds(modifiing);
+                  console.log("Selected Users (selectedUserIds):: ", selectedUserIds);
+                }
+              }else{
+
+              }
             }}
             
         />

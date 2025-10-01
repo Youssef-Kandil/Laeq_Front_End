@@ -37,7 +37,8 @@ function Footer() {
     <div className={Styles.parent} style={{fontFamily:app_identity.primary_font}}>
     {/* ===== START  Social ===== */}
       <section className={Styles.section} id='1'>
-        <Image src={"/images/logo.webp"} alt='logo' width={200} height={200}/>
+        {/* <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={200} height={200}/> */}
+        <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={100} height={100}/>
         <div>
             <span></span>
             <span></span>
@@ -81,15 +82,15 @@ function Footer() {
         <h3>{t_footer("reach_us")}</h3>
         <div>
             <LocalPhoneIcon className={Styles.icon}/>
-            <p>+1012 3456 789</p>
+            <p>92 000 8123</p>
         </div>
         <div>
             <MailIcon className={Styles.icon}/>
-            <p>demo@gmail.com</p>
+            <p>info@laeq365.com</p>
         </div>
         <div>
             <LocationOnIcon className={Styles.icon}/>
-            <p>132 Dartmouth Street Boston, Massachusetts 02156 United States</p>
+            <p>Alyasmen Plaza Building, 3ed floor, Office # 16 Thumamah Road, Alyasmen Dist. Riyadh, KSA</p>
         </div>
 
       </section>

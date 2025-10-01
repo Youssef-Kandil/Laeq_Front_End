@@ -30,6 +30,7 @@ export interface adminType{
 }
 
 export interface employeeType{
+    id?:number;
     // ==== users Table info ===
     email:string;
     password:string;

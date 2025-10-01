@@ -31,6 +31,7 @@ function Report() {
 
   if (isLoading) return <SkeletonLoader variant="table" tableColumns={8} tableRows={8} />;
   if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
+  if (data == null) return <div>لا توجد بيانات</div>;
   if (!data || data.length === 0) return <div>لا توجد بيانات</div>;
 
   const local_var = "reports.tb_headers";
@@ -48,7 +49,7 @@ function Report() {
       : "-",
     action: (
       <FaRegEye 
-          onClick={()=>router.push( `/${current_lang}/Screens/dashboard/reports/Report_Details/${item.template_id}`)}
+          onClick={()=>router.push( `/${current_lang}/Screens/dashboard/reports/Report_Details/${item?.template_id}-${item?.task_id}`)}
           style={{ fontSize: 20 }}/> 
     ),
   }));

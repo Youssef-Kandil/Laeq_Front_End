@@ -5,6 +5,8 @@ import Pricing_Card from "@/app/components/global/Pricing_Card/Pricing_Card";
 import { useTranslations } from "next-intl";
 import CustomSwitch from "@/app/components/global/CustomSwitch/CustomSwitch";
 import { usePaymentPlans } from "@/app/Hooks/usePaymentPlans";
+import { useRouter } from "next/navigation"; 
+import { useLocale } from "next-intl";
 
 // import Popup from "@/app/components/global/Popup/Popup";
 // import { FiXOctagon } from "react-icons/fi";
@@ -15,22 +17,14 @@ import { usePaymentPlans } from "@/app/Hooks/usePaymentPlans";
 
 
 function Priceing() {
+  const router = useRouter();
+  const local = useLocale();
     React.useEffect(()=>{
       localStorage.setItem('clickedTitle', "pricing");
     },[])
-
-
-
-  
-
-      
-  
-
   const t = useTranslations("website.pricing_screen");
   const { data: plans, isLoading } = usePaymentPlans();
 
-  // const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
-  // const [showFailedPopup, setShowFailedPopup] = useState<boolean>(false);
 
 
 
@@ -58,6 +52,7 @@ function Priceing() {
         id={val.id}
         key={index}
         isRecommended={index === 1}
+        buttonFun={()=>router.push(`/${local}/Screens/forms/signup`)}
         title={val.title}
         buttonTitle={"Create Account"}
         subtitle="Ideal for individuals who need advanced features and tools for client work."

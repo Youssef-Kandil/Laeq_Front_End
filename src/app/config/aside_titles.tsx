@@ -1,12 +1,12 @@
 import { GoChecklist , GoCreditCard } from "react-icons/go";
-// import { MdOutlinePendingActions } from "react-icons/md";
+import { MdOutlinePendingActions } from "react-icons/md";
 // import { LuBuilding } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { TbReportAnalytics ,TbUserShield } from "react-icons/tb";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
-// import { HiOutlineArchiveBox } from "react-icons/hi2";
-// import { BsBuildingCheck } from "react-icons/bs";
+import { HiOutlineArchiveBox } from "react-icons/hi2";
+import { BsBuildingCheck } from "react-icons/bs";
 import { MdTaskAlt } from "react-icons/md";
 
 
@@ -47,22 +47,22 @@ const aside_titles =[
         isActive:false,
         hasChild:false,
     },
-    // {
-    //     title:"actions",
-    //     href:"/actions",
-    //     permission_name:"show actions",
-    //     icon:<MdOutlinePendingActions style={{fontSize:iconSize}}/>,
-    //     isActive:false,
-    //     hasChild:false,
-    // },
-    // {
-    //     title:"assets",
-    //     href:"/assets",
-    //     permission_name:"show assets",
-    //     icon:<HiOutlineArchiveBox style={{fontSize:iconSize}}/>,
-    //     isActive:false,
-    //     hasChild:false,
-    // },
+    {
+        title:"actions",
+        href:"/actions",
+        permission_name:"manage actions",
+        icon:<MdOutlinePendingActions style={{fontSize:iconSize}}/>,
+        isActive:false,
+        hasChild:false,
+    },
+    {
+        title:"assets",
+        href:"/assets",
+        permission_name:"show assets",
+        icon:<HiOutlineArchiveBox style={{fontSize:iconSize}}/>,
+        isActive:false,
+        hasChild:false,
+    },
     {
         title:"users",
         href:"/users",
@@ -95,14 +95,14 @@ const aside_titles =[
     //     isActive:false,
     //     hasChild:false,
     // },
-    // {
-    //     title:"inspector_requests",
-    //     href:"/inspector_requests",
-    //     permission_name:"ask inspector requests",
-    //     icon:<BsBuildingCheck style={{fontSize:iconSize }}/>,
-    //     isActive:false,
-    //     hasChild:false,
-    // },
+    {
+        title:"inspector_requests",
+        href:"/inspector_requests",
+        permission_name:"ask inspector requests",
+        icon:<BsBuildingCheck style={{fontSize:iconSize }}/>,
+        isActive:false,
+        hasChild:false,
+    },
     {
         title:"payments_plans",
         href:"/payments_plans",

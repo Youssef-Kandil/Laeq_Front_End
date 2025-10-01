@@ -2,7 +2,8 @@
 import React from 'react'
 
 //You@Laeq123
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl"; 
 // import { SelectChangeEvent } from '@mui/material';
 import { useGetCompaniesByUserId } from '@/app/Hooks/useCompany';
 import { useRole } from '@/app/Hooks/useRole';
@@ -14,17 +15,27 @@ import InputComponent from '@/app/components/global/InputsComponents/InputCompon
 import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 import { DropListType } from '@/app/Types/DropListType';
 import { AccountInfo } from '@/app/Types/AccountsType';
+import regex from '@/app/utils/regex';
+import Popup from '@/app/components/global/Popup/Popup';
+import Lottie from 'lottie-react';
+import ErrorIcon from '@/app/Lottie/wrong.json'
+import { FaFlagCheckered } from "react-icons/fa";
+
 
 function AddUserForm() {
 
     // const current_lang = useLocale();
     const router = useRouter();
+    const local = useLocale();
+    const isFirstTime = localStorage.getItem("first_time");
+    const [showFirstPopup, setShowFirstPopup] =  React.useState<boolean>(isFirstTime?false:true);
+
     const AdminInfo = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
     const limits = AdminInfo?.userDetails?.admin_account_limits;
     const maxEmployees = limits?.max_users ?? 0;
     const Companies = useGetCompaniesByUserId(AdminInfo?.userDetails.id ?? 0);
     const Roles = useRole(AdminInfo?.userDetails.id ?? 0);
-    const { mutate } = useCreateEmployee();
+    const { mutate ,isPending} = useCreateEmployee();
     const Employees = useEmployees(AdminInfo?.userDetails.id ?? 0);
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
       id: item.id,
@@ -60,32 +71,164 @@ function AddUserForm() {
       return company ? SitesList : [];
     }
 
+    const [showErrorPopup,setShowErrorPopup] = React.useState<boolean>(false);
+    const [ErrorPopupMSG,setErrorPopupMSG] = React.useState<{title:string,subTitle:string}>({title:"",subTitle:""});
+
     function handelSelectCompany(company:DropListType){
             setSelectedCompany(company);    
-            setSitesList(getSitesByCompanyId(company.id))
+            setSitesList(getSitesByCompanyId(company.id));
+    }
+
+    function handelValidation(){
+      if (!full_name) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Add Full Name"
+        });
+        return false;
+      }
+      if (!email) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Add  Email"
+        });
+        return false; 
+      }
+      if (email === AdminInfo?.email) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Duplcate Email"
+        });
+        return false; 
+      }
+      if(!regex.email.test(email)){
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Add Valid Email"
+        });
+        return false;
+      }
+      if (!password) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Add  Password"
+        });
+        return false;
+        
+      }
+
+      if(!regex.password.test(password)){
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Add Valid Password"
+        });
+        return false;
+      }
+      if (!jobTitle) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Add Job title"
+        });
+        return false;
+        
+      }
+      if (phone == null) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must phone number"
+        });
+        return false;  
+        
+      }
+      if (selectedCompany == null) {
+          setShowErrorPopup(true);
+          setErrorPopupMSG({
+            title:"warn!",
+            subTitle:"Must Select Company"
+          });
+          return false;
+        
+      }
+      if (!selectedSite) {
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title:"warn!",
+          subTitle:"Must Select Site"
+        });
+        return false;
+        
+      }
+      if (!selectedRole) {
+          setShowErrorPopup(true);
+          setErrorPopupMSG({
+            title:"warn!",
+            subTitle:"Must Select Role"
+          })
+          return false;     
+      }
+
+      return true;
+
     }
 
 
     const handelSubmitEmpData = ()=>{
-          mutate({
-            admin_id:AdminInfo?.userDetails.id ?? 0,
-            email: email ?? "",
-            password: password ?? "",
-            job_title: jobTitle ?? "",
-            full_name:full_name ?? "",
-            phone:phone??"",
-            role:"employee",
-            role_id:selectedRole?.id??0,
-            company_id:selectedCompany?.id??0,
-            site_id:selectedSite?.id??0,
-            is_active:0,
-          },
-          { onSuccess: () => router.back() }
-        )
+
+          if (handelValidation()){
+                mutate({
+                  admin_id:AdminInfo?.userDetails.id ?? 0,
+                  email: email ?? "",
+                  password: password ?? "",
+                  job_title: jobTitle ?? "",
+                  full_name:full_name ?? "",
+                  phone:phone??"",
+                  role:"employee",
+                  role_id:selectedRole?.id??0,
+                  company_id:selectedCompany?.id??0,
+                  site_id:selectedSite?.id??0,
+                  is_active:0,
+                },
+                { 
+                  onSuccess: () => {
+                    localStorage.setItem("first_time","1");
+                    if (!isFirstTime) {
+                      router.replace(`/${local}/Screens/dashboard/checklist`);
+                    }else{
+                      router.back();
+                    }
+                  },
+                  onError:()=>{
+                    setShowErrorPopup(true);
+                    setErrorPopupMSG({
+                      title:"ERROR!",
+                      subTitle:"faild to add user"
+                    });
+                  }
+                }
+              )
+          }
+
     }
     
     console.log(Companies.data)
   return (
+    <div>
+    {showFirstPopup&&<Popup 
+        icon={<FaFlagCheckered />} 
+        title="#3" 
+        subTitle="Add First User" 
+        btnTitle="Next" 
+        btnFunc={()=>setShowFirstPopup(false)} 
+        onClose={()=>setShowFirstPopup(false)} />}
+      {showErrorPopup&&<Popup icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={true}/>} title={ErrorPopupMSG.title} subTitle={ErrorPopupMSG.subTitle} onClose={()=>setShowErrorPopup(false)}/>}
     <div style={{margin:"30px"}}>
             {/* Header */}
             <header
@@ -132,10 +275,11 @@ function AddUserForm() {
             margin: '20px 10px 0px 10px' ,
         }}>
         <div style={{flex:1}}>
-          <BottonComponent onClick={handelSubmitEmpData} title='Save'/>
+          <BottonComponent disabled={isPending} onClick={handelSubmitEmpData} title='Save'/>
         </div>
         <p onClick={()=>router.back()} style={{flex:5,cursor:"pointer"}}>Cancel</p>
       </div>
+    </div>
     </div>
   )
 }

@@ -11,6 +11,7 @@ import Popup from "@/app/components/global/Popup/Popup";
 import Lottie from "lottie-react";
 import WorngIcon  from '@/app/Lottie/wrong.json'
 import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
+import { useRouter,useParams } from "next/navigation";
 
 
 interface FieldType {
@@ -28,6 +29,8 @@ interface questionType {
 const MAX_QUESTIONS_LIMIT = 300;
 
 function AddNewTemplateForm() {
+  const router = useRouter();
+  const {Checklist_id} = useParams();
   const {mutate:sendTemplateDataToDB} = useCreateTemplate();
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const [showPopup,setShowPopup] = useState<boolean>(false);
@@ -133,16 +136,28 @@ function AddNewTemplateForm() {
       });
       return;
     }
+
+    // 4. Validate that Checklist_id exists
+    if (!Checklist_id) {
+      setIsLoading(false);
+      setShowErrorPopup(true);
+      setErrorPopupMSG({
+        title:"Wrong!",
+        subTitle:"try again"
+      });
+      return;
+    }
   
     // ✅ Passed validation
     sendTemplateDataToDB({
-      checklist_id:1,
+      checklist_id:Number(Checklist_id)??-1,
       template_title:templateName,
       questions:QuestionsList
     },{
       onSuccess:()=>{
         setIsLoading(false);
         setShowPopup(true);
+        router.back();
       },
       onError:()=>{
         setIsLoading(false);

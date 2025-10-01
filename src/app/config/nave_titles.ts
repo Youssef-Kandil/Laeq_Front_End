@@ -8,12 +8,12 @@ const nave_titles =[
         isActive:true,
         hasChild:false,
     },
-    {
-        title:"sectors",
-        href:"/sectors",
-        isActive:false,
-        hasChild:true,
-    },
+    // {
+    //     title:"sectors",
+    //     href:"/sectors",
+    //     isActive:false,
+    //     hasChild:true,
+    // },
     {
         title:"pricing",
         href:"/pricing",

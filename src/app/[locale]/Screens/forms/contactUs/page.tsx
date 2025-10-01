@@ -1,10 +1,10 @@
 "use client";
 import React from 'react'
 import Styles from './contactUs.module.css'
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+// import InputLabel from '@mui/material/InputLabel';
+// import MenuItem from '@mui/material/MenuItem';
+// import FormControl from '@mui/material/FormControl';
+// import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {useTranslations,useLocale} from 'next-intl';
 
 function ContactUs() {
@@ -13,11 +13,11 @@ function ContactUs() {
       const t = useTranslations('contact_us')
 
 
-      const [age, setAge] = React.useState('');
+    //   const [age, setAge] = React.useState('');
 
-      const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value as string);
-      };
+    //   const handleChange = (event: SelectChangeEvent) => {
+    //     setAge(event.target.value as string);
+    //   };
 
       
   return (
@@ -32,7 +32,7 @@ function ContactUs() {
             <input type="text" placeholder={t("full_name_placeholder")} name="" id="" />
             <input type="email" placeholder={t("email_placeholder")} name="" id="" />
             <input type="number" placeholder={t("Phone_number_placeholder")} />
-            <FormControl fullWidth>
+            {/* <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">{t("how_did_you_find_us_placeholder")}</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
@@ -45,7 +45,7 @@ function ContactUs() {
                     <MenuItem value={20}>Twenty</MenuItem>
                     <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
-            </FormControl>
+            </FormControl> */}
 
             <button type="button">{t("submit_button")}</button>
         </div>

@@ -1,6 +1,7 @@
+"use client";
 import React from 'react'
 import {useTranslations,useLocale} from 'next-intl';
-import app_identity from '../config/identity';
+import app_identity from '../../../config/identity';
 import Image from 'next/image'
 
 

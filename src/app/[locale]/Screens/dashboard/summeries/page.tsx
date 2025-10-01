@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from 'react'
 import Styles from './summeries.module.css'
@@ -10,7 +11,9 @@ import { MdSell } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
 import { SiReaddotcv } from "react-icons/si";
 import { LuPackagePlus } from "react-icons/lu";
-import { useQueryClient } from '@tanstack/react-query';
+import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
+import { useSummeries } from '@/app/Hooks/useSummeries';
+import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 // import {formatDate} from '@/app/utils/date';
 
 
@@ -36,9 +39,39 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
         React.useEffect(()=>{
             localStorage.setItem('clickedAsideTitle',"dashboard");
         },[])
-        const queryClient = useQueryClient();
-        const adminAccount =  queryClient.getQueryData(["adminAccountInfo"]);
-        console.log(adminAccount);
+
+
+        const Info = getAdminAccountInfo("AccountInfo"); 
+        function calculateReportStatusCounts(reports: any[]) {
+            const counts = {
+              inProgress: 0,
+              pendding: 0,
+              completed: 0,
+              rejected: 0,
+            };
+          
+            reports?.forEach((report) => {
+              switch (report.status?.toLowerCase()) {
+                case "in progress":
+                  counts.inProgress += 1;
+                  break;
+                case "pending":
+                  counts.pendding += 1;
+                  break;
+                case "completed":
+                  counts.completed += 1;
+                  break;
+                case "rejected":
+                  counts.rejected += 1;
+                  break;
+                default:
+                  break;
+              }
+            });
+          
+            return counts;
+          }
+          
 
         // const t = useTranslations('table_component');
 
@@ -56,9 +89,34 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
             <IoMdPersonAdd key="users-icon"/>,
             <LuPackagePlus key="assets-icon"/>,
         ]
+
+        const {data:SummeriesData,isLoading,isError} = useSummeries(Number(Info?.userDetails.id));
+        if (isLoading) return <SkeletonLoader/>;
+        if (isError) return <p>Something went wrong</p>;
         
-        /*TESTING DATA*/  const boxesData = [{title:"Total Reports",info:"389"},{title:"Total Companies",info:"2"},{title:"Total Sites",info:"5"},{title:"Total Users",info:"675"},{title:"Total Assets",info:"238"},]
-        /*TESTING DATA*/  const TotalData = {total:100 ,data:{inProgress:25,pendding:15,completed:50,rejected:10}}
+       
+        const boxesData = [{title:"Total Reports",info:SummeriesData?.ReportsCount},{title:"Total Companies",info:SummeriesData?.companiesCount},{title:"Total Sites",info:SummeriesData?.sitesCount},{title:"Total Users",info:SummeriesData?.employeesCount??""},{title:"Total Assets",info:SummeriesData?.assetsCount},]
+        const tasksCounts = calculateReportStatusCounts(SummeriesData?.ReportSummeries || []);
+        const ActionsCounts = calculateReportStatusCounts(SummeriesData?.actionSummeries || []);
+        
+        const TotalActionsData = {
+          total:
+            ActionsCounts.inProgress +
+            ActionsCounts.pendding +
+            ActionsCounts.completed ,
+            // ActionsCounts.rejected,
+          data: ActionsCounts,
+        };
+        const TotalTasksData = {
+          total:
+            tasksCounts.inProgress +
+            tasksCounts.pendding +
+            tasksCounts.completed ,
+            // tasksCounts.rejected,
+          data: tasksCounts,
+        };
+
+        // const TotalData = {total:100 ,data:{inProgress:25,pendding:15,completed:50,rejected:10}}
         // ==== START DATE FILTER LOGIC ====
         //  const [showDatePicker, setShowDatePicker] = React.useState<boolean>(false);
         //  const [range, setRange] = React.useState<Range[]>([
@@ -117,7 +175,7 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
           </section>
 
           <section id={Styles.Totals}>
-            <h3>Total Actions</h3>
+            <h3>Total Tasks</h3>
             <div className={Styles.info_container}>
                 
                 <div className={Styles.Box}>
@@ -125,8 +183,8 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
                         <Gauge 
                             width={200} 
                             height={100} 
-                            value={TotalData.data.inProgress} 
-                            valueMax={TotalData.total}
+                            value={TotalTasksData.data.inProgress} 
+                            valueMax={TotalTasksData.total}
                             startAngle={-90} 
                             endAngle={90}
                             sx={{
@@ -147,8 +205,8 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
                         <Gauge 
                             width={200} 
                             height={100} 
-                            value={TotalData.data.pendding} 
-                            valueMax={TotalData.total}
+                            value={TotalTasksData.data.pendding} 
+                            valueMax={TotalTasksData.total}
                             startAngle={-90} 
                             endAngle={90}
                             sx={{
@@ -169,8 +227,8 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
                         <Gauge 
                             width={200} 
                             height={100} 
-                            value={TotalData.data.completed} 
-                            valueMax={TotalData.total}
+                            value={TotalTasksData.data.completed} 
+                            valueMax={TotalTasksData.total}
                             startAngle={-90} 
                             endAngle={90}
                             sx={{
@@ -186,20 +244,27 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
                              />
                 </div>
 
+            </div>
+          </section>
+
+          <section id={Styles.Totals}>
+            <h3>Total Actions</h3>
+            <div className={Styles.info_container}>
+                
                 <div className={Styles.Box}>
-                    <h3>Rejected</h3>
+                    <h3>Inprogress</h3>
                         <Gauge 
                             width={200} 
                             height={100} 
-                            value={TotalData.data.rejected} 
-                            valueMax={TotalData.total}
+                            value={TotalActionsData.data.inProgress} 
+                            valueMax={TotalActionsData.total}
                             startAngle={-90} 
                             endAngle={90}
                             sx={{
                                 // track
                                 [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
                                 // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(251, 178, 20, 1)',},
+                                [`& .${gaugeClasses.valueArc}`]: {fill: '#FF6060',},
                                 // text
                                 [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
                               }}
@@ -207,6 +272,51 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
                             text={({ value, valueMax }) => `${value} / ${valueMax}`}
                              />
                 </div>
+
+                <div className={Styles.Box}>
+                    <h3>Pendding</h3>
+                        <Gauge 
+                            width={200} 
+                            height={100} 
+                            value={TotalActionsData.data.pendding} 
+                            valueMax={TotalActionsData.total}
+                            startAngle={-90} 
+                            endAngle={90}
+                            sx={{
+                                // track
+                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
+                                // progress
+                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(27, 203, 128, 1)',},
+                                // text
+                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
+                              }}
+                            
+                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
+                             />
+                </div>
+
+                <div className={Styles.Box}>
+                    <h3>Completed</h3>
+                        <Gauge 
+                            width={200} 
+                            height={100} 
+                            value={TotalActionsData.data.completed} 
+                            valueMax={TotalActionsData.total}
+                            startAngle={-90} 
+                            endAngle={90}
+                            sx={{
+                                // track
+                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
+                                // progress
+                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(151, 71, 255, 1)',},
+                                // text
+                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
+                              }}
+                            
+                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
+                             />
+                </div>
+
             </div>
           </section>
       </div>

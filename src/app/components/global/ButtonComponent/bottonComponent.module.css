@@ -6,7 +6,7 @@
     padding-bottom: 14.09px !important;
     padding-left: 22.14px !important;
     gap: 7.48px !important;
-    background-color: var(--Secondary-color) !important;
+    background-color: var(--Secondary-color);
     color: #FFFFFF !important;
     font-size: 14px !important;
     font-weight: 500 !important;

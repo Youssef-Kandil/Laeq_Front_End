@@ -1,5 +1,6 @@
 
 export interface siteType{
+        id?:number;
         admin_id:number,
         site_name: string,
         full_address: string,
@@ -23,6 +24,7 @@ export interface companyType{
 
 
 export interface comanypayload{
+    id?:number;
     admin_id:number;
     company_name:string;
     sector_type:string;

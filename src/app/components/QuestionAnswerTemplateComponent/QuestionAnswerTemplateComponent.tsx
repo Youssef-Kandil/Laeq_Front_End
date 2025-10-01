@@ -107,6 +107,7 @@ type QuestionProps = {
       const ans = answers.find(
         (a) => a.questionID === questionID && a.fieldID === fieldID
       );
+      console.log(ans ?ans.value:"")
       return ans ? ans.value : "";
     };
   

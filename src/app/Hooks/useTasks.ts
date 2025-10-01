@@ -79,3 +79,19 @@ export const useUpdateTaskStatus = () => {
     },
   });
 };
+
+
+// === Delete inspector_requests ===
+export const useDeleteTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: { id: number }) =>
+      api.delete("/delete_task", payload).then((res) => res),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+};
+

@@ -1,0 +1,42 @@
+.parent{
+    width: 100vw;
+    height: 100vh;
+    background-color: #F4F5FA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .form{
+        .formHeader{
+
+            & img{
+                width: 50px;
+                height: 50px;
+            }
+            & h3{
+                font-size: 20px;
+                font-weight: 500;
+            }
+            & p{
+                font-size: 14px;
+                font-weight: 400;
+                color: #8B8D97;
+            }
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-direction: column;
+            align-items:center;
+            margin-bottom: 20px;
+        }
+        .formInputs{
+            margin-bottom:30px
+        }
+        
+        text-align: center;
+        min-width: 350px;
+        min-height: 300px;
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 44px 34px 44px 34px;
+    }
+}

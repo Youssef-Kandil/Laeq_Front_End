@@ -1,45 +1,101 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from 'react'
-import {ClientOnlyTable} from '@/app/components/global/Table/Table';
-import { useRouter } from 'next/navigation'
-import { useLocale } from 'next-intl';
-// import { CheckIsExpired } from '@/app/utils/CheckIsExpired';
-
+import React from "react";
+import { ClientOnlyTable } from "@/app/components/global/Table/Table";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
-
+import { useAssetsByAdmin, useDeleteAsset } from "@/app/Hooks/useAssets";
+import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 function Assets() {
-    const router = useRouter();
-    const current_lang = useLocale();
-    React.useEffect(()=>{
-        localStorage.setItem('clickedAsideTitle',"assets");
-    },[])
+  const router = useRouter();
+  const current_lang = useLocale();
 
+  // Get logged in user info
+  const info = getAdminAccountInfo("AccountInfo");
+  const isEmployee = info?.role === "employee";
+  const targetId = isEmployee ? info?.userDetails?.admin_id : info?.userDetails?.id;
 
-      const originalData=[
-        {id:1,name:"name 1",model:"model 1",category:"category 1",brand:"brand 1",warranty:"warranty 1",company:"company 1",site:"site 1"},
-      ];
+  // Fetch assets
+  const {
+    data: assetsData,
+    isLoading,
+    isError,
+  } = useAssetsByAdmin(targetId ?? -1); 
 
-      const local_var = "assets.tb_headers";
-      //=== Add Action To The Table Rows
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const modifiedData = originalData.map(({ id,...rest }) => ({
-        ...rest,
-         delete_action:<LuTrash2 style={{fontSize:20}}/>,
-         edit_action:<FiEdit2 style={{fontSize:20}}/>
-      }));
+  // Delete hook
+  const { mutate: deleteAsset } = useDeleteAsset();
+
+  React.useEffect(() => {
+    localStorage.setItem("clickedAsideTitle", "assets");
+  }, []);
+
+  const local_var = "assets.tb_headers";
+
+  // === Loading / Error States ===
+  if (isLoading) return <SkeletonLoader />;
+  if (isError) return <p className="text-red-500">❌ Error loading assets</p>;
+
+  // === Modify Data for Table ===
+  const modifiedData =
+    assetsData?.map((asset: any) => ({
+      name: asset.asset_name || "—",
+      model: asset.model || "—",
+      category: asset.asset_category || "—",
+      brand: asset.brand || "—",
+      warranty: asset.warranty_date || "—",
+      company: asset.companies.company_name || "—",
+      site: asset.sites.site_name || "—",
+      delete_action: (
+        <button
+          className="p-2 hover:text-red-600"
+          onClick={() => deleteAsset({ id: asset.id,ImageFileName:asset?.asset_img??"" })}
+        >
+          <LuTrash2 style={{ fontSize: 20 }} />
+        </button>
+      ),
+      edit_action: (
+        <button
+          className="p-2 hover:text-blue-600"
+          onClick={() =>
+            router.push(
+              `/${current_lang}/Screens/dashboard/assets/EditAssetForm/${asset.id}`
+            )
+          }
+        >
+          <FiEdit2 style={{ fontSize: 20 }} />
+        </button>
+      ),
+    })) || [];
+
   return (
     <div>
-        <ClientOnlyTable 
-            titles={[`${local_var}.name`,`${local_var}.model`,`${local_var}.category`,`${local_var}.brand`,`${local_var}.warranty`,`${local_var}.company`,`${local_var}.site`,"",""]}
-            data={modifiedData}
-            rowsFlex={[1,1,1,1,1,1,1,0.2,0.2]}
-            navButtonTitle='assets'
-            navButtonAction={()=>router.push(`/${current_lang}/Screens/dashboard/assets/AddAssetForm`)}
-         />
+      <ClientOnlyTable
+        titles={[
+          `${local_var}.name`,
+          `${local_var}.model`,
+          `${local_var}.category`,
+          `${local_var}.brand`,
+          `${local_var}.warranty`,
+          `${local_var}.company`,
+          `${local_var}.site`,
+          "",
+          "",
+        ]}
+        data={modifiedData}
+        rowsFlex={[1, 1, 1, 1, 1, 1, 1, 0.2, 0.2]}
+        navButtonTitle="assets"
+        navButtonAction={() =>
+          router.push(
+            `/${current_lang}/Screens/dashboard/assets/AddAssetForm`
+          )
+        }
+      />
     </div>
-  )
+  );
 }
 
-export default Assets
+export default Assets;

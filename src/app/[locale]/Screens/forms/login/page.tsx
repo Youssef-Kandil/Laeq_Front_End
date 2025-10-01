@@ -1,9 +1,10 @@
 "use client";
-import React ,{useState}from 'react'
+import React ,{useState,useEffect}from 'react'
 import Styles from './login.module.css'
 import { Alert ,AlertTitle,Stack} from '@mui/material';
-import { signInWithGoogle } from "../../../../lib/firebase";
-import login_services from '@/app/services/website/login_services';
+import { signIn, useSession,signOut  } from "next-auth/react";
+// import { signInWithGoogle } from "../../../../lib/firebase";
+// import login_services from '@/app/services/website/login_services';
 import regex from '@/app/utils/regex';
 import encryption from '@/app/utils/encryption';
 // === Components ===
@@ -13,7 +14,7 @@ import Link from "next/link";
 import {useTranslations,useLocale} from 'next-intl';
 import Cookies from "js-cookie";
 
-import { useLogin } from '@/app/Hooks/useLogin';
+import { useLogin , useGoogleLogin } from '@/app/Hooks/useLogin';
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -22,7 +23,22 @@ import { useQueryClient } from '@tanstack/react-query';
 function Login() {
   const lang = useLocale();
   const router = useRouter();
-  const t = useTranslations('login_screen')
+  const { data: session } = useSession();
+  const t = useTranslations('login_screen');
+
+  Cookies.remove("AccountInfo");
+  Cookies.remove("next-auth.callback-url");
+  Cookies.remove("next-auth.csrf-token");
+  Cookies.remove("next-auth.session-token");
+  React.useEffect(() => {
+   if (session) {
+     // أول ما يفتح صفحة الساين اب لو في سيشن اعمله لوج اوت
+     signOut({ redirect: false });
+   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, []);
+  console.log("Google session :: ",session)
+
 
 
 
@@ -38,7 +54,52 @@ function Login() {
 
   // START FUNCTIONS ===
   const queryClient = useQueryClient();
+const { mutate:googleLogin } = useGoogleLogin();
 const { mutate } = useLogin();
+
+useEffect(()=>{
+  if (session?.user?.email) {
+    googleLogin(
+      { email: session.user.email },
+      {
+        onSuccess: (data) => {
+          console.warn("Backend response:", data);
+          if (data) {
+            if (data?.role) {
+              queryClient.setQueryData(["AccountInfo"], data);
+              const token = JSON.stringify(data);
+              const key = process.env.NEXT_PUBLIC_HASH_KEY || "";
+              const info = encryption.encryption(token, key);
+              Cookies.set("AccountInfo", info, { expires: 90 });
+  
+              const isFirstTime = localStorage.getItem("first_time");
+              if (data.role === "admin") {
+                if (!isFirstTime) {
+                  router.replace(`/${lang}/Screens/dashboard/company/AddCompanyForm`);
+                } else {
+                  router.replace(`/${lang}/Screens/dashboard/payments_plans`);
+                }
+              } else {
+                router.replace(`/${lang}/Screens/dashboard/tasks`);
+              }
+            }
+          }else{
+            setAlertState(true);
+            setAlertSeverity("error");
+            setError(`Can't Find User With Email : ${session?.user?.email}`);
+          }
+        },
+        onError: () => {
+          setAlertState(true);
+          setAlertSeverity("error");
+          setError("Can't login");
+        },
+      }
+    );
+  }
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[])
 
 const handleLogin = () => {
   setAlertState(false);
@@ -72,9 +133,14 @@ const handleLogin = () => {
                  const info =  encryption.encryption(token,key)
                  console.warn("INFOOO :: ",info)
                   // localStorage.setItem("AccountInfo",info)
+                 const isFirstTime = localStorage.getItem("first_time")
                   Cookies.set("AccountInfo", info, { expires: 90 });
                   if (data?.role == "admin") {
-                    router.replace(`/${lang}/Screens/dashboard/payments_plans`);
+                    if (!isFirstTime) {
+                      router.replace(`/${lang}/Screens/dashboard/company/AddCompanyForm`);        
+                    }else{
+                      router.replace(`/${lang}/Screens/dashboard/payments_plans`);
+                    }
                   }else{
                     router.replace(`/${lang}/Screens/dashboard/tasks`);
                   }
@@ -96,13 +162,7 @@ const handleLogin = () => {
 
   console.log(error)
 
-// Example of the loggedInUser.providerData[0] object returned from Google Sign-In
-// displayName: "youssf kandil"
-// email: "youssfkandil79@gmail.com"
-// phoneNumber: null
-// photoURL: "https://lh3.googleusercontent.com/a/ACg8ocL8j-J0zOBIvLcsDDRt5RzP17B89adQqHivPiF8EKoZ_wfN=s96-c"
-// providerId: "google.com"
-// uid: "113488656261148336375"
+
 
 React.useEffect(() => {
   const handleKeyDown = async (e: { key: string; }) => {
@@ -122,30 +182,19 @@ React.useEffect(() => {
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
-  const handleLoginWithGoogle = async () => {
-    // Call the signInWithGoogle function from firebase
-    const loggedInUser = await signInWithGoogle();
-    const userData = loggedInUser?.providerData[0];
+const handleLoginWithGoogle = async () => {
+  const result = await signIn("google", { redirect: false });
 
-    console.log("email ",userData?.email);
-    console.log("provider ",userData?.providerId);
-    console.log("providerId ",userData?.uid);
-    console.log("userData ",userData);
+  console.log("Google login result:", result);
 
-    // Check if the user data is available
-    if (userData?.email && userData?.providerId && userData?.email != null && userData?.providerId != null ) {
-        // Hash the Data
-        const hashed_Email : string = encryption.encryption(userData?.email,process.env.NEXT_PUBLIC_HASH_KEY as string)
-      //Call the login service
-        const result = await login_services.Goolge_login(hashed_Email,userData?.providerId);
-        console.log("result Sign in Google ",result);
-        // Check if the login was successful And Go To Dashboard
-        if(result){
-          console.log("Login successful");
-          // Redirect to the dashboard or perform any other action
-        }
-    }
-  };
+  if (result?.error) {
+    setAlertState(true);
+    setAlertSeverity("error");
+    setError("فشل تسجيل الدخول بجوجل");
+    return;
+  }
+};
+
 
 
   return (
@@ -175,7 +224,7 @@ React.useEffect(() => {
 
         <span>{t("OR")}</span>
 
-        <div className={Styles.google_login} onClick={handleLoginWithGoogle}>
+        <div className={Styles.google_login} onClick={()=>handleLoginWithGoogle()}>
           <Image src={'/images/google.webp'} alt='google' loading='lazy' width={20} height={20}/>
           <button >{t("google_login")}</button>
         </div>

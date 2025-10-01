@@ -167,10 +167,14 @@
                 width: 300px;
                 .card_image{
                     width: 300px;
+                    overflow: hidden;
                     height: 320.0899963378906px;
                     border-radius: 20px;
                     background-color: #D9E6FD;
                     margin-bottom: 16px;
+                    & img{
+                        object-fit:cover;
+                    }
                 }
 
                 .card_text{

@@ -63,8 +63,13 @@ function Nave() {
     
   return (
     <div className={Styles.parent} dir={current_lang == "en"?"ltr":"rtl"} style={{fontFamily:app_identity.primary_font}}>
-        <div>
-            <Image src={"/images/logo.webp"} alt='logo' width={120} height={120}/>
+        <div style={{display:'flex',alignItems:"center"}}>
+            {/* <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={120} height={120}/> */}
+            <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={60} height={120}/>
+            <strong style={{fontSize:'1.4rem',marginLeft:6}}>
+                <p style={{color:app_identity.primary_color}}>LAEQ</p>
+                <p style={{lineHeight:0.5,color:app_identity.secondary_color}}>365</p>
+            </strong>
         </div>
 
       <div className={Styles.titles}>

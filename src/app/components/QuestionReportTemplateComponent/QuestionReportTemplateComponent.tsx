@@ -13,7 +13,7 @@ import {
   TimeInputComponent,
   DateTimeInputComponent,
 } from "../global/InputsComponents";
-
+import { pdfToImages } from "@/app/utils/pdfToImages";
 
 // import { Answer } from '../../Types/AnswerType';
 
@@ -32,7 +32,29 @@ interface props {
 }
 
 function QuestionReportTemplateComponent({ questionNumber, title, answers }: props) {
+  const [pdfImages, setPdfImages] = React.useState<Record<number, string[]>>({});
   const [showPdf,setShowPdf] = React.useState<boolean>(false);
+  // === جلب الصور من PDF لو فيه ===
+  React.useEffect(() => {
+    const fetchImages = async () => {
+      const imagesMap: Record<number, string[]> = {};
+      for (const ans of answers) {
+        if (ans.type === "images" && ans.value) {
+          try {
+            const imgs = await pdfToImages(ans.value);
+            imagesMap[ans.id] = imgs;
+          } catch (err) {
+            console.error("Error loading PDF:", err);
+          }
+        }
+      }
+      setPdfImages(imagesMap);
+    };
+
+    fetchImages();
+  }, [answers]);
+
+
   return (
     <div className={Styles.Question}>
       <h2>
@@ -98,7 +120,14 @@ function QuestionReportTemplateComponent({ questionNumber, title, answers }: pro
             case "images":
                 return (
                   <div key={ans.id} className={Styles.AnswerItem}>
-                    <strong>PDF:</strong>
+                  {/* صور من pdf */}
+                  <strong>Images:</strong>
+                  <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",marginTop:5}}>
+                    {pdfImages[ans.id]?.map((src, i) => (
+                      <img key={i} style={{width:100,height:100,borderRadius:5}} loading="lazy" src={src} alt={`page-${i}`} />
+                    ))}
+                  </div>
+                    {/* <strong>PDF:</strong> */}
                     {ans.value ? (
                       <>
                         <button
@@ -109,7 +138,7 @@ function QuestionReportTemplateComponent({ questionNumber, title, answers }: pro
                           }}
                           className={Styles.PDF_Btn}
                         >
-                          {showPdf ? "Hide Pdf" : "Show Pdf"}
+                          {showPdf ? "Hide Pdf" : "Show as Pdf"}
                         </button>
 
                         {showPdf && (

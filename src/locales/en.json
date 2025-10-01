@@ -82,9 +82,9 @@
             "title":"Select Status",
             "reset":"Reset",
             "all":"All",
-            "completed":"Completed",
-            "pending":"Pending",
-            "in_progress":"In progress",
+            "Completed":"Completed",
+            "Pending":"Pending",
+            "In_Progress":"In progress",
             "approved":"Approved",
             "rejected":"Rejected",
             "not_started":"Not started",
@@ -123,7 +123,7 @@
                     "role":"Role"
                 },
                 "button_title":"Send",
-                "button_title2":"Automation"
+                "button_title2":"Advanced settings"
             },
 
             "reports":{
@@ -163,6 +163,8 @@
                         "company":"Company",
                         "site":"Site",
                         "status":"Status",
+                        "repeate":"Repeated",
+                        "location":"Location",
                         "date":"Date"
                     }
             },

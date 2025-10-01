@@ -1,3 +1,4 @@
+
 "use client";
 import React from 'react'
 import {ClientOnlyTable} from '@/app/components/global/Table/Table';
@@ -7,7 +8,7 @@ import { useLocale } from 'next-intl';
 
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
-import { useGetCompaniesByUserId } from '../../../../Hooks/useCompany';
+import { useGetCompaniesByUserId ,useDeleteCompany } from '../../../../Hooks/useCompany';
 import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import Popup from '@/app/components/global/Popup/Popup';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
@@ -26,9 +27,9 @@ function Company() {
                   : info?.userDetails?.id;
         const limits = info?.userDetails?.admin_account_limits;
         console.log("limits ::: COMPANYESSS >>> ", limits);
-        const [maxCompanies] = React.useState<number>(
-            typeof limits?.max_branches === "number" ? limits.max_branches : 0
-        );
+        // const [maxCompanies] = React.useState<number>(
+        //     typeof limits?.max_branches === "number" ? limits.max_branches : 0
+        // );
         const [showPopup, setShowPopup] = React.useState(false);
 
         React.useEffect(() => {
@@ -39,22 +40,27 @@ function Company() {
       const local_var = "company.tb_headers";
 
       interface CompanyData {
+        id:number;
         company_name: string;
         sector_type: string;
         sites: [];
       }
-
+      
+      // Delete hook
+      const { mutate: deleteCompany } = useDeleteCompany();
+      
       const { data, isLoading, error } = useGetCompaniesByUserId(targetId??-1);
               if (isLoading) return <SkeletonLoader variant="table" tableColumns={6} tableRows={8} />;
               if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
               if (!data) return <div>لا توجد بيانات</div>;
+              console.log("Comapny : ",data)
       //=== Add Action To The Table Rows
-      const modifiedData = (data as CompanyData[]).map(({ company_name, sector_type, sites }) => ({
+      const modifiedData = (data as CompanyData[]).map(({id, company_name, sector_type, sites }) => ({
           company_name,
           sector_type,
           sites: sites.length, // عدد المواقع
-          delete_action: isEmployee? null: <LuTrash2 style={{ fontSize: 20 }} />,
-          edit_action: isEmployee? null: <FiEdit2 style={{ fontSize: 20 }} />
+          delete_action: isEmployee? null: <LuTrash2 onClick={()=>deleteCompany({id})} style={{ fontSize: 20 }} />,
+          edit_action: isEmployee? null: <FiEdit2 onClick={()=>router.push(`/${current_lang}/Screens/dashboard/company/EditCompanyForm/${id}`)} style={{ fontSize: 20 }} />
       }));
   return (
     <div>
@@ -73,12 +79,11 @@ function Company() {
             rowsFlex={isEmployee?[1,1,1,0,0]:[1,1,1,0.2,0.2]}
             navButtonTitle={isEmployee?"":'company'}
             navButtonAction={()=>{
-              if(maxCompanies <= data.length){
-                  console.log("maxCompanies");
-                  setShowPopup(true)
-              }else{
-                router.push(`/${current_lang}/Screens/dashboard/company/AddCompanyForm`)
-              }
+              router.push(`/${current_lang}/Screens/dashboard/company/AddCompanyForm`)
+              // if(maxCompanies <= data.length){
+              //     setShowPopup(true)
+              // }else{
+              // }
             }}
          />
     </div>

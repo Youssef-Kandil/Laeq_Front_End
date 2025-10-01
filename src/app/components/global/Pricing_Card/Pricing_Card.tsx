@@ -23,6 +23,7 @@ interface PricingCardProps {
   title: string;
   subtitle: string;
   buttonTitle?:string;
+  buttonFun?:()=>void;
   duration: string;
   price: string;
   features: Feature[];
@@ -41,7 +42,7 @@ const arrayOfFeatures = [
 ];
 
 
-function Pricing_Card({id,title,subtitle,buttonTitle,price,duration,features,isRecommended }:PricingCardProps) {
+function Pricing_Card({id,title,subtitle,buttonTitle,price,duration,features,isRecommended ,buttonFun}:PricingCardProps) {
       const [info, setInfo] = React.useState<AccountInfo | null>(null);
       React.useEffect(() => {
         const Account = getAdminAccountInfo("AccountInfo");
@@ -115,7 +116,7 @@ function Pricing_Card({id,title,subtitle,buttonTitle,price,duration,features,isR
         <p style={isRecommended ? {color:"#F7F8F9"} : {}}> / {duration}</p>
       </div>
 
-      <button onClick={pay} style={isRecommended ? {background:"#fff",color:app_identity.primary_color,border:'none'} : {}}>
+      <button onClick={buttonFun?buttonFun:pay} style={isRecommended ? {background:"#fff",color:app_identity.primary_color,border:'none'} : {}}>
        {buttonTitle?buttonTitle:"Get Started Now"} 
       </button>
 

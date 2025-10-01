@@ -63,7 +63,7 @@ function About_us() {
               return (
                 <div key={index} style={(index+1)%2 == 0 ?{marginBottom:100}:{}} className={Styles.team_section_card}>       
                     <div className={Styles.card_image}>
-                      <Image src={""} alt='' loading='lazy' width={100} height={100}/>
+                      <Image src={card.image} alt=''  loading='lazy' width={300} height={100}/>
                     </div>
                     <div className={Styles.card_text}>
                       <h3>{card.name}</h3>

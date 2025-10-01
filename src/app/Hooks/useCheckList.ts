@@ -40,6 +40,18 @@ export const useCreateCheckList = () => {
   });
 };
 
+export const useDeleteCheckList = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (newChecklist: {id:number}) =>
+      api.delete("/delete_checklists", newChecklist),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["checkLists"] }); // تحديث القائمة
+    },
+  });
+};
+
 
 // === CREATE Check list - Template ===
 export const useCreateTemplate = () => {
@@ -49,7 +61,8 @@ export const useCreateTemplate = () => {
     mutationFn: (newChecklist: {checklist_id:number,template_title:string,questions:Question[]}) =>
       api.post("/add_checklists_Temp", newChecklist),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Templates"] }); // تحديث القائمة
+      queryClient.invalidateQueries({ queryKey: ["checkLists"] }); // تحديث القائمة
     },
   });
 };
+

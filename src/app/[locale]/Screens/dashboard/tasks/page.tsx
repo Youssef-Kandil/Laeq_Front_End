@@ -3,24 +3,26 @@ import React from "react";
 import { ClientOnlyTable } from "@/app/components/global/Table/Table";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { useTasks, useUpdateTaskStatus } from "@/app/Hooks/useTasks";
+import { useTasks, useUpdateTaskStatus ,useDeleteTask } from "@/app/Hooks/useTasks";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
-
+import Link from "next/link";
+import { generateMapLinks } from "@/app/utils/mapLinks";
 // Icons
 
 import { LuTrash2 } from "react-icons/lu";
-import { FiEdit2 } from "react-icons/fi";
+// import { FiEdit2 } from "react-icons/fi";
 
 // ===== Types =====
 interface TaskType {
   id: number;
   users?: { email?: string };
   templates?: { id: number; template_title?: string; is_repeated?: boolean };
-  sites?: { site_name?: string };
+  sites?: { site_name?: string,full_address:string ,lat:string,long:string};
   companies?: { company_name?: string };
   status?: string;
+  repeate_date:string;
   date?: string;
 }
 
@@ -32,6 +34,9 @@ function Tasks() {
 
   const router = useRouter();
   const current_lang = useLocale();
+
+    // Delete hook
+    const { mutate: deleteTask } = useDeleteTask();
 
   // Mutation hook for updating task status
   const { mutate: updateTaskStatus } = useUpdateTaskStatus();
@@ -73,6 +78,7 @@ function Tasks() {
     id: targetId ?? -1,
     role: info?.role === "admin" ? "admin" : "user",
   });
+  console.log("tasksData >> ",tasksData)
 
   // ===== Table Headers =====
   const local_var = "tasks.tb_headers";
@@ -82,12 +88,14 @@ function Tasks() {
     `${local_var}.site`,
     `${local_var}.company`,
     `${local_var}.status`,
+    `${local_var}.repeate`,
+    `${local_var}.location`,
     `${local_var}.date`,
   ];
 
   const headers = isEmployee
     ? [...baseHeaders, ""]
-    : [...baseHeaders, "", "", ""];
+    : [...baseHeaders, "", ""];
 
   // ===== Loading / Error States =====
   if (isLoading) return <SkeletonLoader />;
@@ -102,6 +110,14 @@ function Tasks() {
         site: task?.sites?.site_name || "—",
         company: task?.companies?.company_name || "—",
         status: task.status,
+        repeate_date: task?.repeate_date? new Date(task?.repeate_date).toLocaleString("en-US", {
+          month: "short", // Month letters
+          day: "numeric", // Day number
+          hour: "numeric", // Hour
+          minute: "2-digit", // Minutes
+          hour12: true, // AM/PM
+        }) : "NO",
+        location:task?.sites?.lat? <Link href={generateMapLinks(task?.sites?.lat??"",task?.sites?.long??"").google_search} style={{ color: "#68A6A6", textDecoration: "underline" }} target="_blank">Site Location</Link>:task?.sites?.full_address??"No Location",
         date: task?.date
           ? new Date(task.date).toLocaleString("en-US", {
               month: "short", // Month letters
@@ -137,13 +153,13 @@ function Tasks() {
       } else {
         return {
           ...baseData,
-          edit: (
-            <button className="p-2 hover:text-blue-600">
-              <FiEdit2 style={{ fontSize: 20 }} />
-            </button>
-          ),
+          // edit: (
+          //   <button className="p-2 hover:text-blue-600">
+          //     <FiEdit2 style={{ fontSize: 20 }} />
+          //   </button>
+          // ),
           delete: (
-            <button className="p-2 hover:text-red-600">
+            <button onClick={()=>deleteTask({id:task.id})} className="p-2 hover:text-red-600">
               <LuTrash2 style={{ fontSize: 20 }} />
             </button>
           ),
@@ -174,10 +190,11 @@ function Tasks() {
       <ClientOnlyTable
         titles={headers}
         data={modifiedData}
+        filter
         rowsFlex={
           isEmployee
-            ? [1, 1, 1, 1, 1, 1, 1]
-            : [1, 1, 1, 1, 1, 1, 0.5, 0.5, 1]
+            ? [1, 1, 1, 1, 1, 1,1, 1]
+            : [1.5, 1, 1, 1, 1, 1, 1,1.5, 0.5, 1]
         }
       />
     </div>

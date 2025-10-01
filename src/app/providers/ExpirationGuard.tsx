@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { CheckIsExpired } from "@/app/utils/CheckIsExpired";
 import { getAdminAccountInfo } from "../utils/getAccountInfo";
+import TableSceletonLoader from "../components/global/Table/TableSceletonLoader";
 
 export default function ExpirationGuard({
   locale,
@@ -40,7 +41,7 @@ export default function ExpirationGuard({
   }, [locale, router, pathname]);
 
   if (!checked) {
-    return <p>Loading...</p>; // أو أي loading skeleton تحبه
+    return <TableSceletonLoader/>; // أو أي loading skeleton تحبه
   }
 
   return <>{children}</>;

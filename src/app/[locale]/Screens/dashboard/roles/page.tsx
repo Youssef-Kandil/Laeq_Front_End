@@ -3,7 +3,7 @@ import React from 'react'
 import {ClientOnlyTable} from '@/app/components/global/Table/Table';
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl';
-import { useRole } from '@/app/Hooks/useRole';
+import { useRole ,useDeleteRole } from '@/app/Hooks/useRole';
 import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 
@@ -16,9 +16,12 @@ function Roles() {
         },[])
         const router = useRouter();
         const current_lang = useLocale();
-        const AdminInfo = getAdminAccountInfo("AccountInfo"); 
+        const Info = getAdminAccountInfo("AccountInfo"); 
         const local_var = "roles.tb_headers";
-        const {data,isLoading,error} = useRole(AdminInfo?.userDetails.id ?? 0);
+
+      // Delete hook
+      const { mutate: deleteRole } = useDeleteRole();
+        const {data,isLoading,error} = useRole(Info?.userDetails.id ?? 0);
         console.warn("data : ",data)
               if (isLoading) return <SkeletonLoader variant="table" tableColumns={6} tableRows={8} />;
               if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
@@ -40,11 +43,11 @@ function Roles() {
       };
 
       // Ensure 'data' is typed as Role[]
-      const modifiedData = (data as Role[]).map(({ role_name,description}) => ({
+      const modifiedData = (data as Role[]).map(({id, role_name,description}) => ({
         role_name,
         description,
-         delete_action:<LuTrash2 style={{fontSize:20}}/>,
-         edit_action:<FiEdit2 style={{fontSize:20}}/>
+         delete_action:<LuTrash2 onClick={()=>deleteRole({id})} style={{fontSize:20}}/>,
+         edit_action:<FiEdit2 onClick={()=>router.push(`/${current_lang}/Screens/dashboard/roles/EditRoleForm/${id}`)} style={{fontSize:20}}/>
       }));
   return (
     <div>

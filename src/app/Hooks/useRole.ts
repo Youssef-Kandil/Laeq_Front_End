@@ -30,3 +30,44 @@ export const useCreateRole = () => {
     },
   });
 };
+
+// === Get Role Data By Role ID ===
+export const useGetRoleDataByID = (id: number) => {
+  return useQuery({
+    queryKey: ["roles", id],
+    queryFn: () =>
+      api.post(`/get_role_data_by_id`, { id })
+         .then(res => res),
+    enabled: !!id
+  });
+};
+
+// === Edit role ===
+export const useEditRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: RolePayload) =>
+      api.update("/edit_role", payload).then((res) => res),
+
+    onSuccess: (data, variables) => {
+      // تحديث الكاش مباشرةً
+      queryClient.setQueryData(["roles", variables], data);
+    },
+  });
+};
+
+
+// === Delete role ===
+export const useDeleteRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: { id: number }) =>
+      api.delete("/delete_role", payload).then((res) => res),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
+    },
+  });
+};
