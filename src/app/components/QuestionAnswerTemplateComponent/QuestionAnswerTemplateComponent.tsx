@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import Styles from "./QuestionAnswerTemplateComponent.module.css";
+import { useAssetsByAdmin } from "@/app/Hooks/useAssets";
+import { useEmployees } from "@/app/Hooks/useEmployees";
 
 import {
   InputComponent,
@@ -15,6 +18,8 @@ import {
   DateTimeInputComponent,
   MultimageInputComponent,
 } from "../global/InputsComponents";
+import { AccountInfo } from "@/app/Types/AccountsType";
+import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 
 
 
@@ -39,6 +44,8 @@ interface Answer {
   userID: number;
   task_id?:number;
   admin_id?:number;
+  company_id:number;
+  site_id:number;
   questionID: number;
   fieldID: number;
   value: string | Blob;
@@ -88,6 +95,23 @@ type QuestionProps = {
     onAnswerChange: (newAnswer: Answer) => void;
     answers: Answer[]; // ✅ نضيف الاجابات الحالية
   };
+
+  // =============================
+// 📝 بنعمل اعادة تشكيل لشكل الداتا عشان تناسب التشك بوكس
+// =============================
+
+  function mapToOptions<T extends Record<string, any>>(
+    arr: T[],
+    labelKey: keyof T,
+    valueKey?: keyof T,
+    idKey?: keyof T
+  ): any {
+    return arr.map((item) => ({
+      label: String(item[labelKey]),
+      value: valueKey ? String(item[valueKey]) : undefined,
+      id: idKey ? Number(item[idKey]) : undefined,
+    }));
+  }
   
   const QuestionAnswerTemplateComponent: React.FC<QuestionProps> = ({
     questionNumber,
@@ -100,6 +124,14 @@ type QuestionProps = {
     onAnswerChange,
     answers,
   }) => {
+    const info = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
+    const isEmployee = info?.role === "employee";    
+    const targetId  =
+            isEmployee
+              ? info?.userDetails?.admin_id
+              : info?.userDetails?.id;
+    const usersList = useEmployees(targetId??-1);
+    const assetsList = useAssetsByAdmin(targetId??-1);
     const sortedFields = sortFields(fields);
   
     // 📝 function بترجع القيمة الحالية لأي field
@@ -107,7 +139,7 @@ type QuestionProps = {
       const ans = answers.find(
         (a) => a.questionID === questionID && a.fieldID === fieldID
       );
-      console.log(ans ?ans.value:"")
+      console.log(ans?ans.value:"")
       return ans ? ans.value : "";
     };
   
@@ -129,6 +161,8 @@ type QuestionProps = {
                     task_id,
                     admin_id,
                     questionID,
+                    company_id:-1,
+                    site_id:-1,
                     fieldID: field.id,
                     value: processedValue,
                     type: field.type,
@@ -261,6 +295,25 @@ type QuestionProps = {
                   <CheckBoxListComponent
                     key={field.id}
                     list={field.question_field_options}
+                    onChange={handleChange}
+                  />
+                );
+
+              case "users_list":
+                return (
+                  <CheckBoxListComponent
+                    key={field.id}
+                    list={mapToOptions(usersList?.data??[],"full_name","full_name")}
+                    onChange={handleChange}
+                  />
+                );
+
+              case "assets_list":
+                return (
+                  <CheckBoxListComponent
+                    key={field.id}
+                    
+                    list={mapToOptions(assetsList?.data??[],"asset_name","asset_name")}
                     onChange={handleChange}
                   />
                 );

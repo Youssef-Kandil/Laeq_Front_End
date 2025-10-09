@@ -38,7 +38,7 @@ function Footer() {
     {/* ===== START  Social ===== */}
       <section className={Styles.section} id='1'>
         {/* <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={200} height={200}/> */}
-        <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={100} height={100}/>
+        <Image src={"/images/logo365.jpeg"} alt='logo' width={100} height={100}/>
         <div>
             <span></span>
             <span></span>

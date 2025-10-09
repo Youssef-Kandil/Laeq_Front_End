@@ -10,16 +10,18 @@ import { FaRegEye } from "react-icons/fa";
 
 import { LuSend } from "react-icons/lu";
 import { IoIosSearch } from "react-icons/io";
-import { RiDeleteBinLine } from "react-icons/ri";
+// import { RiDeleteBinLine } from "react-icons/ri";
 import Quiz_card from '@/app/components/global/CheckList_Card/CheckList_Card';
 // import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 // import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 
 import { useLocale } from 'next-intl';
 import { TemplateType } from '@/app/Types/checklistTypes';
-import {useGetTemplatesByChecklistId , useDeleteTemplate } from '@/app/Hooks/useTemplates'
+import {useGetTemplatesByChecklistId  } from '@/app/Hooks/useTemplates'
+import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
+import { MdModeEdit } from "react-icons/md";
 // import { useDeleteCheckList } from '@/app/Hooks/useCheckList';
-import { useQueryClient } from '@tanstack/react-query';
+// import { useQueryClient } from '@tanstack/react-query';
 
 // NOTES: THE ROWS OF Checklists THAT HAVE SAME PARENT template
 
@@ -27,7 +29,7 @@ function Quizes() {
     const t = useTranslations('table_component');
       const router = useRouter();
       const current_lang = useLocale();
-      const queryClient = useQueryClient();
+      // const queryClient = useQueryClient();
 
     // Start Sceleton Loading..
     //  Get template ID  From Params
@@ -40,35 +42,25 @@ function Quizes() {
     
     const { data, isLoading, error } = useGetTemplatesByChecklistId(Number(ID));
     // const {mutate:deleteChecklist,isPending:isPendingChecklist}= useDeleteCheckList();
-    const {mutate:deleteTemplate,isPending}= useDeleteTemplate();
+    // const {mutate:deleteTemplate,isPending}= useDeleteTemplate();
 
-    // const handelDeleteChecklist = ()=>{
-    //   if (!isPendingChecklist) {
-    //     deleteChecklist({id:Number(ID)},
+
+    // const handelDeleteTemplate = (id:number)=>{
+    //   if (!isPending) {
+    //     deleteTemplate({id:id},
     //       {
     //         onSuccess: () => {
-    //           router.back();
+    //           // 🟢 كدا بيجبر الكويري إنه يعمل refetch
+    //           queryClient.invalidateQueries({
+    //             queryKey: ['templates', Number(ID)],
+    //           });
     //         },
     //       }
     //     )
     //   }
     // }
-    const handelDeleteTemplate = (id:number)=>{
-      if (!isPending) {
-        deleteTemplate({id:id},
-          {
-            onSuccess: () => {
-              // 🟢 كدا بيجبر الكويري إنه يعمل refetch
-              queryClient.invalidateQueries({
-                queryKey: ['templates', Number(ID)],
-              });
-            },
-          }
-        )
-      }
-    }
 
-    if (isLoading) return <div>جاري التحميل...</div>;
+    if (isLoading) return <SkeletonLoader/>;
     if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
     if (!data) return <div>لا توجد بيانات</div>;
     
@@ -80,7 +72,8 @@ function Quizes() {
                     title={card.template_title}
                     questionsCount={card._count.questions}
                     icon={ <div  style={{display:"flex",alignItems:"center",gap:"20px"}}>
-                        <RiDeleteBinLine style={{color:"red"}} onClick={()=>handelDeleteTemplate(card.id??-1)}/>
+                        <MdModeEdit style={{color:"rgba(29, 144, 238, 0.75)"}}  onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/EditTemplate/${card.id}`)}/>
+                        {/* <RiDeleteBinLine style={{color:"red"}} onClick={()=>handelDeleteTemplate(card.id??-1)}/> */}
                         <FaRegEye onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${card.template_title}-${card.id}`)}/> 
                         <LuSend onClick={()=>  router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${card.template_title}-${card.id}/ChooseUserTableScreen`)}/>
                     </div> }/>

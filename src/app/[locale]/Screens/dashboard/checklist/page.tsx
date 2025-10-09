@@ -1,7 +1,7 @@
 // ======== MAIN PARENT CHECK LISTS BOXES SCREEN
 "use client";
 import React from 'react'
-import { useCheckList } from '@/app/Hooks/useCheckList';
+import { useCheckList ,useDeleteCheckList } from '@/app/Hooks/useCheckList';
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl';
 import Styles from './checklists.module.css'
@@ -10,6 +10,11 @@ import {useTranslations} from 'next-intl';
 import { IoIosSearch } from "react-icons/io";
 import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import { AccountInfo } from '@/app/Types/AccountsType';
+import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
+import Popup from '@/app/components/global/Popup/Popup';
+import Lottie from "lottie-react";
+import WorngIcon  from '@/app/Lottie/wrong.json'
+import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 
 function CheckLists() {
     const current_lang = useLocale();
@@ -27,36 +32,81 @@ function CheckLists() {
     const maxChecklist = isEmployee?0:info?.userDetails?.admin_account_limits?.max_custom_checklists
     console.log("maxChecklist :: ",maxChecklist)
 
+    const [showErrorPopup, setShowErrorPopup] = React.useState<boolean>(false);
+    const [ErrorPopupMSG, setErrorPopupMSG] = React.useState<{title:string,subTitle:string}>({title:"",subTitle:""});
+    const [loading,setLoading] = React.useState<boolean>(false);
+
       
-      const {mutate:getCheckLists, data, isPending, error } = useCheckList();
-      React.useEffect(()=>{
-        getCheckLists({
-            admin_id:Number(targetId)??-1
-          })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      },[])
+      const {mutate:deleteCheckLists } = useDeleteCheckList();
+      const { data, isLoading:loadingCheckLists, isError } = useCheckList(Number(targetId)??-1);
 
-        if (isPending) {
-          return <div>جاري التحميل...</div>;
+
+        if (loadingCheckLists) {
+          return <SkeletonLoader/>;
         }
 
-        if (error) {
-          return <div>حدث خطأ: {error.message}</div>;
+        if (isError) {
+          return <div>حدث خطأ</div>;
         }
 
-        if (!data || data.length === 0) {
+        if (!data) {
           return <div>لا توجد بيانات</div>;
+        }
+
+        const handelDeleteChecklist =(id:number)=>{
+          setLoading(true);
+          deleteCheckLists({id},{
+            onSuccess:()=>{
+              setLoading(false);
+            },
+            onError:()=>{
+              setLoading(false);
+              setShowErrorPopup(true);
+              setErrorPopupMSG({title:"Wrong!",subTitle:"try again"});
+            },
+          })
         }
         const idx = (data || []).findIndex((item: { owner: string | undefined; }) => item.owner === info?.email);
         console.log("data :: ",data[idx])
 
       const Cards = data.map((card:{id:number,checklist_title:string,admin_id:number},indx:number)=>{
-        return <Card key={indx} title={card.checklist_title} imgSrc={""} cardInfo={card}/>
+        return <Card key={indx} disabledMenu={true} onDelete={()=>handelDeleteChecklist(card.id)} onEdit={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/EditCheckList/${card.id}`)} title={card.checklist_title} imgSrc={""} cardInfo={card}/>
       })
 
 
 
   return (
+    <div>
+      {loading&&<Popup
+          icon={
+            <Lottie
+            animationData={LoadingIcon}
+            loop={true}
+            style={{ width: 350, height: 250 }}
+          />
+          } 
+          title={"loading..."} 
+          subTitle=" " 
+          onClose={()=>{}}/>}
+
+      {showErrorPopup&&<Popup 
+              icon={ 
+                <Lottie
+                  animationData={WorngIcon}
+                  loop={false}
+                  style={{ width: 350, height: 250 }}
+                />
+              } 
+              title={ErrorPopupMSG.title}
+              subTitle={ErrorPopupMSG.subTitle}
+              btnTitle="OK" 
+              btnFunc={()=>{
+                setShowErrorPopup(false);
+              }} 
+              onClose={()=>{
+                setShowErrorPopup(false);
+              }} />}
+
     <div className={Styles.parent}>
         <nav>
             <div className={Styles.pikers}>
@@ -67,7 +117,8 @@ function CheckLists() {
             </div>
           {/* === START BTN */}  
           {/* {(!isEmployee&& maxChecklist != 0&&maxChecklist)&& <button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm`)} className={Styles.button} >Add New Checklist</button>} */}
-          {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm/${data[idx].id}`)} className={Styles.button} >Add New Checklist</button>}
+          {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm/${data[idx].id}`)} className={Styles.button} >Add New Template</button>}
+          {/* {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewChecklist`)} className={Styles.button} >Add New Checklist</button>} */}
           
              
         </nav>
@@ -79,6 +130,7 @@ function CheckLists() {
         </div>
       </section>
       
+    </div>
     </div>
   )
 }

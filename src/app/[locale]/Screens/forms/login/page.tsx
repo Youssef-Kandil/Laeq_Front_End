@@ -70,7 +70,8 @@ useEffect(()=>{
               const token = JSON.stringify(data);
               const key = process.env.NEXT_PUBLIC_HASH_KEY || "";
               const info = encryption.encryption(token, key);
-              Cookies.set("AccountInfo", info, { expires: 90 });
+              localStorage.setItem("AccountInfo",info)
+              // Cookies.set("AccountInfo", info, { expires: 90 });
   
               const isFirstTime = localStorage.getItem("first_time");
               if (data.role === "admin") {
@@ -98,8 +99,8 @@ useEffect(()=>{
     );
   }
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-},[])
+
+},[googleLogin, lang, queryClient, router, session])
 
 const handleLogin = () => {
   setAlertState(false);
@@ -123,8 +124,6 @@ const handleLogin = () => {
         { email, password },
         {
           onSuccess: (data) => {
-            console.warn(data);
-            // خزّن البيانات في الكاش
             if (data) {
                if (data?.role) {   
                   queryClient.setQueryData(["AccountInfo"], data);
@@ -132,14 +131,23 @@ const handleLogin = () => {
                   const key = process.env.NEXT_PUBLIC_HASH_KEY || ""
                  const info =  encryption.encryption(token,key)
                  console.warn("INFOOO :: ",info)
-                  // localStorage.setItem("AccountInfo",info)
+                  localStorage.setItem("AccountInfo",info)
                  const isFirstTime = localStorage.getItem("first_time")
-                  Cookies.set("AccountInfo", info, { expires: 90 });
+                //  Cookies.set("AccountInfo", JSON.stringify(info), {
+                //   expires: 90,
+                //   path: "/",
+                //   sameSite: "Lax"
+                // });
+                //  Cookies.set("AccountInfo", info, {
+                //   expires: 90,
+                //   path: "/",
+                //   sameSite: "Lax"
+                // });
                   if (data?.role == "admin") {
                     if (!isFirstTime) {
                       router.replace(`/${lang}/Screens/dashboard/company/AddCompanyForm`);        
                     }else{
-                      router.replace(`/${lang}/Screens/dashboard/payments_plans`);
+                      router.replace(`/${lang}/Screens/dashboard/summeries`);
                     }
                   }else{
                     router.replace(`/${lang}/Screens/dashboard/tasks`);
@@ -216,6 +224,9 @@ const handleLoginWithGoogle = async () => {
 
             <label htmlFor="password">{t("password_label")}</label>
             <input type="password"  id="password"  onChange={(e)=>setPassword(e.target.value)}  />
+            <div className={Styles.have_account} style={{marginTop:5}}>
+              <Link  href={`/${lang}/Screens/forms/forget_password`}>Forget Password?</Link>
+            </div>
         </div>
         {/* === Login Button */}
         <div className={Styles.login_btn} onClick={handleLogin}>

@@ -119,7 +119,7 @@ function Payments_plans() {
                const updatedInfo =  encryption.encryption(token,key)
               
                setUpdatedInfo(updatedAccountInfo);
-                Cookies.set("AccountInfo", JSON.stringify(updatedInfo), { expires: 90 });
+                // Cookies.set("AccountInfo", JSON.stringify(updatedInfo), { expires: 90 });
                 localStorage.setItem("AccountInfo", JSON.stringify(updatedInfo));
                 router.replace(pathname);
               }

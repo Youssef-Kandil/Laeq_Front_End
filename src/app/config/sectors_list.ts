@@ -1,23 +1,27 @@
 const sectors_list = [
     {
         title:"Hospitality",
-        img_url:""
-    },
-    {
-        title:"Food and Beverage",
-        img_url:""
+        img_url:"/images/sectors/hotel.png"
     },
     {
         title:"Factory",
-        img_url:""
+        img_url:"/images/sectors/Factory.png"
     },
     {
-        title:"Retail",
-        img_url:""
+        title:"Restaurants",
+        img_url:"/images/sectors/resturant.png"
     },
     {
-        title:"Health",
-        img_url:""
+        title:"Coffee shops",
+        img_url:"/images/sectors/coffe.png"
+    },
+    {
+        title:"Supermarkets",
+        img_url:"/images/sectors/Supermarkets.png"
+    },
+    {
+        title:"Others",
+        img_url:"/images/sectors/others.png"
     },
   
 ]

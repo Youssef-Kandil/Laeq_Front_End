@@ -23,7 +23,7 @@ export interface EmpAccountInfo  {
 };
 export interface AccountInfo  {
   id: number;
-  role:  "admin"|"employee";
+  role:  "admin"|"employee"|"laeq";
   email:string;
   userDetails: {
     full_name: string;

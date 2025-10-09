@@ -22,7 +22,7 @@ function About_us() {
           <div className={Styles.container}>
             <div className={Styles.header_text}>
               <h1>{t("header.title")}</h1>
-              <p>{t("header.subtitle")}</p>
+              <p>A Saudi team specializing in quality, food safety, and public health, we work to raise safety standards and ensure food establishments adhere to the highest levels of quality. We have experience in inspection, training, and consulting, and we strive to protect community health by implementing global best practices in line with the Kingdom s Vision 2030 to enhance quality of life.</p>
             </div>
             <div className={Styles.header_btns}>
               <Link href={""} className={Styles.getStartedBtn} shallow>{t("header.get_started_btn")}</Link>

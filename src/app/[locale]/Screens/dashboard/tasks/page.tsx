@@ -3,12 +3,15 @@ import React from "react";
 import { ClientOnlyTable } from "@/app/components/global/Table/Table";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { useTasks, useUpdateTaskStatus ,useDeleteTask } from "@/app/Hooks/useTasks";
+import { useTasks, useUpdateTaskStatus ,useDeleteTask ,useGetTaskStatus} from "@/app/Hooks/useTasks";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
 import Link from "next/link";
 import { generateMapLinks } from "@/app/utils/mapLinks";
+import Popup from "@/app/components/global/Popup/Popup";
+import { CiSquareRemove } from "react-icons/ci";
+
 // Icons
 
 import { LuTrash2 } from "react-icons/lu";
@@ -17,12 +20,15 @@ import { LuTrash2 } from "react-icons/lu";
 // ===== Types =====
 interface TaskType {
   id: number;
-  users?: { email?: string };
+  users?: { email?: string ; employees:{full_name:string} };
   templates?: { id: number; template_title?: string; is_repeated?: boolean };
-  sites?: { site_name?: string,full_address:string ,lat:string,long:string};
-  companies?: { company_name?: string };
+  sites?: {id:number , site_name?: string,full_address:string ,lat:string,long:string};
+  companies?: { id:number , company_name?: string };
   status?: string;
   repeate_date:string;
+  score:string;
+  end_repeated?:number;
+  repete_every_custom_hour?:number;
   date?: string;
 }
 
@@ -34,33 +40,55 @@ function Tasks() {
 
   const router = useRouter();
   const current_lang = useLocale();
+  const [showValidationPopup,setShowValidationPopup] = React.useState<boolean>(false);
+  const [ValidationPopupMSG,setValidationPopupMSG] = React.useState<string>("");
 
     // Delete hook
     const { mutate: deleteTask } = useDeleteTask();
 
-  // Mutation hook for updating task status
+  // Mutation hook for Controlling task status
+  const { mutate: getTaskStatus } = useGetTaskStatus();
   const { mutate: updateTaskStatus } = useUpdateTaskStatus();
 
   /**
    * Handle start task → update status to "In Progress"
    * then navigate to task details page
+   * "score": "{\"finalScore\":10,\"templateScore\":8,\"percentage\":\"80%\"}"
    */
   function handelStartTask(
     task_id: number,
     template_title: string,
-    template_id: number
+    template_id: number,
+    company_id:number,
+    site_id:number,
   ) {
-    if (task_id && template_title && template_id) {
-      updateTaskStatus(
-        { task_id, status: "In Progress" },
-        {
-          onSuccess: () => {
-            router.replace(
-              `/${current_lang}/Screens/dashboard/tasks/${task_id}-${template_title}-${template_id}`
+    if (task_id && template_title && template_id && company_id && site_id) {
+      getTaskStatus({task_id},{
+        onSuccess:(data)=>{
+          if(data.status == "Pending"){
+            updateTaskStatus(
+              { task_id, status: "In Progress" },
+              {
+                onSuccess: () => {
+                  router.replace(
+                    `/${current_lang}/Screens/dashboard/tasks/${task_id}-${template_title}-${template_id}-${company_id}-${site_id}`
+                  );
+                },
+              }
             );
-          },
+          }else if (data.status == "In Progress"){
+            setShowValidationPopup(true);
+            setValidationPopupMSG("Task has already been started.");
+          }else if (data.status == "Completed"){
+            setShowValidationPopup(true);
+            setValidationPopupMSG("Task has already been finished.");
+          }
+        },
+        onError:(error)=>{
+          setShowValidationPopup(true);
+          setValidationPopupMSG(`Failed to fetch task status. Please try again later.${error}`);
         }
-      );
+      })
     }
   }
 
@@ -85,8 +113,8 @@ function Tasks() {
   const baseHeaders = [
     `${local_var}.employee`,
     `${local_var}.checklist`,
-    `${local_var}.site`,
     `${local_var}.company`,
+    `${local_var}.score`,
     `${local_var}.status`,
     `${local_var}.repeate`,
     `${local_var}.location`,
@@ -105,10 +133,11 @@ function Tasks() {
   const modifiedData =
     tasksData?.map((task: TaskType) => {
       const baseData = {
-        employee: task?.users?.email || "—",
+        employee: task?.users?.employees?.full_name || "—",
         checklist: task?.templates?.template_title || "—",
-        site: task?.sites?.site_name || "—",
+        // site: task?.sites?.site_name || "—",
         company: task?.companies?.company_name || "—",
+        site: task?.score? JSON.parse(task?.score).percentage : "0%",
         status: task.status,
         repeate_date: task?.repeate_date? new Date(task?.repeate_date).toLocaleString("en-US", {
           month: "short", // Month letters
@@ -140,7 +169,9 @@ function Tasks() {
                   handelStartTask(
                     task.id,
                     task?.templates?.template_title || "—",
-                    task?.templates?.id || -10
+                    task?.templates?.id || -10,
+                    task?.companies?.id??-1,
+                    task?.sites?.id??-1,
                   )
                 }
               />
@@ -171,7 +202,9 @@ function Tasks() {
                   handelStartTask(
                     task.id,
                     task?.templates?.template_title || "—",
-                    task?.templates?.id || -10
+                    task?.templates?.id || -10,
+                    task?.companies?.id??-1,
+                    task?.sites?.id??-1,
                   )
                 }
               />
@@ -187,6 +220,7 @@ function Tasks() {
   // ===== Render =====
   return (
     <div>
+      {showValidationPopup&&<Popup icon={<CiSquareRemove color="red"/>} title="Wrong!" subTitle={ValidationPopupMSG} onClose={()=>setShowValidationPopup(false)}/>}
       <ClientOnlyTable
         titles={headers}
         data={modifiedData}

@@ -3,7 +3,7 @@ interface OptionType {
     id?:number;
     label: string;
     value:string ;
-  }
+}
 
 export interface FieldType{
     id:number;
@@ -27,6 +27,8 @@ export interface TemplateType{
 }; 
 
 
+
+
 export interface AnswerType{
     answerID?:number;
     userID:number;
@@ -36,3 +38,11 @@ export interface AnswerType{
     type:string;
     answered_at?:string|Date;
 };
+
+
+export interface ChecklistPayload{
+    checklist_id:number;
+    checklist_title:string;
+    admin_id:number;
+    owner:string;
+}

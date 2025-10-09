@@ -19,6 +19,7 @@ import regex from '@/app/utils/regex';
 import Popup from '@/app/components/global/Popup/Popup';
 import Lottie from 'lottie-react';
 import ErrorIcon from '@/app/Lottie/wrong.json'
+import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 import { FaFlagCheckered } from "react-icons/fa";
 
 
@@ -47,6 +48,8 @@ function AddUserForm() {
       value: String(item.id),
       title: item.role_name,
     }));
+
+    const [loading,setLoading] = React.useState<boolean>(false);
 
     const [sitesList,setSitesList] = React.useState<DropListType[]|null>(null)
 
@@ -80,7 +83,9 @@ function AddUserForm() {
     }
 
     function handelValidation(){
+      setLoading(true);
       if (!full_name) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -89,6 +94,7 @@ function AddUserForm() {
         return false;
       }
       if (!email) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -97,6 +103,7 @@ function AddUserForm() {
         return false; 
       }
       if (email === AdminInfo?.email) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -105,6 +112,7 @@ function AddUserForm() {
         return false; 
       }
       if(!regex.email.test(email)){
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -113,6 +121,7 @@ function AddUserForm() {
         return false;
       }
       if (!password) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -123,14 +132,16 @@ function AddUserForm() {
       }
 
       if(!regex.password.test(password)){
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
-          title:"warn!",
-          subTitle:"Must Add Valid Password"
+          title:"unValid Password!",
+          subTitle: "at least (8 characters, uppercase letter, lowercase letter, number, and special character)*"
         });
         return false;
       }
       if (!jobTitle) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -140,6 +151,7 @@ function AddUserForm() {
         
       }
       if (phone == null) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -149,6 +161,7 @@ function AddUserForm() {
         
       }
       if (selectedCompany == null) {
+        setLoading(false);
           setShowErrorPopup(true);
           setErrorPopupMSG({
             title:"warn!",
@@ -158,6 +171,7 @@ function AddUserForm() {
         
       }
       if (!selectedSite) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -167,6 +181,7 @@ function AddUserForm() {
         
       }
       if (!selectedRole) {
+        setLoading(false);
           setShowErrorPopup(true);
           setErrorPopupMSG({
             title:"warn!",
@@ -198,6 +213,7 @@ function AddUserForm() {
                 },
                 { 
                   onSuccess: () => {
+                    setLoading(false);
                     localStorage.setItem("first_time","1");
                     if (!isFirstTime) {
                       router.replace(`/${local}/Screens/dashboard/checklist`);
@@ -206,6 +222,7 @@ function AddUserForm() {
                     }
                   },
                   onError:()=>{
+                    setLoading(false);
                     setShowErrorPopup(true);
                     setErrorPopupMSG({
                       title:"ERROR!",
@@ -221,6 +238,17 @@ function AddUserForm() {
     console.log(Companies.data)
   return (
     <div>
+      {loading&&<Popup
+          icon={
+            <Lottie
+            animationData={LoadingIcon}
+            loop={true}
+            style={{ width: 350, height: 250 }}
+          />
+          } 
+          title={"loading..."} 
+          subTitle=" " 
+          onClose={()=>{}}/>}
     {showFirstPopup&&<Popup 
         icon={<FaFlagCheckered />} 
         title="#3" 
@@ -228,7 +256,7 @@ function AddUserForm() {
         btnTitle="Next" 
         btnFunc={()=>setShowFirstPopup(false)} 
         onClose={()=>setShowFirstPopup(false)} />}
-      {showErrorPopup&&<Popup icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={true}/>} title={ErrorPopupMSG.title} subTitle={ErrorPopupMSG.subTitle} onClose={()=>setShowErrorPopup(false)}/>}
+      {showErrorPopup&&<Popup icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={false}/>} title={ErrorPopupMSG.title} subTitle={ErrorPopupMSG.subTitle} onClose={()=>setShowErrorPopup(false)}/>}
     <div style={{margin:"30px"}}>
             {/* Header */}
             <header

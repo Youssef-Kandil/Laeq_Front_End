@@ -64,12 +64,47 @@ export const useAssignTask = () => {
 };
 
 // === Update Task Status ===
+export const useGetTaskStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: { task_id: number }) =>
+      api.post("/getTaskStatusByID", payload).then((res) => res),
+
+    onSuccess: (_, variables) => {
+      // invalidate tasks queries للادمن أو اليوزر على حسب
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "admin", variables.task_id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "user", variables.task_id] });
+    },
+  });
+
+};
+
+// === Update Task Status ===
 export const useUpdateTaskStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: { task_id: number; status: string }) =>
       api.update("/updateTaskStatusByID", payload).then((res) => res),
+
+    onSuccess: (_, variables) => {
+      // invalidate tasks queries للادمن أو اليوزر على حسب
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "admin", variables.task_id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "user", variables.task_id] });
+    },
+  });
+};
+
+// === Update Task Score ===
+export const useUpdateTaskScore = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: { task_id: number; score: string }) =>
+      api.update("/updateTaskScoreByID", payload).then((res) => res),
 
     onSuccess: (_, variables) => {
       // invalidate tasks queries للادمن أو اليوزر على حسب

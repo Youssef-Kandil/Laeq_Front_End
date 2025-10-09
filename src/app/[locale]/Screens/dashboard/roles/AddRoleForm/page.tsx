@@ -13,8 +13,10 @@ import { getAdminAccountInfo } from '../../../../../utils/getAccountInfo';
 import { RolePayload } from '@/app/Types/RoleType';
 import { AccountInfo } from '@/app/Types/AccountsType';
 import Popup from "@/app/components/global/Popup/Popup";
+import Lottie from "lottie-react";
+import WorngIcon  from '@/app/Lottie/wrong.json'
+import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 import { FaFlagCheckered } from "react-icons/fa";
-import { HiMiniArchiveBoxXMark } from "react-icons/hi2";
 
 
 
@@ -26,6 +28,7 @@ function AddRoleForm() {
     const RoleMutation =  useCreateRole();
     const {data} = usePermissions();
     const isFirstTime = localStorage.getItem("first_time");
+    const [isSubmitLoading,setIsSubmiLoading] = React.useState<boolean>(false);
     const [showFirstPopup, setShowFirstPopup] =  React.useState<boolean>(isFirstTime?false:true);
     const [showErrorPopup, setShowErrorPopup] =  React.useState<boolean>(false);
     const [ErrorPopupMSG, setErrorPopupMSG] =  React.useState<{title:string,subTitle:string}>({title:"",subTitle:""});
@@ -36,8 +39,10 @@ function AddRoleForm() {
     console.warn("permissionsIdList : ",permissionsIdList)
 
       const handleAddRole = () => {
+        setIsSubmiLoading(true);
         if (!AdminInfo) {
             // Handle the case where AdminInfo is null, e.g., show an error or return early
+            setIsSubmiLoading(false);
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Failed",
@@ -50,6 +55,7 @@ function AddRoleForm() {
           || roleDescription.length == 0
           || permissionsIdList.length == 0
          ) {
+          setIsSubmiLoading(false);
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Failed",
@@ -74,6 +80,7 @@ function AddRoleForm() {
               }
             },
             onError:()=>{
+              setIsSubmiLoading(false);
               setShowErrorPopup(true);
               setErrorPopupMSG({
                 title:"Error",
@@ -95,14 +102,22 @@ function AddRoleForm() {
         btnFunc={()=>setShowFirstPopup(false)} 
         onClose={()=>setShowFirstPopup(false)} />}
 
+        {isSubmitLoading&&<Popup
+          icon={
+            <Lottie
+            animationData={LoadingIcon}
+            loop={true}
+            style={{ width: 350, height: 250 }}
+          />
+          } 
+          title={"loading..."} 
+          subTitle=" " 
+          onClose={()=>{}}/>}
+
       {showErrorPopup&&<Popup 
-        icon={<HiMiniArchiveBoxXMark color="rgba(168, 17, 17, 0.5)" />} 
+        icon={<Lottie animationData={WorngIcon}  loop={false} style={{ width: 350, height: 250 }}/>} 
         title={ErrorPopupMSG.title}
         subTitle={ErrorPopupMSG.subTitle}
-        btnTitle="OK" 
-        btnFunc={()=>{
-          setShowErrorPopup(false);
-        }} 
         onClose={()=>{
           setShowErrorPopup(false);
         }} />}
@@ -130,6 +145,7 @@ function AddRoleForm() {
                 return <CheckBoxComponent
                         key={i}
                         label={permission.permission_name}
+                        checked={permissionsIdList.includes(permission.id)}
                         onCheck={(checked) => {
                           setPermissionsIdList(prev => {
                             if (checked) {

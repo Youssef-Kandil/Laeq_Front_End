@@ -2,26 +2,29 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Styles from "./aside.module.css";
+import Styles from "./laeqAside.module.css";
 import { useTranslations, useLocale } from "next-intl";
-import aside_titles from "@/app/config/aside_titles";
+import laeq_aside_titles from "@/app/config/laeq_aside_titles";
+
+
+import { FaPowerOff } from "react-icons/fa6";
+
 import Cookies from "js-cookie";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
+// import { useRouter } from "next/navigation";
 import { AccountInfo } from "@/app/Types/AccountsType";
-import { CiLogout } from "react-icons/ci";
-import { useRouter } from "next/navigation";
 
 
 function LaeqAside() {
   const info :AccountInfo = getAdminAccountInfo("AccountInfo") as AccountInfo;
   console.log("Nave INFo ", info);
-const router = useRouter();
+// const router = useRouter();
   const current_lang = useLocale();
   const t = useTranslations("aside_component");
 
   // ==== handel Clecked text ====
   const [clickedTitle, setClickedTitle] = React.useState<string>(
-    t(aside_titles[0].title)
+    t(laeq_aside_titles[0].title)
   );
 
   React.useEffect(() => {
@@ -42,23 +45,23 @@ const router = useRouter();
   };
 
   // لو المستخدم موظف → فلترة العناوين بناءً على البرمشنز
-  let allowedTitles = aside_titles;
-  if (info?.role === "employee") {
-    const userPermissions = info?.userDetails?.permissions || [];
+  // let allowedTitles = laeq_aside_titles;
+  // if (info?.role === "employee") {
+  //   const userPermissions = info?.userDetails?.permissions || [];
 
-    allowedTitles = aside_titles.filter(
-      (el) =>
-        el.title === "tasks" || 
-        el.title === "settings" || 
-        userPermissions.includes(el.permission_name)
-    );
-  }
+  //   allowedTitles = laeq_aside_titles.filter(
+  //     (el) =>
+  //       el.title === "tasks" || 
+  //       el.title === "settings" || 
+  //       userPermissions.includes(el.permission_name)
+  //   );
+  // }
 
   // === Render Titles ===
-  const titles = allowedTitles.map((el, index) => {
+  const titles = laeq_aside_titles.map((el, index) => {
     return (
       <Link
-        href={`/${current_lang}/Screens/dashboard${el.href}`}
+        href={`/${current_lang}/laeq-admin/dashboard${el.href}`}
         onClick={() => handleTitleClick(el)}
         style={
           clickedTitle == el.title
@@ -118,14 +121,18 @@ const router = useRouter();
       <div className={Styles.titlesList}>
         {titles}
       {/*=======  LOGOUT ====== */}
-        <p 
+      {/*=======  LOGOUT ====== */}
+      <div
           onClick={()=>{
               localStorage.clear();
+              localStorage.removeItem("AccountInfo");
               Cookies.remove("AccountInfo")
-              router.replace(`/${current_lang}/Screens/forms/login`)
           }}  
           className={Styles.title} 
-          style={{textDecoration:"underline",color:"red"}}><CiLogout/>logout</p>
+          style={{textDecoration:"underline",color:"rgba(199, 8, 8, 0.5)"}}>
+            <FaPowerOff style={{fontSize:20}}/>
+            <p>logout</p>
+          </div>
       </div>
     </div>
   );

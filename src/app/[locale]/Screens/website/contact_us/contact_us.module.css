@@ -39,3 +39,94 @@
        }
     }
 }
+
+@media (max-width:1000px){
+  .parent{
+    padding: 16px 46px;
+    display: flex;
+    flex-direction: column;
+    align-items:center ;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100vw;
+
+    #formSection{
+        /* overflow: hidden; */
+        overflow:auto;
+        /* justify-content: flex-end; */
+        display: flex;
+        /* flex-wrap: wrap; */
+        width: 100%;
+        border-radius: 50px;
+        box-shadow: 0px 141px 200px -80px #193A4B4D;
+       position: relative;
+      .backGround{
+            width: 30%;
+            height: 900px;
+            background-color: var(--Secondary-color);
+       }
+       .Container{
+         display: flex;
+         align-items: center;
+         background: transparent;
+         position: absolute;
+         flex-wrap: wrap;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+         gap: 50px;
+
+         .map{
+            width: 545px;
+            height: 700px;
+            background-color: aqua;
+         }
+       }
+    }
+}
+}
+@media (max-width:690px){
+  .parent{
+    padding: 16px 46px;
+    display: flex;
+    flex-direction: column;
+    align-items:center ;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100vw;
+
+    #formSection{
+        /* overflow: hidden; */
+        overflow:auto;
+        /* justify-content: flex-end; */
+        display: flex;
+        /* flex-wrap: wrap; */
+        width: 100%;
+        border-radius: 50px;
+        box-shadow: 0px 141px 200px -80px #193A4B4D;
+       position: relative;
+      .backGround{
+            width: 30%;
+            height: 900px;
+            background-color: var(--Secondary-color);
+       }
+       .Container{
+         display: flex;
+         align-items: center;
+         background: transparent;
+         position: absolute;
+         flex-wrap: wrap;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+         gap: 50px;
+
+         .map{
+            width: 545px;
+            height: 700px;
+            background-color: aqua;
+         }
+       }
+    }
+}
+}

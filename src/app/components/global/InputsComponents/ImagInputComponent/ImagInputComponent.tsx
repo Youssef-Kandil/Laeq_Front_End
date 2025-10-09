@@ -115,7 +115,10 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
     };
     reader.readAsDataURL(file);
 
-    event.target.value = "";
+    // ✅ فضي القيمة بعد شوية علشان ما يفتحش الـ picker تاني أول مرة
+    setTimeout(() => {
+      event.target.value = "";
+    }, 0);
   };
 
   const openFilePicker = () => {

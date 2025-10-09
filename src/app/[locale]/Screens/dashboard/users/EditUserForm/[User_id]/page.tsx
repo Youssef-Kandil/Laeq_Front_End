@@ -153,8 +153,8 @@ function EditUserForm() {
       if(!regex.password.test(password)){
         setShowErrorPopup(true);
         setErrorPopupMSG({
-          title:"warn!",
-          subTitle:"Must Add Valid Password"
+          title:"unValid Password!",
+          subTitle: "at least (8 characters, uppercase letter, lowercase letter, number, and special character)*"
         });
         return false;
       }

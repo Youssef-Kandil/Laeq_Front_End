@@ -12,10 +12,13 @@ import DropListComponent from "@/app/components/global/InputsComponents/DropList
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
 import { RxDragHandleDots1 } from "react-icons/rx";
+import { GrList } from "react-icons/gr";
 
 
 import { TbNumber123 } from "react-icons/tb";
 import { MdTextFields, MdOutlineAddPhotoAlternate, MdEvent, MdDateRange, MdAccessTime } from "react-icons/md";
+import { CgUserList } from "react-icons/cg";
+
 import { BsChatRightText } from "react-icons/bs";
 import { VscGithubAction } from "react-icons/vsc";
 // import { HiOutlineCalendarDateRange } from "react-icons/hi2";
@@ -63,7 +66,9 @@ function QuestionFormComponent({
       score: ["Score", <TfiPulse key="score" />],
       location: ["Location", <FaMapLocationDot key="Location"/>],
       signature: ["Signature", <PiSignatureDuotone key="Signature" />],
-      checkbox: ["Checkbox", <BsChatRightText key="Checkbox"/>],
+      checkbox: ["Checkbox", <GrList key="Checkbox"/>],
+      assets_list: ["assets Checkbox List", <GrList key="all assets"/>],
+      users_list: ["users Checkbox List", <CgUserList key="all assets"/>],
       mcq: ["MCQ", <BsChatRightText key="MCQ"/>],
     };
 
@@ -185,19 +190,21 @@ function QuestionFormComponent({
           }}
           list={[
             { id: 1, value: "short_text", title: "short text" },
-            { id: 6, value: "number", title: "number" },
-            { id: 2, value: "comment", title: "comment" },
-            { id: 13, value: "checkbox", title: "Checkbox" },
-            { id: 14, value: "mcq", title: "MCQ" },
-            { id: 4, value: "action", title: "action" },
-            { id: 3, value: "images", title: "images" },
-            { id: 9, value: "date", title: "date" },
-            { id: 5, value: "time", title: "time" },
-            { id: 7, value: "date_time", title: "date time" },
+            { id: 2, value: "number", title: "number" },
+            { id: 3, value: "comment", title: "comment" },
+            { id: 4, value: "checkbox", title: "Checkbox" },
+            { id: 5, value: "users_list", title: "users Checkbox List" },
+            { id: 6, value: "assets_list", title: "assets Checkbox List" },
+            { id: 7, value: "mcq", title: "MCQ" },
+            { id: 8, value: "action", title: "action" },
+            { id: 9, value: "images", title: "images" },
+            { id: 10, value: "date", title: "date" },
+            { id: 11, value: "time", title: "time" },
+            { id: 12, value: "date_time", title: "date time" },
             // { id: 8, value: "date_range", title: "date range" },
-            { id: 11, value: "location", title: "location" },
-            { id: 12, value: "signature", title: "signature" },
-            { id: 10, value: "score", title: "score" },
+            { id: 13, value: "location", title: "location" },
+            { id: 14, value: "signature", title: "signature" },
+            { id: 15, value: "score", title: "score" },
           ]}
         />
 
@@ -246,6 +253,37 @@ function QuestionFormComponent({
       </section>
 
       {selectedType === "checkbox" && (
+        <div style={{ marginTop: 20 }}>
+          {checkboxOptions.map((opt, i) => (
+            <div key={i} className={Styles.checkboxOptionWrapper}>
+              <InputComponent
+                label={`Option ${i + 1}`}
+                value={opt}
+                onTyping={(val) => handleCheckboxOptionChange(val, i)}
+                placeholder="Enter checkbox option"
+              />
+              <div className={Styles.deleteBtn} onClick={() => handleRemoveCheckboxOption(i)}>×</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {selectedType === "users_list" && (
+        <div style={{ marginTop: 20 }}>
+          {checkboxOptions.map((opt, i) => (
+            <div key={i} className={Styles.checkboxOptionWrapper}>
+              <InputComponent
+                label={`Option ${i + 1}`}
+                value={opt}
+                onTyping={(val) => handleCheckboxOptionChange(val, i)}
+                placeholder="Enter checkbox option"
+              />
+              <div className={Styles.deleteBtn} onClick={() => handleRemoveCheckboxOption(i)}>×</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {selectedType === "assets_list" && (
         <div style={{ marginTop: 20 }}>
           {checkboxOptions.map((opt, i) => (
             <div key={i} className={Styles.checkboxOptionWrapper}>

@@ -9,9 +9,12 @@ import { useLogin } from "@/app/Hooks/useLogin";
 import app_identity from "@/app/config/identity";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import encryption from "@/app/utils/encryption";
+import { useRouter } from "next/navigation";
 
 function Laeq_login() {
     const lang = useLocale();
+    const router = useRouter();
   // ==== STATES ====
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -40,7 +43,28 @@ function Laeq_login() {
     // هنا تحط API login call
     login({email,password},{
         onSuccess:(data)=>{
-            console.log("Logging in with:", { email, password },"data :",data);        
+            console.log("Logging in with:", { email, password },"data :",data);
+            if (data) {
+              if (data?.role && data?.role == "laeq") {   
+                 const token = JSON.stringify(data);
+                 const key = process.env.NEXT_PUBLIC_HASH_KEY || ""
+                const info =  encryption.encryption(token,key)
+                console.warn("INFOOO :: ",info)
+                localStorage.setItem("AccountInfo",info)
+                 router.replace(`/${lang}/laeq-admin/dashboard/summeries`);        
+               //  Cookies.set("AccountInfo", JSON.stringify(info), {
+               //   expires: 90,
+               //   path: "/",
+               //   sameSite: "Lax"
+               // });
+               //  Cookies.set("AccountInfo", info, {
+               //   expires: 90,
+               //   path: "/",
+               //   sameSite: "Lax"
+               // });
+
+               }
+           }      
         },
         onError:(err)=>{
             setError(`Login Error : ${err}`);
@@ -53,7 +77,7 @@ function Laeq_login() {
     <div className={Styles.parent}>
       <section className={Styles.form}>
         <div className={Styles.formHeader}>
-          <img src="/images/شعار لائق -06.jpeg" loading="lazy" alt="logo" />
+          <img src="/images/logo365.jpeg" loading="lazy" alt="logo" />
           <div>
             <h3>Welcome back!</h3>
             <p>Login to your account</p>
@@ -75,7 +99,7 @@ function Laeq_login() {
             type="password"
           />
           <Link 
-            href={`/${lang}/laeq-admin/forget_password`}  
+            href={`/${lang}/Screens/forms/forget_password`}  
             style={{textAlign:"right",color:app_identity.secondary_color,cursor:"pointer",display: "block",}}>
                 Forget Password?
             </Link>

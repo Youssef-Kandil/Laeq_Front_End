@@ -7,26 +7,26 @@ const businessCards = [
     {
         icon:<GrCertificate />,
         staticAnalytics:true,
-        Analytics:"15+",
+        Analytics:"8+",
         title:"experience"
     },
     {
         icon:<FaUsers />,
         staticAnalytics:false,
-        Analytics:244,
-        title:"clients"
+        Analytics:90,
+        title:"MEMBERS"
     },
     {
         icon:<IoShieldCheckmarkOutline />,
         staticAnalytics:false,
-        Analytics:300,
-        title:"brands"
+        Analytics:"+490",
+        title:"Trusted by Leading Brands"
     },
     {
         icon:<LuHeadset />,
         staticAnalytics:true,
         Analytics:"24/7",
-        title:"service"
+        title:"Fulltime customer service"
     },
 ]
 

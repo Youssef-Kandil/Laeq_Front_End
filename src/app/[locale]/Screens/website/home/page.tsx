@@ -10,8 +10,8 @@ import Gallary_Card from '@/app/components/website/Gallary_Card/Gallary_Card';
 import app_identity from '@/app/config/identity';
 
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
-import WidgetsIcon from '@mui/icons-material/Widgets';
-import AssessmentIcon from '@mui/icons-material/Assessment';
+// import WidgetsIcon from '@mui/icons-material/Widgets';
+// import AssessmentIcon from '@mui/icons-material/Assessment';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
 
@@ -53,10 +53,10 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
         <div className={Styles.mediaSection}>
           <Image src={"/images/left_Ellipses.webp"} alt='left' width={400} height={400} />
           <div className={Styles.mediaContainer}>
-            <Image src={"/images/Picture.webp"} alt='pic' width={1800} height={700} loading='lazy' />
+            <Image src={"/images/hearo.png"} alt='pic' width={1800} height={700} loading='lazy' />
 
           </div>
-          <Image src={"/images/right_Ellipses.webp"} alt='right' width={750} height={400} loading='lazy' />
+          <Image className={Styles.rightImg} src={"/images/right_Ellipses.webp"} alt='right' width={750} height={400} loading='lazy' />
 
         </div>
       </header>
@@ -80,37 +80,40 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
         </div>
 
         <div className={Styles.boxs_container}>
-            <div className={Styles.box}>
-                  <div className={Styles.icons}>
-                    <span className={Styles.span}>
-                      <ChecklistRtlIcon style={{fontSize:"40px"}}/>
-                    </span>
-                      <ArrowOutwardIcon style={{fontSize:"40px"}}/>
-                  </div>
-                  <h3>{t("features.boxe1.title")}</h3>
-                  <p>{t("features.boxe1.subtitle")}</p>
-            </div>
-            <div className={Styles.box}>
-                  <div className={Styles.icons}>
-                    <span className={Styles.span}>
-                      <WidgetsIcon style={{fontSize:"40px"}}/>
-                    </span>
-                      <ArrowOutwardIcon style={{fontSize:"40px"}}/>
-                  </div>
-                  <h3>{t("features.boxe2.title")}</h3>
-                  <p>{t("features.boxe2.subtitle")}</p>
-            </div>
-            <div className={Styles.box}>
-                  <div className={Styles.icons}>
-                    <span className={Styles.span}>
-                      <AssessmentIcon style={{fontSize:"40px"}}/>
-                    </span>
-                      <ArrowOutwardIcon style={{fontSize:"40px"}}/>
-                  </div>
-                  <h3>{t("features.boxe3.title")}</h3>
-                  <p>{t("features.boxe3.subtitle")}</p>
-            </div>
+          {[
+            {title:"Scheduled Tasks",text:"You've got enough to worry about. Let Laeq365 worry about reminding you of important tasks."},
+            {title:"Onboarding Wizard",text:"Onboarding Wizard Setting up Laeq365 with your unique requirements couldn't be simpler."},
+            
+            {title:"Temperature Monitoring",text:"Never lose track of equipment temperatures again with temperature monitoring digital solution."},
+            {title:"Custom Forms",text:"Say goodbye to your printer—custom paperless forms eliminate the need for it."},
+            {title:"User Accountability",text:"Track precisely who performed each action and when with User Accountability."},
+            
+            {title:"Business Insights Reporting",text:"Stay informed about your business operations and identify potential issues before they arise."},
+            {title:"Audit/Inspection Reports",text:"Simplify your food safety audits and inspections with Laeq365"},
+            {title:"Escalations",text:"It's time to automate food safety, and escalations can assist."},
+            
+            {title:"Management Dashboard",text:"Centralize all your food safety compliance in one convenient dashboard auditors and inspectors will appreciate it!"},
+            {title:"Resource Management",text:"Leave the paperwork behind"},
+            {title:"Corrective Actions",text:"Safeguard your business by assigning corrective actions to incidents and observations."},
+            
+            {title:"Equipment Management",text:"Simplify equipment maintenance with Laeq365’s digital asset register."},
+            {title:"Encrypted Data Storage",text:"Ensure your food safety records are secure, now and always."},
+            {title:"Inwards Goods Checklist",text:"Streamline your delivery process with ease"},
+            {title:"Reminders",text:"With Laeq365 reminders, you'll never overlook an important food safety task."},
+          ].map((val,index)=>{
+            return <div key={index} className={Styles.box}>
+                    <div className={Styles.icons}>
+                      <span className={Styles.span}>
+                        <ChecklistRtlIcon style={{fontSize:"40px"}}/>
+                      </span>
+                        <ArrowOutwardIcon style={{fontSize:"40px"}}/>
+                    </div>
+                    <h3>{val.title}</h3>
+                    <p>{val.text}</p>
+              </div>
+          })}
         </div>
+
       </section>
     {/* ====== END Features SECTION ======= */}
 
@@ -145,7 +148,7 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
       {/* ====== START Assets SECTION ======= */}
       <section id={Styles.AssetsSection} className={Styles.Section}>
-          <Image src={"/images/assets.webp"} alt='' width={600} height={300}/>
+          <Image src={"/images/assets.webp"} alt='' width={700} height={300}/>
           <div>
             <h4>{t("assets.title")}</h4>
             <h2>{t("assets.subtitle")}</h2>
@@ -171,7 +174,7 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
       <section id={Styles.ExperienceSection} className={Styles.Section}>
         <div className={Styles.ExperienceSection_blackScreen}/>
         <div className={Styles.img_container}>
-          <Image src={"/images/image (1).webp"} alt='' width={500} height={500}/>
+          <Image src={"/images/Experiance.png"} alt='' width={500} height={500}/>
         </div>
 
         <div className={Styles.text_container}>

@@ -18,7 +18,7 @@ const aside_titles =[
     {
         title:"dashboard", // This Title Is A Key Fom Locale Folder
         href:"/summeries",
-        permission_name:"show summeries",
+        permission_name:"summeries",
         icon:<HiOutlineViewGridAdd  style={{fontSize:iconSize}} />,
         isActive:true,
         hasChild:false,

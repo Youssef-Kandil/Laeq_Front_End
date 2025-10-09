@@ -40,7 +40,7 @@ function AddNewTemplateForm() {
   const [QuestionsList, setQuestionsList] = useState<questionType[]>([
     {
       question_title: "",
-      fields: [{ id: 1, type: "short_text" }],
+      fields: [{ id: 1, type: "mcq",options:[{id:1,label:"Yes",value:"1"},{label:"No",value:"0"},{id:2,label:"N/A",value:"-1"}] }],
     },
   ]);
 

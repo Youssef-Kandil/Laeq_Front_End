@@ -44,13 +44,15 @@ function Users() {
         id:number;
         user_id:number;
         full_name: string;
+        phone: string;
         users: { email: string };
         sites: { site_name: string };
         roles: { role_name: string };
       }
-      const modifiedData = data?.map(({id,user_id, full_name, users, sites, roles }: Employee) => {
+      const modifiedData = data?.map(({id,user_id, full_name,phone, users, sites, roles }: Employee) => {
         return {
           full_name,
+          phone,
           email: users.email,
           site: sites.site_name,
           role: roles.role_name,
@@ -70,9 +72,9 @@ function Users() {
 
 
         <ClientOnlyTable 
-            titles={[`${local_var}.name`,`${local_var}.email`,`${local_var}.site`,`${local_var}.role`,"",""]}
+            titles={[`${local_var}.name`,`${local_var}.phone`,`${local_var}.email`,`${local_var}.site`,`${local_var}.role`,"",""]}
             data={modifiedData}
-            rowsFlex={[1,1,1,1,0.2,0.2]}
+            rowsFlex={[1,1,1,1,1,0.2,0.2]}
             navButtonTitle={isEmployee?"":'employees'}
             navButtonAction={()=>{
               router.push(`/${current_lang}/Screens/dashboard/users/AddUserForm`)

@@ -6,6 +6,7 @@ import Styles from './LaeqdashboardLayout.module.css'
 import type { Metadata } from "next";
 import "../../../globals.css";
 import app_identity from '@/app/config/identity';
+import CheckAdminGuard from '@/app/providers/CheckAdminGuard';
 
 
 import { cookies  } from 'next/headers';
@@ -84,8 +85,10 @@ export default async function DashboardLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
             <LaeqAside/>
             <LaeqNave/>
-            <main className={Styles.mainComponent} style={{gridColumn:2,background:"#EEEEEE80"}}>
+            <main className={Styles.mainComponent} style={{background:"#EEEEEE80"}}>
+              <CheckAdminGuard  locale={locale}>
                 {children}
+              </CheckAdminGuard>
             </main>
         </NextIntlClientProvider>
 

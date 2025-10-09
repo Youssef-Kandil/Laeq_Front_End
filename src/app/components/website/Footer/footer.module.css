@@ -3,6 +3,7 @@
     width: 100vw;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     flex-direction: row;
     padding: 16px 48px;
     margin-top: 200px;
@@ -38,4 +39,11 @@
             background-color: var(--Primary-color);
         }
     }
+
+    & img{
+        width: 13vw;
+    }
 }
+
+
+

@@ -12,9 +12,12 @@ import { useCreateCompany } from "@/app/Hooks/useCompany";
 import { useGetCompaniesByUserId } from '@/app/Hooks/useCompany';
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import { DropListType } from "@/app/Types/DropListType";
-import Popup from "@/app/components/global/Popup/Popup";
+import Popup from '@/app/components/global/Popup/Popup';
+import Lottie from "lottie-react";
+import WorngIcon  from '@/app/Lottie/wrong.json'
+import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 import { FaFlagCheckered } from "react-icons/fa";
-import { HiMiniArchiveBoxXMark } from "react-icons/hi2";
+
 
 // ✅ نوع الـ Site اللي هيخش في الـ Payload
 export interface siteType {
@@ -36,6 +39,7 @@ function AddCompanyForm() {
   const [showSecPopup, setShowSecPopup] = useState<boolean>(false);
   const [showErrorPopup, setShowErrorPopup] = useState<boolean>(false);
   const [ErrorPopupMSG, setErrorPopupMSG] = useState<{title:string,subTitle:string}>({title:"",subTitle:""});
+  const [loading,setLoading] = React.useState<boolean>(false);
   const limits = AdminInfo?.userDetails?.admin_account_limits ?? {max_branches:0};
   const [maxBranches] = useState(limits?.max_branches?? 0); 
   // const [currentCompanies] = useState(1); // شركة واحدة حالياً
@@ -96,6 +100,7 @@ function AddCompanyForm() {
   };
 
   const handel_createNewCompany = () => {
+    setLoading(true);
     if (
       companyName.length == 0
       ||companyEmail.length == 0
@@ -108,6 +113,7 @@ function AddCompanyForm() {
       ||sites[0].long.length == 0
 
      ) {
+      setLoading(false);
       setShowErrorPopup(true);
       setErrorPopupMSG({
         title:"Error",
@@ -133,6 +139,7 @@ function AddCompanyForm() {
             }
           },
           onError:()=>{
+            setLoading(false);
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Error",
@@ -145,6 +152,17 @@ function AddCompanyForm() {
 
   return (
     <div>
+      {loading&&<Popup
+          icon={
+            <Lottie
+            animationData={LoadingIcon}
+            loop={true}
+            style={{ width: 350, height: 250 }}
+          />
+          } 
+          title={"loading..."} 
+          subTitle=" " 
+          onClose={()=>{}}/>}
       {showFirstPopup&&<Popup 
         icon={<FaFlagCheckered />} 
         title="Welcome 👋" 
@@ -172,7 +190,13 @@ function AddCompanyForm() {
 
 
       {showErrorPopup&&<Popup 
-        icon={<HiMiniArchiveBoxXMark color="rgba(168, 17, 17, 0.5)" />} 
+        icon={ 
+          <Lottie
+            animationData={WorngIcon}
+            loop={false}
+            style={{ width: 350, height: 250 }}
+          />
+        } 
         title={ErrorPopupMSG.title}
         subTitle={ErrorPopupMSG.subTitle}
         btnTitle="OK" 
@@ -239,8 +263,8 @@ function AddCompanyForm() {
               { id: 2, value: "Hotel" ,title:"Hotel"},
               { id: 3, value: "Supermarket",title:"Supermarket" },
               { id: 4, value: "Factory",title:  "Factory",},
-              { id: 5, value: "coffee shop",title:  "coffee shop",},
-              { id: 6, value: "hospitality",title:  "hospitality",},
+              { id: 5, value: "Coffee shop",title:  "Coffee shop",},
+              { id: 6, value: "Hospitality",title:  "Hospitality",},
               { id: 7, value: "Other" ,title:"Other"}
             ]}
           />
@@ -258,6 +282,7 @@ function AddCompanyForm() {
           />
           <InputComponent
             label="license"
+            type="number"
             placeholder="Please enter your company license number"
             value={companyLicense}
             onTyping={(txt) => setCompanyLicense(txt)}

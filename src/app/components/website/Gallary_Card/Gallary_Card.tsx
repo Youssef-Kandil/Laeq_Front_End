@@ -11,7 +11,7 @@ interface gallary_card_props {
 function Gallary_Card({title,media_url }:gallary_card_props) {
   return (
     <div className={Styles.parent} style={{fontFamily:app_identity.primary_font}}>
-      <Image src={media_url} alt=''/>
+      <Image src={media_url} width={350} height={480} alt=''/>
         <h3>{title}</h3>
     </div>
   )

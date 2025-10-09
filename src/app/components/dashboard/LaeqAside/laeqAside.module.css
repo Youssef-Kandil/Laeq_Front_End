@@ -107,6 +107,7 @@
 
 @media print {
     .parent{
+        width: 0px;
         display: none;
     }
 }

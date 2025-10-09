@@ -9,6 +9,7 @@ import Link from 'next/link';
 import {useTranslations,useLocale} from 'next-intl';
 
 import { Select,MenuItem ,SelectChangeEvent ,FormControl} from '@mui/material';
+import { GiHamburgerMenu } from "react-icons/gi";
 
 
 
@@ -20,6 +21,7 @@ function Nave() {
     const t = useTranslations('nave_bar_component');
 
     // ==== handel Clecked text ====
+    const [showNave, setShowNave] = React.useState<boolean>(false);
     const [clickedTitle, setClickedTitle] = React.useState<string>(t(nave_titles[0].title));//+
     // const [ isChildMenuTitleShowed , setIsChildMenuTitleShowed] = React.useState(false)
     React.useEffect(() => {
@@ -65,7 +67,7 @@ function Nave() {
     <div className={Styles.parent} dir={current_lang == "en"?"ltr":"rtl"} style={{fontFamily:app_identity.primary_font}}>
         <div style={{display:'flex',alignItems:"center"}}>
             {/* <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={120} height={120}/> */}
-            <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={60} height={120}/>
+            <Image src={"/images/logo365.jpeg"} alt='logo' width={60} height={120}/>
             <strong style={{fontSize:'1.4rem',marginLeft:6}}>
                 <p style={{color:app_identity.primary_color}}>LAEQ</p>
                 <p style={{lineHeight:0.5,color:app_identity.secondary_color}}>365</p>
@@ -97,6 +99,20 @@ function Nave() {
 
 
       </div>
+
+      <GiHamburgerMenu onClick={()=>setShowNave(true)} className={Styles.burgerMenuIcon} size={24} color="#333"/>
+
+      {showNave&&<div onClick={()=>setShowNave(false)}  className={Styles.overLayMobile} >
+        <div className={Styles.titlesMobile}>
+         {titles}
+        </div>
+
+        <div className={Styles.nav_configsMobile}>
+             <Link href={`/${lang}/Screens/forms/login`} shallow className={Styles.login_btn}>
+                {t("login_btn")}
+             </Link>
+        </div>
+        </div>}
     </div>
   )
 }

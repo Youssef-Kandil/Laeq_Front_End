@@ -9,7 +9,7 @@ import app_identity from '@/app/config/identity';
 import ExpirationGuard from '@/app/providers/ExpirationGuard';
 
 import { cookies  } from 'next/headers';
-import encryption from '@/app/utils/encryption';
+// import encryption from '@/app/utils/encryption';
 
 
 export const metadata: Metadata = {
@@ -59,30 +59,30 @@ export default async function DashboardLayout({
 
 
   // === Get Token From Cookies ==
-    const infoToken =  cookieStore.get('AccountInfo')?.value ?? "";
-    const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
-    const decryptionResult  =  encryption.decryption(infoToken,key)
+    // const infoToken =  cookieStore.get('AccountInfo')?.value ?? "";
+    // const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
+    // const decryptionResult  =  encryption.decryption(infoToken,key)
     // Safely parse decrypted cookie value to avoid crashing on empty/invalid JSON
-    let info: {userDetails:{end_date:string}} | null = null;
-    if (decryptionResult) {
-      const trimmed = String(decryptionResult).trim();
-      if (trimmed && trimmed !== "null" && trimmed !== "undefined" && (trimmed.startsWith("{") || trimmed.startsWith("["))) {
-        try {
-          info = JSON.parse(trimmed);
-        } catch (err) {
-          console.error("Invalid AccountInfo cookie:", err);
-        }
-      }
-    }
-    console.warn("INFO FROM SERVER :: ",info);
+    // let info: {userDetails:{end_date:string}} | null = null;
+    // if (decryptionResult) {
+    //   const trimmed = String(decryptionResult).trim();
+    //   if (trimmed && trimmed !== "null" && trimmed !== "undefined" && (trimmed.startsWith("{") || trimmed.startsWith("["))) {
+    //     try {
+    //       info = JSON.parse(trimmed);
+    //     } catch (err) {
+    //       console.error("Invalid AccountInfo cookie:", err);
+    //     }
+    //   }
+    // }
+    // console.warn("INFO FROM SERVER :: ",info);
     
-    const endDate = info?.userDetails?.end_date
-    ? new Date(info.userDetails.end_date).getTime()
-    : null;
+  //   const endDate = info?.userDetails?.end_date
+  //   ? new Date(info.userDetails.end_date).getTime()
+  //   : null;
 
-  const now = Date.now();
-  const isExpired = endDate ? endDate < now : false;
-  console.warn("pathName isExpired  VALUE :: ", isExpired);
+  // const now = Date.now();
+  // const isExpired = endDate ? endDate < now : false;
+  // console.warn("pathName isExpired  VALUE :: ", isExpired);
     // const token =  cookieStore.get('token')?.value;
 
   

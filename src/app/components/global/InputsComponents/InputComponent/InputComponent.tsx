@@ -7,16 +7,19 @@ interface props{
     placeholder:string;
     type?:React.ComponentPropsWithoutRef<'input'>['type'];
     value:string;
+    disabled?:boolean
     isTextArea?:boolean
+
     onTyping:(value:string)=>void;
 }
 
-function InputComponent({label,placeholder,type,value,onTyping,isTextArea=false}:props) {
+function InputComponent({label,placeholder,type,value,onTyping,isTextArea=false,disabled=false}:props) {
   return (
     <div  className={Styles.input}>
     <label className={Styles.label} htmlFor='input'>{label}</label>
     {isTextArea? 
       <textarea
+      disabled={disabled}  
        id='input'
        style={{minWidth:"100%",minHeight:"92px"}}
        className={Styles.field}
@@ -26,6 +29,7 @@ function InputComponent({label,placeholder,type,value,onTyping,isTextArea=false}
       />
       :
       <input
+        disabled={disabled}  
         id='input'
         className={Styles.field}
         placeholder={placeholder}

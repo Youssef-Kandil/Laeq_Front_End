@@ -45,14 +45,28 @@ const router = useRouter();
 
   // لو المستخدم موظف → فلترة العناوين بناءً على البرمشنز
   let allowedTitles = aside_titles;
+  // if (info?.role === "employee") {
+  //   const userPermissions = info?.userDetails?.permissions || [];
+
+  //   allowedTitles = aside_titles.filter(
+  //     (el) =>
+  //       el.title !== "dashboard" || 
+  //       el.title === "tasks" || 
+  //     el.title === "settings" || 
+  //       userPermissions.includes(el.permission_name)
+  //   );
+  // }
+
   if (info?.role === "employee") {
     const userPermissions = info?.userDetails?.permissions || [];
-
+  
     allowedTitles = aside_titles.filter(
       (el) =>
-        el.title === "tasks" || 
-        el.title === "settings" || 
-        userPermissions.includes(el.permission_name)
+        el.title !== "summary" && ( // 👈 استبعاد شاشة الـ summary
+          el.title === "tasks" ||
+          el.title === "settings" ||
+          userPermissions.includes(el.permission_name)
+        )
     );
   }
 
@@ -123,6 +137,7 @@ const router = useRouter();
         <div
           onClick={()=>{
               localStorage.clear();
+              localStorage.removeItem("AccountInfo");
               Cookies.remove("AccountInfo")
               signOut();
               router.replace(`/${current_lang}/Screens/forms/login`);

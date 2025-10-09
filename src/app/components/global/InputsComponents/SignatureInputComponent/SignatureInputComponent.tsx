@@ -5,13 +5,12 @@ import SignaturePad from "react-signature-canvas";
 import Modal from "react-modal";
 import Styles from "./SignatureInputComponent.module.css";
 import { FaTrashAlt } from "react-icons/fa";
-// import Image from "next/image";
 
 interface Props {
   label: string;
   placeholder: string;
-  onChange: (value: Blob | null) => void; // ✅ بقينا نرجع Blob بدل string
-  value: Blob | null; // ✅ القيمة دلوقتي Blob
+  onChange: (value: Blob | null) => void;
+  value: Blob | null;
 }
 
 export default function SignatureInputComponent({
@@ -27,30 +26,46 @@ export default function SignatureInputComponent({
   const closeModal = () => setIsModalOpen(false);
 
   const saveSignature = () => {
-    try {
-      const sigPad = sigPadRef.current;
-      if (sigPad && !sigPad.isEmpty()) {
-        sigPad.getTrimmedCanvas().toBlob((blob) => {
-          if (blob) {
-            onChange(blob); // ✅ رجع Blob للأب
-          }
-          closeModal();
-        }, "image/webp"); // 👈 نحفظ كـ WebP
-      }
-      
-    } catch (error) {
-      console.error(error)
-    }
-  };
+  try {
+    const sigPad = sigPadRef.current;
+    if (sigPad && !sigPad.isEmpty()) {
+      // ✅ استخدم getCanvas بدل getTrimmedCanvas
+      const canvas = sigPad.getCanvas();
 
-  
+      if (canvas.toBlob) {
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              onChange(blob);
+            }
+            closeModal();
+          },
+          "image/webp",
+          1
+        );
+      } else {
+        const dataUrl = canvas.toDataURL("image/webp");
+        fetch(dataUrl)
+          .then((res) => res.blob())
+          .then((blob) => {
+            onChange(blob);
+            closeModal();
+          });
+      }
+    }
+  } catch (error) {
+    console.error("Error saving signature:", error);
+  }
+};
+
 
   const clearSignature = () => {
     sigPadRef.current?.clear();
   };
 
-  const deleteSignature = () => {
-    onChange(null); // ✅ نحذف التوقيع
+  const deleteSignature = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    onChange(null);
   };
 
   return (
@@ -63,19 +78,23 @@ export default function SignatureInputComponent({
         style={{ cursor: "pointer", position: "relative" }}
       >
         {value ? (
-          <div style={{ maxHeight: "100px", maxWidth: "300px", position: "relative" }}>
+          <div
+            style={{
+              maxHeight: "100%",
+              maxWidth: "100%",
+              position: "relative",
+              overflow:"hidden"
+            }}
+          >
             <img
-              src={URL.createObjectURL(value)} // ✅ حول Blob → URL
+              src={URL.createObjectURL(value)}
               alt="التوقيع"
-              // fill
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: "contain", maxWidth: "100%", maxHeight: "100%" }}
             />
             <button
+              type="button"
               className={Styles.deleteBtn}
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteSignature();
-              }}
+              onClick={deleteSignature}
             >
               <FaTrashAlt color="#ef4444" />
             </button>
@@ -88,8 +107,8 @@ export default function SignatureInputComponent({
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel="رسم التوقيع"
         ariaHideApp={false}
+        contentLabel="رسم التوقيع"
         style={{
           content: {
             inset: "15%",
@@ -102,22 +121,43 @@ export default function SignatureInputComponent({
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginLeft: "auto",
-            marginRight: "auto",
+            margin: "auto",
           },
         }}
       >
         <div style={{ padding: "16px" }}>
           <SignaturePad
             ref={sigPadRef}
-            canvasProps={{ width: 300, height: 200, className: Styles.signatureCanvas }}
+            canvasProps={{
+              width: 300,
+              height: 200,
+              className: Styles.signatureCanvas,
+            }}
           />
         </div>
 
         <div className={Styles.buttonsContainer}>
-          <button type='button' onClick={clearSignature} className={Styles.clearBtn}>مسح</button>
-          <button type='button' onClick={closeModal} className={Styles.cancelBtn}>إلغاء</button>
-          <button type='button' onClick={saveSignature} className={Styles.saveBtn}>حفظ</button>
+          <button
+            type="button"
+            onClick={clearSignature}
+            className={Styles.clearBtn}
+          >
+            مسح
+          </button>
+          <button
+            type="button"
+            onClick={closeModal}
+            className={Styles.cancelBtn}
+          >
+            إلغاء
+          </button>
+          <button
+            type="button"
+            onClick={saveSignature}
+            className={Styles.saveBtn}
+          >
+            حفظ
+          </button>
         </div>
       </Modal>
     </div>

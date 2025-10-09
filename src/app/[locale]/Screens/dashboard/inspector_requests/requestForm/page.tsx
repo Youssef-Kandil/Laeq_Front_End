@@ -11,6 +11,10 @@ import { DropListType } from '@/app/Types/DropListType';
 import { AccountInfo } from '@/app/Types/AccountsType';
 import { useAddInspectorRequest } from '@/app/Hooks/useInspectorRequest';
 import { inspectorRequestType } from '@/app/Types/inspector_request_Type';
+import Popup from "@/app/components/global/Popup/Popup";
+import Lottie from "lottie-react";
+import WorngIcon  from '@/app/Lottie/wrong.json'
+import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 // import Styles from './settings.module.css'
 
 function RequestForm() {
@@ -24,6 +28,9 @@ function RequestForm() {
     // const limits = info?.userDetails?.admin_account_limits;
     const Companies = useGetCompaniesByUserId(info?.userDetails.id ?? 0);
     const {mutate:newRequest,isPending} = useAddInspectorRequest();
+    const [isSubmitLoading,setIsSubmiLoading] = React.useState<boolean>(false);
+    const [showValidationPopup,setShowValidationPopup] = React.useState<boolean>(false);
+    const [ValidationPopupMSG,setValidationPopupMSG] = React.useState<string>("");
     const [sitesList,setSitesList] = React.useState<DropListType[]|null>(null)
     // const pathname = usePathname();
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
@@ -34,6 +41,7 @@ function RequestForm() {
 
     const [selectedCompany,setSelectedCompany] = React.useState<DropListType|null>(null)
     const [selectedSite,setSelectedSite] = React.useState<DropListType|null>(null)
+    const [disabled,setDisabled] = React.useState<boolean>(false)
 
     function getSitesByCompanyId(companyId:number) {
       const company = Companies.data.find((c :{id:number}) => c.id === companyId);
@@ -55,6 +63,8 @@ function RequestForm() {
         if (!admin_id) return;
         if (!selectedCompany?.value) return;
         if (!selectedSite?.value) return;
+        setIsSubmiLoading(true);
+        setDisabled(isPending);
         const payload:inspectorRequestType = {
               admin_id:Number(admin_id)??-1,
               company_id:Number(selectedCompany?.value)??-1,
@@ -64,42 +74,60 @@ function RequestForm() {
         console.log("Request Payload ::" ,payload);
         newRequest(payload,{
           onSuccess:()=>{
-                console.log("Done")
+            router.back();
           },
           onError:(e)=>{
-            console.error("Requested ERROR >> ",e)
+            console.error("Requested ERROR >> ",e);
+            setIsSubmiLoading(false)
+            setDisabled(false);
+            setShowValidationPopup(true);
+            setValidationPopupMSG("try again.");
           },
         })
     }
 
   return (
-    <div style={{
-        margin:'12px 10px'
-    }}>
-      <div style={{display:"flex",flexDirection:'column',gap:30}}>
-        <div style={{minWidth:300,width:250}}>
-            <DropListComponent label='Company' placeholder='Choose your Company' list={CompaniesList??[]}  onSelect={(val)=>{handelSelectCompany(val)}}/>
-        </div>
-        <div style={{minWidth:300,width:250}}>
-          <DropListComponent label='Site' placeholder='Choose your Site'  list={sitesList ?? []}  onSelect={(val)=>{setSelectedSite(val)}}/>
-        </div>
-         
-
-
-      </div>
-
+    <div>
+          {isSubmitLoading&&<Popup
+          icon={
+            <Lottie
+            animationData={LoadingIcon}
+            loop={true}
+            style={{ width: 350, height: 250 }}
+          />
+          } 
+          title={"loading..."} 
+          subTitle=" " 
+          onClose={()=>{}}/>}
+            {showValidationPopup&&<Popup icon={<Lottie animationData={WorngIcon} loop={false} style={{ width: 350, height: 250 }}/>} title="Wrong!" subTitle={ValidationPopupMSG} onClose={()=>setShowValidationPopup(false)}/>}
       <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '20px',
-            margin: '20px 10px' ,
-        }}>
-        <div style={{flex:1}}>
-          <BottonComponent disabled={isPending} title='Send Request' onClick={handelSendNewRequest}/>
+          margin:'12px 10px'
+      }}>
+        <div style={{display:"flex",flexDirection:'column',gap:30}}>
+          <div style={{minWidth:300,width:250}}>
+              <DropListComponent label='Company' placeholder='Choose your Company' list={CompaniesList??[]}  onSelect={(val)=>{handelSelectCompany(val)}}/>
+          </div>
+          <div style={{minWidth:300,width:250}}>
+            <DropListComponent label='Site' placeholder='Choose your Site'  list={sitesList ?? []}  onSelect={(val)=>{setSelectedSite(val)}}/>
+          </div>
+          
+
+
         </div>
-        <p onClick={()=>router.back()} style={{flex:5,cursor:"pointer"}}>Cancel</p>
+
+        <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '20px',
+              margin: '20px 10px' ,
+          }}>
+          <div style={{flex:1}}>
+            <BottonComponent disabled={disabled} title='Send Request' onClick={handelSendNewRequest}/>
+          </div>
+          <p onClick={()=>router.back()} style={{flex:5,cursor:"pointer"}}>Cancel</p>
+        </div>
+        
       </div>
-      
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { AccountInfo } from "../Types/AccountsType";
 import encryption from "./encryption";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 
 
@@ -14,13 +14,14 @@ import Cookies from "js-cookie";
 export function getAdminAccountInfo(localStorage_Key: string) : AccountInfo | null {
 
 
-  // const token = localStorage.getItem(localStorage_Key);
-  const token =  Cookies.get(localStorage_Key);
-  console.warn("token :: ",token);
-  if (!token) return null;
-
-  const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
   try {
+    if (typeof window == "undefined") return null;
+    const token = localStorage.getItem(localStorage_Key);
+    // const token =  Cookies.get(localStorage_Key);
+    console.warn("token :: ",token);
+    if (!token) return null;
+  
+    const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
     const decryption = encryption.decryption(token, key);
     return JSON.parse(decryption);
   } catch (err) {
@@ -39,7 +40,9 @@ export function setAdminAccountInfo(localStorage_Key: string,value:any) : boolea
     const encrypted = encryption.encryption(stringified, key);
 
     // تخزين في الكوكيز
-    Cookies.set(localStorage_Key, encrypted, { expires: 30 }); 
+    // Cookies.set(localStorage_Key, encrypted, { expires: 30 }); 
+    if (typeof window == "undefined") return false;
+    localStorage.setItem(localStorage_Key, encrypted); 
     return true;
     // expires = 7 يعني الكوكي هيقعد أسبوع (تقدر تغيرها)
   } catch (err) {

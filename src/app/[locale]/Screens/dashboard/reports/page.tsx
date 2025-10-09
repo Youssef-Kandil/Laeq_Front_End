@@ -32,24 +32,26 @@ function Report() {
   if (isLoading) return <SkeletonLoader variant="table" tableColumns={8} tableRows={8} />;
   if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
   if (data == null) return <div>لا توجد بيانات</div>;
-  if (!data || data.length === 0) return <div>لا توجد بيانات</div>;
+  // if (!data || data.length === 0) return <div>لا توجد بيانات</div>;
 
   const local_var = "reports.tb_headers";
 
   // === تعديل البيانات عشان تناسب الجدول
+  //    "score": "{\"finalScore\":10,\"templateScore\":8,\"percentage\":\"80%\"}"
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const modifiedData = data.map((item: any, index: number) => ({
     id: index + 1,
     name: item.template_title,
-    company: item.company_name ?? "-", // لو محتاج نضيفها بعدين
-    site: item.site_name ?? "-",       // لو محتاج نضيفها بعدين
+    company: item.site_name ?? "-", // لو محتاج نضيفها بعدين
+    site: item?.score ? JSON.parse(item?.score).percentage : "0%",       // لو محتاج نضيفها بعدين
     submitted_by:info?.email ==  item.answered_by_user ? "You": item.answered_by_user,
     date: item.answered_at
       ? new Date(item.answered_at).toLocaleDateString("en-GB")
       : "-",
     action: (
       <FaRegEye 
-          onClick={()=>router.push( `/${current_lang}/Screens/dashboard/reports/Report_Details/${item?.template_id}-${item?.task_id}`)}
+          onClick={()=>router.push( `/${current_lang}/Screens/dashboard/reports/Report_Details/data-${item?.id}`)}
+          // onClick={()=>router.push( `/${current_lang}/Screens/dashboard/reports/Report_Details/${item?.template_id}-${item?.task_id}`)}
           style={{ fontSize: 20 }}/> 
     ),
   }));
@@ -61,8 +63,8 @@ function Report() {
         titles={[
           `${local_var}.id`,
           `${local_var}.name`,
-          `${local_var}.company`,
           `${local_var}.site`,
+          `${local_var}.score`,
           `${local_var}.submitted_by`,
           `${local_var}.date`,
           "",

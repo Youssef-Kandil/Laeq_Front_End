@@ -4,19 +4,20 @@ import Style from './checkBoxListComponent.module.css'
 
 import CheckBoxComponent from '../CheckBoxComponent/CheckBoxComponent';
 
-interface opthionsType{
-    id?:number;
-    label:string;
-    value?:string
+interface OptionsType {
+  id?: number;
+  label: string;
+  value?: string;
 }
 
-interface props{
-    list:opthionsType[];
-    onChange?: (selected: string[]) => void;
+interface Props {
+  list: OptionsType[];
+  onChange?: (selected: string[]) => void;
 }
 
-function CheckBoxListComponent({list,onChange}:props) {
-  const [, setSelected] = useState<string[]>([]);
+function CheckBoxListComponent({ list, onChange }: Props) {
+  const [selected, setSelected] = useState<string[]>([]);
+
   const handleToggle = (label: string) => {
     setSelected((prev) => {
       let newSelected: string[];
@@ -29,23 +30,25 @@ function CheckBoxListComponent({list,onChange}:props) {
         newSelected = [...prev, label];
       }
 
-      // ✅ نبعت ال array للأب
+      // ✅ نبعت الـ array للأب
       onChange?.(newSelected);
 
       return newSelected;
     });
   };
+
   return (
     <div className={Style.list}>
-        {list.map((input,index)=>{
-            return <CheckBoxComponent 
-                        key={index} 
-                        label={input.label}
-                        onCheck={() => handleToggle(input.label)}
-                        />
-        })}
+      {list.map((input, index) => (
+        <CheckBoxComponent
+          key={index}
+          label={input.label}
+          checked={selected.includes(input.label)}  
+          onCheck={() => handleToggle(input.label)}
+        />
+      ))}
     </div>
-  )
+  );
 }
 
-export default CheckBoxListComponent
+export default CheckBoxListComponent;

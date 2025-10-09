@@ -65,10 +65,12 @@
         "notifications":"Notifications",
 
         "users":"Users",
+        "Inspectors":"Inspectors",
         "roles":"Roles",
         "company":"Company",
         "department":"Department",
         "inspector_requests":"Inspector Requests",
+        "Subscriptions":"Subscriptions",
         "payments_plans":"Payments & Plans",
         "settings":"Settings"
 
@@ -106,6 +108,7 @@
                     "id":"#",
                     "name":"Employee",
                     "email":"Email",
+                    "phone":"Phone",
                     "site":"Site",
                     "role":"Role",
                     "status":"Status"
@@ -117,6 +120,7 @@
                 "tb_headers":{
                     "id":"ID",
                     "employee":"Employee",
+                    "phone":"Phone",
                     "email":"Email",
                     "site":"Site",
                     "company":"Company",
@@ -130,12 +134,13 @@
                 "tb_headers":{
                     "id":"Report ID",
                     "name":"Report Name",
+                    "phone":"Phone",
                     "company":"Company",
                     "site":"Site",
+                    "score":"Score",
                     "submitted_by":"Submitted By",
                     "date":"Date",
-                        "score":"Score",
-                        "status":"Status"
+                    "status":"Status"
                     },
                     "button_title":"Print",
                     "button_title2":"Automation"
@@ -155,6 +160,18 @@
                 "button_title":"Create action"
             },
 
+            "subscriptions":{
+                    "tb_headers":{
+                        "transaction_id":"Transaction ID",
+                        "user":"Email",
+                        "plan":"Plan",
+                        "planType":"Duration",
+                        "amount":"Amount",
+                        "subscripe_at":"Subscripe at",
+                        "invoice":"Invoice"
+                    }
+            },
+
             "tasks":{
                     "tb_headers":{
                         "employee":"Employee",
@@ -162,6 +179,7 @@
                         "repeated":"Repeated",
                         "company":"Company",
                         "site":"Site",
+                        "score":"Score",
                         "status":"Status",
                         "repeate":"Repeated",
                         "location":"Location",

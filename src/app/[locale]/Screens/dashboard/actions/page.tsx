@@ -19,8 +19,8 @@ interface ActionType {
   action_title?: string;
   companies?: { company_name?: string };
   sites?: { site_name?: string };
-  users_actions_created_byTousers?: { email?: string }; // لو عندك relation للي عمل الأكشن
-  users_actions_assigned_toTousers?: { email?: string }; // لو عندك relation للي عمل الأكشن
+  users_actions_created_byTousers?: { email?: string ,employees:{full_name:string}}; // لو عندك relation للي عمل الأكشن
+  users_actions_assigned_toTousers?: { email?: string,employees:{full_name:string} }; // لو عندك relation للي عمل الأكشن
   created_at?: string;
   status?: string;
 }
@@ -38,12 +38,12 @@ function Actions() {
   // Get logged in user info
   const info = getAdminAccountInfo("AccountInfo");
   const isEmployee = info?.role === "employee";
-  const limits =  
-          isEmployee
-            ?info.userDetails.admin_users?.admin_account_limits  as { max_Corrective_action?: number } ?? {} 
-            : info?.userDetails?.admin_account_limits as { max_Corrective_action?: number } ?? {};
+  // const limits =  
+  //         isEmployee
+  //           ?info.userDetails.admin_users?.admin_account_limits  as { max_Corrective_action?: number } ?? {} 
+  //           : info?.userDetails?.admin_account_limits as { max_Corrective_action?: number } ?? {};
 
-  const [maxActions] = React.useState(limits.max_Corrective_action ?? 0);
+  // const [maxActions] = React.useState(limits.max_Corrective_action ?? 0);
   const targetId = isEmployee ? info?.id : info?.userDetails?.id;
 
   // Fetch actions
@@ -85,28 +85,28 @@ function Actions() {
     +  Check max Limit To Add Or Assign Action of Current Plan
     +  Check Roll of EMP
 */ 
-  function handelValidation() {
-      // 1- check limit
-      if (maxActions <= actionsData.length) {
-        console.log("❌ Max actions limit reached!");
-        return false;
-      }
+  // function handelValidation() {
+  //     // 1- check limit
+  //     if (maxActions <= actionsData.length) {
+  //       console.log("❌ Max actions limit reached!");
+  //       return false;
+  //     }
 
-      // 2- check employee role
-      if (isEmployee) {
-        const hasPermission = info.userDetails.permissions?.includes("manage actions");
+  //     // 2- check employee role
+  //     if (isEmployee) {
+  //       const hasPermission = info.userDetails.permissions?.includes("manage actions");
 
-        if (!hasPermission) {
-          console.log("❌ You don't have permission to manage actions");
-          return false;
-        }
-      }
-       // لو عدى كل الشروط
-      console.log("✅ Validation passed, you can proceed");
-      return true;
-    }
+  //       if (!hasPermission) {
+  //         console.log("❌ You don't have permission to manage actions");
+  //         return false;
+  //       }
+  //     }
+  //      // لو عدى كل الشروط
+  //     console.log("✅ Validation passed, you can proceed");
+  //     return true;
+  //   }
 
-    const hasPermission = handelValidation();
+    // const hasPermission = handelValidation();
 
   // ===== Modify actions data for table =====
   const modifiedData =
@@ -160,16 +160,16 @@ function Actions() {
             (<BottonComponent
               title="Assign"
               onClick={() =>{ 
-                if (hasPermission == false) {
-                  if (!isEmployee) {
-                    setShowPopup(true)
-                  }
-                }else{
-                    router.push(`/${current_lang}/Screens/dashboard/actions/${encryption.encryption(JSON.stringify(action.id),"encryptionKey")}/AssignActionToUser`);
-                }
+                // if (hasPermission == false) {
+                //   if (!isEmployee) {
+                //     setShowPopup(true)
+                //   }
+                // }else{
+                // }
+                router.push(`/${current_lang}/Screens/dashboard/actions/${encryption.encryption(JSON.stringify(action.id),"encryptionKey")}/AssignActionToUser`);
               }}
               />):(
-                <p style={{ color: "#68A6A6" }}>Assigned to {action.users_actions_assigned_toTousers?.email}</p>
+                <p style={{ color: "#68A6A6" }}>Assigned to {action.users_actions_assigned_toTousers.email}</p>
               )
           ,
           delete_action: (

@@ -21,6 +21,12 @@ export function getFutureDate(days: number): Date {
   return result;
 }
 
+export function getFutureTime(hour: number): Date {
+  const result = new Date();
+  result.setHours(result.getHours() + hour);
+  return result;
+}
+
 export function getFutureDateString(days: number): string {
   const result = new Date();
   result.setDate(result.getDate() + days);

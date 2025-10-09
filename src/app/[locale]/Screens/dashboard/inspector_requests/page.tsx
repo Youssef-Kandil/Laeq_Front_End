@@ -50,7 +50,13 @@ function Inspector_requests() {
     company: item.companies.company_name ?? "-",
     site: item.sites.site_name ?? "-",
     status: item.status,
-    date: item.request_date ? new Date(item.request_date).toLocaleDateString() : "-",
+    date: item.request_date
+    ? new Date(item.request_date).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : "-",
     action: (
       <MdDeleteOutline
         onClick={() => {
