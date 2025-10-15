@@ -2,7 +2,7 @@
 import React from "react";
 import { ClientOnlyTable } from "@/app/components/global/Table/Table";
 // import { HiOutlineDotsVertical } from "react-icons/hi";
-import { useAdminReports, useUserReports } from "@/app/Hooks/useGetTasksReports";
+import { useAdminReports } from "@/app/Hooks/useGetTasksReports";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
@@ -24,9 +24,9 @@ function Report() {
   const isEmployee = info?.role === "employee";
   const targetId = isEmployee ? info?.userDetails?.id : info?.userDetails?.id; // user_id لو يوزر, admin_id لو أدمن
   const adminQuery = useAdminReports(targetId ?? -1);
-  const userQuery = useUserReports(targetId ?? -1);
+
   
-  const { data, isLoading, error } = isEmployee ? userQuery : adminQuery;
+  const { data, isLoading, error } = adminQuery;
 
 
   if (isLoading) return <SkeletonLoader variant="table" tableColumns={8} tableRows={8} />;

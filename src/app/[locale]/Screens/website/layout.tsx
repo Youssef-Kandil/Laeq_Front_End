@@ -8,6 +8,7 @@ import { routing } from '../../../../i18n/routing';
 import type { Metadata } from "next";
 import "../../../globals.css";
 import app_identity from '@/app/config/identity';
+import WhatsAppButton from '@/app/components/global/WhatsAppButton/WhatsAppButton';
 
 // const rubikSans = Rubik({
 //   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default async function WebsiteLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ReactQueryProvider>
             <Nave/>
+            <WhatsAppButton phone='+966570000102' message='Hi IN LAEEQ356 APP'/>
             {children}
             <Footer/>
           </ReactQueryProvider>

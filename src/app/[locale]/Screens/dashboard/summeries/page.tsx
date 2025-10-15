@@ -175,7 +175,7 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
           </section>
 
           <section id={Styles.Totals}>
-            <h3>Total Tasks</h3>
+            <h3>Tasks</h3>
             <div className={Styles.info_container}>
                 
                 <div className={Styles.Box}>
@@ -248,7 +248,7 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
           </section>
 
           <section id={Styles.Totals}>
-            <h3>Total Actions</h3>
+            <h3>Actions</h3>
             <div className={Styles.info_container}>
                 
                 <div className={Styles.Box}>

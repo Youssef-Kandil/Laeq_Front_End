@@ -13,7 +13,7 @@ const ourTeam = [
     },
     {
         name:'Huda AlZara',
-        position:'Executive Manager',
+        position:'Founder & CEO',
         image: '/images/team/huda.jpeg',
         description: '',
         social_links: [

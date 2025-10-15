@@ -53,6 +53,7 @@ function Actions() {
     isError,
   } = useActions({
     id: targetId ?? -1,
+    user_id: info?.id??-1,
     role: info?.role === "admin" ? "admin" : "user",
   });
 
@@ -75,7 +76,7 @@ function Actions() {
 
   const headers = isEmployee
     ? [...baseHeaders, ""] // زرار start/finish بس
-    : [...baseHeaders, `${local_var}.assign`, ""]; // assign + edit + delete
+    : [...baseHeaders, `${local_var}.assign`, "",""]; // assign + edit + delete
 
   // ===== Loading / Error States =====
   if (isLoading) return <SkeletonLoader />;
@@ -172,14 +173,34 @@ function Actions() {
                 <p style={{ color: "#68A6A6" }}>Assigned to {action.users_actions_assigned_toTousers.email}</p>
               )
           ,
-          delete_action: (
+          delete_action: action?.users_actions_assigned_toTousers?.email !== info?.email ? (
             <button
               className="p-2 hover:text-red-600"
               onClick={() => deleteAction({ id: action.id })}
             >
               <LuTrash2 style={{ fontSize: 20 }} />
             </button>
-          )
+          ):"-",
+          action: ( action.status === "Pending" && action?.users_actions_assigned_toTousers?.email == info?.email) ? (
+            <BottonComponent
+              title="Start"
+              onClick={() =>{
+                console.log("Start action", action.id, action.action_title);
+                action.status = "Pending" 
+                updateStatus({action_id:action.id,status:"In Progress"});
+              }
+              }
+            />
+          ) :( action.status === "In Progress"&& action?.users_actions_assigned_toTousers?.email == info?.email) ? (
+            <BottonComponent title="Done" 
+                  onClick={()=>{
+                    console.log("Done action", action.action_title);
+                    action.status = "Completed" 
+                    updateStatus({action_id:action.id,status:"Completed"});
+                  }} />
+          ) : (
+            <p style={{ color: "#68A6A6" }}>Finished</p>
+          ),
         };
       }
     }) || [];
@@ -197,10 +218,11 @@ function Actions() {
       <ClientOnlyTable
         titles={headers}
         data={modifiedData}
+        filter
         rowsFlex={
           isEmployee
             ? [ 1, 1, 1, 1, 1, 1, 1]
-            : [ 1, 1, 1, 1, 1, 1, 1, 0.2]
+            : [ 1, 1, 1, 1, 1, 1, 1, 0.2,1]
         }
         navButtonTitle="actions"
         navButtonAction={() =>{

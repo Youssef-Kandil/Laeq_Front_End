@@ -8,6 +8,7 @@ import QuestionAnswerTemplateComponent from "@/app/components/QuestionAnswerTemp
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
 import { useGetQuestionsByTemplatesId } from "@/app/Hooks/useTemplateQuestions";
 import { useSubmitTemplateAnswers } from "@/app/Hooks/useSubmitTemplateAnswers";
+// import { useUpdateInspectorRequestStatus } from "@/app/Hooks/useInspectorRequest";
 import { useUpdateTaskStatus ,useUpdateTaskScore } from "@/app/Hooks/useTasks";
 import { useLocale } from "next-intl";
 import Popup from "@/app/components/global/Popup/Popup";
@@ -53,27 +54,32 @@ function AnswerTemplate() {
   let task_id: number | undefined = undefined;
   let company_id: number | undefined = undefined;
   let site_id: number | undefined = undefined;
+  let inspection_to: number | undefined = undefined;
   if (templateID) {
     const raw = Array.isArray(templateID) ? templateID[0] : templateID;
   
     // نقسم كل جزء بناءً على الـ "-"
     const parts = raw.split("-");
   
-    if (parts.length >= 5) {
+    if (parts.length >= 6) {
       // أول جزء هو الـ task_id
       task_id = Number(parts[0]);
   
       // آخر 3 أجزاء دايمًا هي template_id, company_id, site_id
-      const sitePart = parts.pop(); // آخر جزء = site_id
-      const companyPart = parts.pop(); // اللي قبله = company_id
-      const templatePart = parts.pop(); // اللي قبله = template_id
-  
+      task_id = Number(parts[0]);       // أول جزء
+      inspection_to = Number(parts[1]); // تاني جزء
+      
+      // آخر 3 أجزاء = template_id, company_id, site_id
+      const sitePart = parts.pop();      // site_id
+      const companyPart = parts.pop();   // company_id
+      const templatePart = parts.pop();  // template_id
+    
       site_id = Number(sitePart);
       company_id = Number(companyPart);
       id = Number(templatePart);
   
       // الباقي من الأجزاء هو الـ title
-      title = decodeURIComponent(parts.slice(1).join("-"));
+      title = decodeURIComponent(parts.slice(2).join("-"));
     }
   }
 
@@ -104,6 +110,7 @@ function AnswerTemplate() {
   const [templateScore,setTemplateScore] = useState<number>(0);
 
   // استقبال اجابة من الابن
+  // const  { mutate: updateRequestStatus} = useUpdateInspectorRequestStatus();
   const  { mutate: updateTaskStatus} = useUpdateTaskStatus();
   const  { mutate: updateTaskScore} = useUpdateTaskScore();
 
@@ -112,69 +119,180 @@ function AnswerTemplate() {
     return () => preventPageExit(false);
   }, []);
   
-  const handleAnswerChange = (newAnswer: Answer) => {
-    newAnswer.company_id = company_id ?? -1;
-    newAnswer.site_id = site_id ?? -1;
-    setAnswers((prev) => {
-      const exist = prev.find(
-        (a) =>
-          a.questionID === newAnswer.questionID &&
-        a.fieldID === newAnswer.fieldID
-      );
-      let updatedAnswers;
-      if (exist) {
-        updatedAnswers = prev.map((a) =>
-          a.questionID === newAnswer.questionID && a.fieldID === newAnswer.fieldID
-        ? newAnswer
-        : a
-      );
-    } else {
-      updatedAnswers = [...prev, newAnswer];
+//   const handleAnswerChange = (newAnswer: Answer) => {
+//     newAnswer.company_id = company_id ?? -1;
+//     newAnswer.site_id = site_id ?? -1;
+//     setAnswers((prev) => {
+//       const exist = prev.find(
+//         (a) =>
+//           a.questionID === newAnswer.questionID &&
+//         a.fieldID === newAnswer.fieldID
+//       );
+//       let updatedAnswers;
+//       if (exist) {
+//         updatedAnswers = prev.map((a) =>
+//           a.questionID === newAnswer.questionID && a.fieldID === newAnswer.fieldID
+//         ? newAnswer
+//         : a
+//       );
+//     } else {
+//       updatedAnswers = [...prev, newAnswer];
+//     }
+    
+//     // ✅ حساب الاسكور والفاينال
+//     let tempScore = 0;
+//     let tempPenalty = 0;
+    
+//     updatedAnswers.forEach((ans) => {
+//       if (ans.type === "mcq") {
+//         const val = Number(ans.value);
+//         if (val === 1) tempScore += 5; // تزود في الاسكور
+//         if (val === -1) tempPenalty += 5; // خصم من النهائي بس
+//       } else if (ans.type === "score") {
+//         const val = Number(ans.value);
+//         if (!isNaN(val)) tempScore += val;
+//       }
+//     });
+    
+//     // ✅ totalMcqAndScore لسه زي ما هو 
+//     const totalMcqAndScore =
+//     (fieldCounts.mcq || 0) + (fieldCounts.score || 0);
+    
+//     // النهائي الكلي = الدرجة الكاملة - الخصومات
+//     const maxPossible = totalMcqAndScore * 5;
+//     const final = maxPossible - tempPenalty;
+    
+//     setTemplateScore(tempScore);
+//     setFinalScore(final);
+    
+//     return updatedAnswers;
+//   });
+// };
+
+const [questions, setQuestions] = useState<QuestionType[]>([]);
+useEffect(() => {
+  if (data) setQuestions(data);
+}, [data]);
+const handleAnswerChange = (newAnswer: Answer) => {
+  newAnswer.company_id = company_id ?? -1;
+  newAnswer.site_id = site_id ?? -1;
+  setAnswers((prev) => {
+    const exist = prev.find(
+      (a) =>
+        a.questionID === newAnswer.questionID &&
+      a.fieldID === newAnswer.fieldID
+    );
+    let updatedAnswers;
+    if (exist) {
+      updatedAnswers = prev.map((a) =>
+        a.questionID === newAnswer.questionID && a.fieldID === newAnswer.fieldID
+      ? newAnswer
+      : a
+    );
+  } else {
+    updatedAnswers = [...prev, newAnswer];
+  }
+  
+  // ✅ حساب الاسكور والفاينال
+  let tempScore = 0;
+  let tempPenalty = 0;
+  
+  updatedAnswers.forEach((ans) => {
+    if (ans.type === "mcq") {
+      const val = Number(ans.value);
+      if (val === 1) tempScore += 5; // تزود في الاسكور
+      if (val === -1) tempPenalty += 5; // خصم من النهائي بس
+    } else if (ans.type === "score") {
+      const val = Number(ans.value);
+      if (!isNaN(val)) tempScore += val;
     }
-    
-    // ✅ حساب الاسكور والفاينال
-    let tempScore = 0;
-    let tempPenalty = 0;
-    
-    updatedAnswers.forEach((ans) => {
-      if (ans.type === "mcq") {
-        const val = Number(ans.value);
-        if (val === 1) tempScore += 5; // تزود في الاسكور
-        if (val === -1) tempPenalty += 5; // خصم من النهائي بس
-      } else if (ans.type === "score") {
-        const val = Number(ans.value);
-        if (!isNaN(val)) tempScore += val;
-      }
-    });
-    
-    // ✅ totalMcqAndScore لسه زي ما هو 
-    const totalMcqAndScore =
-    (fieldCounts.mcq || 0) + (fieldCounts.score || 0);
-    
-    // النهائي الكلي = الدرجة الكاملة - الخصومات
-    const maxPossible = totalMcqAndScore * 5;
-    const final = maxPossible - tempPenalty;
-    
-    setTemplateScore(tempScore);
-    setFinalScore(final);
-    
-    return updatedAnswers;
   });
+  
+  // ✅ totalMcqAndScore لسه زي ما هو 
+  const totalMcqAndScore =
+  (fieldCounts.mcq || 0) + (fieldCounts.score || 0);
+  
+  // النهائي الكلي = الدرجة الكاملة - الخصومات
+  const maxPossible = totalMcqAndScore * 5;
+  const final = maxPossible - tempPenalty;
+  
+  setTemplateScore(tempScore);
+  setFinalScore(final);
+  
+  return updatedAnswers;
+});
+
+ // ✅ هنا الجزء الخاص بإضافة أو إزالة الحقول
+ if (newAnswer.type === "mcq") {
+  setQuestions((prevQuestions: any) =>
+    prevQuestions.map((q: any) => {
+      if (q.id !== newAnswer.questionID) return q;
+
+      const mcqValue = Number(newAnswer.value);
+      const baseFields = q.question_fields;
+      const existingFieldTypes = baseFields.map((f: any) => f.type);
+
+      // ✅ الحقول اللي ممكن نضيفها
+      const extraFields = [
+        { id: -1, type: "action", label: "Action Required", question_field_options: [] },
+        { id: -2, type: "comment", label: "Comment", question_field_options: [] },
+        { id: -3, type: "images", label: "Attach Images", question_field_options: [] },
+      ];
+
+      if (mcqValue === 0) {
+        // أضف فقط الحقول غير الموجودة بالفعل
+        const missingFields = extraFields.filter(
+          (ef) => !existingFieldTypes.includes(ef.type)
+        );
+
+        return {
+          ...q,
+          question_fields: [...baseFields, ...missingFields],
+        };
+      } else {
+        // ✅ امسح إجابات الأكشن والكومنت والصور للسؤال دا
+        setAnswers((prev) =>
+          prev.filter(
+            (a) =>
+              a.questionID !== newAnswer.questionID ||
+              !["action", "comment", "images"].includes(a.type)
+          )
+        );
+        // احذف فقط الحقول اللي أضفناها يدويًا (ID سالب)
+        return {
+          ...q,
+          question_fields: baseFields.filter(
+            (f: any) =>
+              !(
+                ["action", "comment", "images"].includes(f.type) &&
+                f.id < 0 // يعني مضاف محليًا مش جاى من الباك
+              )
+          ),
+        };
+      }
+    })
+  );
+
+}
+
 };
 
-
-
 function handelSubmit(){
-  setIsSubmiLoading(true);
-  // ✅ تحقق من أن كل الأسئلة المطلوبة متجاوب عليها
-  const requiredFields: { questionID: number; fieldID: number }[] = [];
-  //=== Step 1
-  data.forEach((q: QuestionType) => {
-    q.question_fields.forEach((field) => {
-      requiredFields.push({ questionID: q.id, fieldID: field.id });
-      // if (field.type === "mcq" || field.type === "score") {
-        //   requiredFields.push({ questionID: q.id, fieldID: field.id });
-        // }
+    setIsSubmiLoading(true);
+    // ✅ تحقق من أن كل الأسئلة المطلوبة متجاوب عليها
+    const requiredFields: { questionID: number; fieldID: number }[] = [];
+    //=== Step 1
+    // data.forEach((q: QuestionType) => {
+    //   q.question_fields.forEach((field) => {
+    //     requiredFields.push({ questionID: q.id, fieldID: field.id });
+    //     });
+    //   });
+    data.forEach((q: QuestionType) => {
+      q.question_fields.forEach((field) => {
+        // ✅ استثناء الأنواع غير المطلوبة
+        if (!["action", "images", "comment"].includes(field.type)) {
+          requiredFields.push({ questionID: q.id, fieldID: field.id });
+        }
       });
     });
     // === Step 2 (بدل ما نخزنهم في Array نخزنهم في Set)
@@ -207,6 +325,7 @@ function handelSubmit(){
       company_id: company_id ?? -1,
       site_id: site_id ?? -1,
       template_title: title ?? "Untitled",
+      inspection_to:inspection_to ?? -1,
       score: JSON.stringify({
         finalScore,
         templateScore,
@@ -311,7 +430,7 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
   // console.log("fieldCounts (mcq & score only) :: ", fieldCounts);
   // console.log("Questionss ::>> ",data);
 
-  const Questions = data.map((question: QuestionType, index: number) => (
+  const Questions = questions.map((question: QuestionType, index: number) => (
     <QuestionAnswerTemplateComponent
       key={index}
       questionNumber={index + 1}

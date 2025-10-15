@@ -12,7 +12,8 @@ import BottonComponent from '@/app/components/global/ButtonComponent/BottonCompo
 import { DropListType } from '@/app/Types/DropListType';
 import { AccountInfo } from '@/app/Types/AccountsType';
 import { useEmployees } from '@/app/Hooks/useEmployees';
-import { useAssignTask } from '@/app/Hooks/useTasks';
+import { useAssignTask  } from '@/app/Hooks/useTasks';
+import { useUpdateInspectorRequestStatus } from '@/app/Hooks/useInspectorRequest';
 import { AssignTaskPayload } from '@/app/Types/TaskType';
 import Popup from "@/app/components/global/Popup/Popup";
 import Lottie from "lottie-react";
@@ -23,7 +24,7 @@ import { useGetMutationTemplatesByChecklistId } from '@/app/Hooks/useTemplates';
 function AssignForm() {
     // const current_lang = useLocale();
     const {request_data} = useParams();
-    const [companyId, siteId] = (request_data as string).split("-");
+    const [request_id,client_id,companyId, siteId] = (request_data as string).split("-");
     const router = useRouter();
     const info = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
     const admin_id =  info?.userDetails?.id ?? -1;
@@ -36,6 +37,7 @@ function AssignForm() {
     const [ValidationPopupMSG,setValidationPopupMSG] = React.useState<string>("");
     const [TemplatesList,setTemplatesList] = React.useState<DropListType[]|null>(null)
     const  {mutate:getTemplates} = useGetMutationTemplatesByChecklistId()
+    const  {mutate:updateStatus} = useUpdateInspectorRequestStatus()
     // const pathname = usePathname();
     const CheckLis_Categories_List = CheckLists.data?.map((item:{id:number,checklist_title:string}) => ({
       id: item?.id,
@@ -92,12 +94,24 @@ function AssignForm() {
               template_id:Number(selectedTemplate?.value)??-1,
               company_id:Number(companyId)??-1,
               site_id:Number(siteId)??-1,
-              status:"Pending"
+              status:"Pending",
+              task_type:'request',
+              inspection_to:Number(client_id)??-1,
+              request_id:Number(request_id)
         }
         console.log("Request Payload ::", payload);
         newTask([payload], {
-          onSuccess: () => {
-            router.back();
+          onSuccess: () => {   
+            updateStatus({request_id:Number(request_id),status:"In Progress"},{
+              onSuccess:()=>{router.back();},
+              onError:(e)=>{
+                console.error("Requested ERROR >> ",e);
+                setIsSubmiLoading(false)
+                setDisabled(false);
+                setShowValidationPopup(true);
+                setValidationPopupMSG("try again.");
+              }
+            })         
           },
           onError: (e) => {
             console.error("Requested ERROR >> ",e);

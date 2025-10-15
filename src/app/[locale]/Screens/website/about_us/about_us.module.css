@@ -67,9 +67,14 @@
         .header_image{
            flex: 0.8;
             height: 25.25rem;
+            /* width: 100%; */
             border-radius: 1rem;
             background-color: #323135;
             overflow: hidden;
+            & img{
+                width: 100%;
+                height: 100%;
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import { LuTrash2 } from "react-icons/lu";
 // ===== Types =====
 interface TaskType {
   id: number;
+  inspection_to: number;
   users?: { email?: string ; employees:{full_name:string} };
   templates?: { id: number; template_title?: string; is_repeated?: boolean };
   sites?: {id:number , site_name?: string,full_address:string ,lat:string,long:string};
@@ -61,8 +62,9 @@ function Tasks() {
     template_id: number,
     company_id:number,
     site_id:number,
+    inspection_to:number,
   ) {
-    if (task_id && template_title && template_id && company_id && site_id) {
+    if (task_id && template_title && template_id && company_id && site_id && inspection_to) {
       getTaskStatus({task_id},{
         onSuccess:(data)=>{
           if(data.status == "Pending"){
@@ -71,7 +73,7 @@ function Tasks() {
               {
                 onSuccess: () => {
                   router.replace(
-                    `/${current_lang}/Screens/dashboard/tasks/${task_id}-${template_title}-${template_id}-${company_id}-${site_id}`
+                    `/${current_lang}/Screens/dashboard/tasks/${task_id}-${inspection_to}-${template_title}-${template_id}-${company_id}-${site_id}`
                   );
                 },
               }
@@ -172,6 +174,7 @@ function Tasks() {
                     task?.templates?.id || -10,
                     task?.companies?.id??-1,
                     task?.sites?.id??-1,
+                    task?.inspection_to??-1
                   )
                 }
               />
@@ -205,6 +208,7 @@ function Tasks() {
                     task?.templates?.id || -10,
                     task?.companies?.id??-1,
                     task?.sites?.id??-1,
+                    task?.inspection_to??-1
                   )
                 }
               />

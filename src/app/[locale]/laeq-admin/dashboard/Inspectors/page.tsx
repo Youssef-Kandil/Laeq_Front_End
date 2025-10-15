@@ -55,7 +55,7 @@ function Users() {
           site: sites.site_name,
           role: roles.role_name,
           delete_action: isEmployee ? null : <LuTrash2 onClick={()=>deleteEmp({id:user_id})} style={{ fontSize: 20 }} />,
-          edit_action: isEmployee ? null : <FiEdit2 onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/users/EditUserForm/${id}`)} style={{ fontSize: 20 }} />,
+          edit_action: isEmployee ? null : <FiEdit2 onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/Inspectors/EditUserForm/${id}`)} style={{ fontSize: 20 }} />,
         };
       });
   return (
@@ -75,7 +75,7 @@ function Users() {
             rowsFlex={[1,1,1,1,0.2,0.2]}
             navButtonTitle={isEmployee?"":'employees'}
             navButtonAction={()=>{
-              router.push(`/${current_lang}/Screens/dashboard/users/AddUserForm`)
+              router.push(`/${current_lang}/Screens/dashboard/Inspectors/AddUserForm`)
                 // if(maxEmps <= data.length){
                 //   console.log("maxCompanies");
                 //   setShowPopup(true)

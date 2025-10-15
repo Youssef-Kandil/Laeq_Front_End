@@ -25,7 +25,7 @@ function ContactUs() {
 
         <header>
             <h1>{t("title")} <span>{t("special_word")}</span> </h1>
-            <p>{t("subtitle")}</p>
+            <p>Contact us for inquiries, feedback, or assistance. We value your time and are ready to help.</p>
         </header>
 
         <div className={Styles.form}>

@@ -42,10 +42,10 @@ function CreateActionForm() {
     console.log("AdminID >>> ",AdminID)
     console.log("Employees.data >>> ",Employees)
     // ==== Lists
-    const EmployeesList = Employees.data?.map((item:{id:number,users:{email:string,id:number}}) => ({
+    const EmployeesList = Employees.data?.map((item:{id:number,full_name:string,users:{email:string,id:number}}) => ({
       id: item.users.id,
       value: String(item.users.id),
-      title: item.users.email,
+      title: item.full_name,
     }));
 
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({

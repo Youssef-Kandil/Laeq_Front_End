@@ -32,5 +32,6 @@ export interface report_payload{
     score:string;
     submitted_by:string;
     questions:report_question[],
+    inspection_to:number,
     answered_at?:string|Date; 
 };

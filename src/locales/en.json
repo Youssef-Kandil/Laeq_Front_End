@@ -69,7 +69,7 @@
         "roles":"Roles",
         "company":"Company",
         "department":"Department",
-        "inspector_requests":"Inspector Requests",
+        "inspector_requests":"Inspection Requests",
         "Subscriptions":"Subscriptions",
         "payments_plans":"Payments & Plans",
         "settings":"Settings"
@@ -325,7 +325,7 @@
                 "get_started_btn":"Get Started",
                 "free_trial_btn":"Start Free Trial"
             },
-            "partners":"Over 1k+ Companies growing with Lauq",
+            "partners":"Over 1k+ Companies growing with Laeq",
             "features":{
                 "first_title":"Powerful ",
                 "special_word":" Features ",
@@ -372,7 +372,7 @@
 
             "experience":{
                 "title":"Experience the Difference",
-                "text":"Get A Personalized Live Demo Tailored To Your Needs, Or Kickstart Your Journey With A 7-Day FREE Trial—no Credit Card Required, No Strings Attached.",
+                "text":"Get A Personalized Live Demo Tailored To Your Needs, Or Kickstart Your Journey With A 14-Days FREE Trial—no Credit Card Required, No Strings Attached.",
                 "get_started_btn":"Get Started",
                 "free_trial":"Start a free trial"
             }
@@ -389,7 +389,7 @@
         "about_us_screen":{
             "header":{
                 "title":"About Us",
-                "subtitle":"Lauq empowers teams to streamline safety and food management with ease. Our intuitive tools ensure compliance, improve efficiency, and support seamless collaboration across all operations. Simplify your processes and focus on delivering excellence—every time, everywhere.",
+                "subtitle":"Laeq empowers teams to streamline safety and food management with ease. Our intuitive tools ensure compliance, improve efficiency, and support seamless collaboration across all operations. Simplify your processes and focus on delivering excellence—every time, everywhere.",
                 "get_started_btn":"Get Started",
                 "free_trial_btn":"Start Free Trial"
             },

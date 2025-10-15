@@ -53,7 +53,8 @@ function Actions() {
     isError,
   } = useActions({
     id: targetId ?? -1,
-    role: info?.role === "admin" ? "admin" : "user",
+    user_id: info?.id??-1,
+    role:"admin",
   });
 
   const {mutate:updateStatus} = useUpdateActionStatus();
@@ -197,6 +198,7 @@ function Actions() {
       <ClientOnlyTable
         titles={headers}
         data={modifiedData}
+        filter
         rowsFlex={
           isEmployee
             ? [ 1, 1, 1, 1, 1, 1, 1]

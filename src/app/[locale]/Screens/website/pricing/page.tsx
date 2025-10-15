@@ -55,7 +55,7 @@ function Priceing() {
         buttonFun={()=>router.push(`/${local}/Screens/forms/signup`)}
         title={val.title}
         buttonTitle={"Create Account"}
-        subtitle="Ideal for individuals who need advanced features and tools for client work."
+        subtitle={index == 0?"Perfect for small teams starting out who need smart tools to manage daily operations easily.":index == 1?"Designed for growing teams who need more control, flexibility, and advanced management tools":"Built for large organizations that require powerful tools, scalability, and dedicated support."}
         price={String(val.price)}
         duration={val.is_yearly === 1 ? "Year" : "Month"}
         features={val.plan_features?.map((f, idx) => ({

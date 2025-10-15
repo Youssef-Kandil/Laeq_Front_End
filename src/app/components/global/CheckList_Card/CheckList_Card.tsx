@@ -5,7 +5,9 @@ import React, { ReactNode } from 'react'
 
 
 import Styles from './CheckList_Card.module.css'
-import Image from 'next/image'
+// import Image from 'next/image'
+import { HiOutlineTemplate } from "react-icons/hi";
+import app_identity from '@/app/config/identity';
 
 
 interface props {
@@ -21,7 +23,8 @@ function Quiz_card({title,questionsCount,imgSrc,icon}:props) {
   return (
     <div className={Styles.parent}>
       <section>
-        <Image src={imgSrc} alt='QuizImg' width={60} height={60}/>
+        {/* <Image src={imgSrc} alt='QuizImg' width={60} height={60}/> */}
+        <HiOutlineTemplate title={imgSrc} size={30} color={app_identity.secondary_color}/>
         <div className={Styles.text}>
             <h3>{title}</h3>
             <p>{questionsCount} questions</p>

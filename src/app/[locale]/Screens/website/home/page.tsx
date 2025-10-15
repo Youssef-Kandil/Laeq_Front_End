@@ -17,6 +17,7 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
 
 
+
  function Home() {
     React.useEffect(()=>{
       localStorage.setItem('clickedTitle', "home");
@@ -47,8 +48,8 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
             {t("header.second_title")}
         </h2>
         <div className={Styles.header_btns}>
-              <Link href={"#"} shallow className={Styles.getStarted}>{t("header.get_started_btn")}</Link>
-              <Link href={""} shallow className={Styles.free_trial}>{t("header.free_trial_btn")}</Link>
+              <Link href={`/${current_lang}/Screens/forms/signup`} shallow className={Styles.getStarted}>{t("header.get_started_btn")}</Link>
+              <Link href={`/${current_lang}/Screens/forms/signup`} shallow className={Styles.free_trial}>{t("header.free_trial_btn")}</Link>
         </div>
         <div className={Styles.mediaSection}>
           <Image src={"/images/left_Ellipses.webp"} alt='left' width={400} height={400} />
@@ -124,7 +125,7 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
             <h4>{t("sectors.title")}</h4>
             <h2>{t("sectors.subtitle")}</h2>
             <p>{t("sectors.text")}</p>
-            <Link href={""} shallow>{t("sectors.btn")}</Link>
+            <Link href={`/${current_lang}/Screens/forms/signup`} shallow>{t("sectors.btn")}</Link>
           </div>
           <Image src={"/images/sector.webp"} alt='' width={600} height={300}/>
 
@@ -181,8 +182,8 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
           <h3>{t("experience.title")}</h3>
           <p>{t("experience.text")}</p>
           <div  className={Styles.btns_container}>
-            <Link href={""} shallow className={Styles.getStartedBtn}>{t("experience.get_started_btn")}</Link>
-            <Link href={""} shallow className={Styles.freeTrielBtn}>{t("experience.free_trial")}</Link>
+            <Link href={`/${current_lang}/Screens/forms/signup`} shallow className={Styles.getStartedBtn}>{t("experience.get_started_btn")}</Link>
+            <Link href={`/${current_lang}/Screens/forms/signup`} shallow className={Styles.freeTrielBtn}>{t("experience.free_trial")}</Link>
           </div>
         </div>
 

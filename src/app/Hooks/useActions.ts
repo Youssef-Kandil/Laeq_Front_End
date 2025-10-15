@@ -30,13 +30,13 @@ export const useAddAction = () => {
 
 
 // === Fetch Actions By ID ===
-export const useActions = (args: { id: number; role: "admin" | "user" }) => {
+export const useActions = (args: { id: number;user_id:number; role: "admin" | "user" }) => {
     return useQuery({
       queryKey: ["actions", args],
       queryFn: () => {
         if (args.role === "admin") {
           return api
-            .post("/get_all_actions_by_admin_id", { admin_id: args.id })
+            .post("/get_all_actions_by_admin_id", { admin_id: args.id ,user_id:args.user_id })
             .then((res) => res);
         }
         return api

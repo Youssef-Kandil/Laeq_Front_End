@@ -47,7 +47,7 @@ export const useUpdateInspectorRequestStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: { task_id: number; status: string }) =>
+    mutationFn: (payload: { request_id: number; status: string }) =>
       api.update("/update_inspector_request_status", payload).then((res) => res),
 
     onSuccess: () => {

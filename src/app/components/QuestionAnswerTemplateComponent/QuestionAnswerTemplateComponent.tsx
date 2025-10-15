@@ -21,6 +21,8 @@ import {
 import { AccountInfo } from "@/app/Types/AccountsType";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 
+import MultiDropListComponent from "../global/InputsComponents/MultiDropListComponent/MultiDropListComponent";
+
 
 
 
@@ -107,7 +109,8 @@ type QuestionProps = {
     idKey?: keyof T
   ): any {
     return arr.map((item) => ({
-      label: String(item[labelKey]),
+      // label: String(item[labelKey]),
+      title: String(item[labelKey]),
       value: valueKey ? String(item[valueKey]) : undefined,
       id: idKey ? Number(item[idKey]) : undefined,
     }));
@@ -146,7 +149,7 @@ type QuestionProps = {
     return (
       <div className={Styles.Question}>
         <h2>
-          {questionNumber}. {title} ?
+          {questionNumber}. {title} 
         </h2>
   
         <div className="space-y-4">
@@ -301,21 +304,45 @@ type QuestionProps = {
 
               case "users_list":
                 return (
-                  <CheckBoxListComponent
-                    key={field.id}
-                    list={mapToOptions(usersList?.data??[],"full_name","full_name")}
-                    onChange={handleChange}
-                  />
+                  <MultiDropListComponent 
+                      key={field.id}
+                      label="Users List" 
+                      placeholder="Choose From Users List"
+                      // list={mapToOptions(usersList?.data??[{id:0,full_name:"No Users"}],"full_name","full_name", "id")}
+                      list={
+                        mapToOptions(
+                          (usersList?.data?.length ? usersList.data : [{id:0,full_name:"No Users"}]),
+                          "full_name",
+                          "full_name",
+                          "id"
+                        )
+                      }
+                      onSelect={handleChange}
+                   />
                 );
 
               case "assets_list":
                 return (
-                  <CheckBoxListComponent
-                    key={field.id}
+                  <MultiDropListComponent 
+                  key={field.id}
+                  label="Assets List" 
+                  placeholder="Choose From Assets List"
+                  list={
+                    mapToOptions(
+                      (assetsList?.data?.length ? assetsList.data : [{ id: 0, asset_name: "No Assets" }]),
+                      "asset_name",
+                      "asset_name",
+                      "id"
+                    )
+                  }
+                  onSelect={handleChange}
+               />
+                  // <CheckBoxListComponent
+                  //   key={field.id}
                     
-                    list={mapToOptions(assetsList?.data??[],"asset_name","asset_name")}
-                    onChange={handleChange}
-                  />
+                  //   list={mapToOptions(assetsList?.data??[],"asset_name","asset_name")}
+                  //   onChange={handleChange}
+                  // />
                 );
   
               case "score":

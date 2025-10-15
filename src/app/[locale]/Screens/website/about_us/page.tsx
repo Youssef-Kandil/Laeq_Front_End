@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
 import businessCards from '@/app/config/about_us_upscale_your_business_cards_list';
-import ourTeam from '@/app/config/our_team';
+// import ourTeam from '@/app/config/our_team';
 import Styles from "./about_us.module.css"
 import {useTranslations,useLocale} from 'next-intl';
 import Image from 'next/image'
@@ -25,13 +25,13 @@ function About_us() {
               <p>A Saudi team specializing in quality, food safety, and public health, we work to raise safety standards and ensure food establishments adhere to the highest levels of quality. We have experience in inspection, training, and consulting, and we strive to protect community health by implementing global best practices in line with the Kingdom s Vision 2030 to enhance quality of life.</p>
             </div>
             <div className={Styles.header_btns}>
-              <Link href={""} className={Styles.getStartedBtn} shallow>{t("header.get_started_btn")}</Link>
-              <Link href={""} className={Styles.startFreeTrialBtn} shallow>{t("header.free_trial_btn")}</Link>
+              <Link href={`/${current_lang}/Screens/forms/signup`} className={Styles.getStartedBtn} shallow>{t("header.get_started_btn")}</Link>
+              <Link href={`/${current_lang}/Screens/forms/signup`} className={Styles.startFreeTrialBtn} shallow>{t("header.free_trial_btn")}</Link>
             </div>
           </div>
 
           <div className={Styles.header_image}>
-            <Image src={""} alt='' loading='lazy' width={100} height={100}/>
+            <Image src={"/images/aboutUs.png"} alt='' loading='lazy' width={300} height={100}/>
           </div>
       </header>
 
@@ -47,18 +47,18 @@ function About_us() {
               <div key={index} className={Styles.business_section_card}>
               <span>{card.icon}</span>
               <h3>{String(card.Analytics)}</h3>
-              <p>{t(`busniess_section.cards.${card.title}`)}</p>
+              <p>{card.title}</p>
             </div>
             )
           })} 
         </div>
       </section>
 
-      <section id={Styles.team_section}>
+      {/* <section id={Styles.team_section}>
           <h3><span>{t("team_section.special_word")}</span> {t("team_section.title")}</h3>
-          {/* == STRAT CARD LIST */}
+
           <div className={Styles.team_section_cards}>
-            {/* == STRAT CARD */}
+
             {ourTeam.map((card, index) => {
               return (
                 <div key={index} style={(index+1)%2 == 0 ?{marginBottom:100}:{}} className={Styles.team_section_card}>       
@@ -72,20 +72,19 @@ function About_us() {
                 </div>
               )
             })} 
-            {/* == END CARD */}
-            {/* === END CARD  */}
+
           </div>
-          {/* === END CARD LIST */}
 
-      </section>
 
-      <section id={Styles.trust_brands_section}>
+      </section> */}
+
+      {/* <section id={Styles.trust_brands_section}>
             <h2>{t("brands_section.first_title")}<span>{t("brands_section.special_word")}</span>{t("brands_section.second_title")}</h2>
           <div>
             <Image src={""} alt='' loading='lazy' width={100} height={100}/>
           </div>
 
-      </section>
+      </section> */}
     </div>
   )
 }

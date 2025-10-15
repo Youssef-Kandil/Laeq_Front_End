@@ -215,7 +215,7 @@ const handleLoginWithGoogle = async () => {
         {/* === Form Headers */}
         <div>
           <h2>{t("title")} 👋 </h2>
-          <p>Welcome back! component variant main layer. Pixel strikethrough style text variant edit italic scale.</p>
+          <p>Welcome back! Your workspace awaits. Manage, plan, and connect with smart simple tools</p>
         </div>
         {/* === INPUTS === */}
         <div className={Styles.form_inputs}>

@@ -57,7 +57,7 @@ function Inspector_requests() {
         year: "numeric",
       })
     : "-",
-    action: (
+    action: item.status =="Pending"?(
       <MdDeleteOutline
         onClick={() => {
           deleteRequest({id:item.id})
@@ -65,7 +65,7 @@ function Inspector_requests() {
         color="rgba(239, 54, 54, 0.5)"
         style={{ fontSize: 20 }}
       />
-    ),
+    ):"-",
   }));
 
   const local_var = "inspector_requests.tb_headers";

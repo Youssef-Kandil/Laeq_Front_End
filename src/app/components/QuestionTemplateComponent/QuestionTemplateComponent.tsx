@@ -43,6 +43,7 @@ interface props{
     fields:fieldType[];
 }
 
+
 function QuestionTemplateComponent({questionNumber,title,fields}:props) {
   
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,6 +63,8 @@ function QuestionTemplateComponent({questionNumber,title,fields}:props) {
 
     const SingleChoiceField  = getFieldByType(fields,'mcq');
     const CheckboxField = getFieldByType(fields,'checkbox');
+    const AssetsListField = getFieldByType(fields,'assets_list');
+    const UsersListField = getFieldByType(fields,'users_list');
 
     const ImagesField = getFieldByType(fields,'images');
     const DateRangeField = getFieldByType(fields,'date_range');
@@ -84,6 +87,8 @@ function QuestionTemplateComponent({questionNumber,title,fields}:props) {
 
         {SingleChoiceField&&<ButtonCard title='MCQ Choice' icon={<GiChoice size={16}/>}/>}
         {CheckboxField&&<ButtonCard title='Checkbox' icon={<RiListCheck3/>}/>}
+        {UsersListField&&<ButtonCard title='Users List' icon={<RiListCheck3/>}/>}
+        {AssetsListField&&<ButtonCard title='Assets List' icon={<RiListCheck3/>}/>}
 
         {ImagesField&&<ButtonCard title='Photo' icon={<MdOutlineAddPhotoAlternate/>}/>}
         {DateRangeField&&<ButtonCard title='Date Range' icon={<HiOutlineCalendarDateRange/>}/>}

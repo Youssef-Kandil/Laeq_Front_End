@@ -87,6 +87,29 @@ padding: 10px 16px;
 
                                 }
 
+
+                                .search_input {
+                                    width: 100%;
+                                    margin: 10px auto;
+                                    display: block;
+                                    padding: 6px 10px;
+                                    border: 1px solid #ccc;
+                                    border-radius: 8px;
+                                    outline: none;
+                                    font-size: 14px;
+                                }
+                                
+                                .search_input:focus {
+                                    border-color: var(--Secondary-color);
+                                }
+                                
+                                .no_result {
+                                    padding: 10px;
+                                    text-align: center;
+                                    color: #888;
+                                    font-size: 14px;
+                                }
+
                                 .list {
                                     .label {
                                         font-size: 14px;
@@ -97,3 +120,7 @@ padding: 10px 16px;
                                 }
                             }
                         }
+
+
+
+                          

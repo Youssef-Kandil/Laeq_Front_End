@@ -75,7 +75,7 @@ function AddNewTemplateForm() {
       ...prev,
       {
         question_title: "",
-        fields: [{ id: Date.now(), type: "short_text" }],
+        fields: [{ id: Date.now(), type: "mcq",options:[{id:1,label:"Yes",value:"1"},{label:"No",value:"0"},{id:2,label:"N/A",value:"-1"}] }],
       },
     ]);
   };
@@ -231,7 +231,7 @@ function AddNewTemplateForm() {
         }}>
         <InputComponent label="" placeholder="Please Enter Template Name" onTyping={(txt)=>setTemplateName(txt)} value={templateName}/>
         <div style={{minWidth:300,width:250}}>
-              <DropListComponent label='Checklist Catecgory' placeholder='Choose Checklist Catecgory' list={CheckLis_Categories_List??[]}  onSelect={(val)=>{setSelectedChecklist(val)}}/>
+              <DropListComponent label='Checklist Category' placeholder='Choose Checklist Category' list={CheckLis_Categories_List??[]}  onSelect={(val)=>{setSelectedChecklist(val)}}/>
         </div>
         <div style={{ width: 100 }}>
           <BottonComponent onClick={handelSubmit} title="Save" />

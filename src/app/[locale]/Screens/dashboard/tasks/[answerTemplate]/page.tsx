@@ -53,27 +53,32 @@ function AnswerTemplate() {
   let task_id: number | undefined = undefined;
   let company_id: number | undefined = undefined;
   let site_id: number | undefined = undefined;
+  let inspection_to: number | undefined = undefined;
   if (templateID) {
     const raw = Array.isArray(templateID) ? templateID[0] : templateID;
   
     // نقسم كل جزء بناءً على الـ "-"
     const parts = raw.split("-");
   
-    if (parts.length >= 5) {
+    if (parts.length >= 6) {
       // أول جزء هو الـ task_id
       task_id = Number(parts[0]);
   
       // آخر 3 أجزاء دايمًا هي template_id, company_id, site_id
-      const sitePart = parts.pop(); // آخر جزء = site_id
-      const companyPart = parts.pop(); // اللي قبله = company_id
-      const templatePart = parts.pop(); // اللي قبله = template_id
-  
+      task_id = Number(parts[0]);       // أول جزء
+      inspection_to = Number(parts[1]); // تاني جزء
+      
+      // آخر 3 أجزاء = template_id, company_id, site_id
+      const sitePart = parts.pop();      // site_id
+      const companyPart = parts.pop();   // company_id
+      const templatePart = parts.pop();  // template_id
+    
       site_id = Number(sitePart);
       company_id = Number(companyPart);
       id = Number(templatePart);
   
       // الباقي من الأجزاء هو الـ title
-      title = decodeURIComponent(parts.slice(1).join("-"));
+      title = decodeURIComponent(parts.slice(2).join("-"));
     }
   }
 
@@ -111,7 +116,15 @@ function AnswerTemplate() {
     preventPageExit(true);
     return () => preventPageExit(false);
   }, []);
+
+
+
   
+  
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
+  useEffect(() => {
+    if (data) setQuestions(data);
+  }, [data]);
   const handleAnswerChange = (newAnswer: Answer) => {
     newAnswer.company_id = company_id ?? -1;
     newAnswer.site_id = site_id ?? -1;
@@ -160,6 +173,60 @@ function AnswerTemplate() {
     
     return updatedAnswers;
   });
+
+   // ✅ هنا الجزء الخاص بإضافة أو إزالة الحقول
+   if (newAnswer.type === "mcq") {
+    setQuestions((prevQuestions: any) =>
+      prevQuestions.map((q: any) => {
+        if (q.id !== newAnswer.questionID) return q;
+  
+        const mcqValue = Number(newAnswer.value);
+        const baseFields = q.question_fields;
+        const existingFieldTypes = baseFields.map((f: any) => f.type);
+  
+        // ✅ الحقول اللي ممكن نضيفها
+        const extraFields = [
+          { id: -1, type: "action", label: "Action Required", question_field_options: [] },
+          { id: -2, type: "comment", label: "Comment", question_field_options: [] },
+          { id: -3, type: "images", label: "Attach Images", question_field_options: [] },
+        ];
+  
+        if (mcqValue === 0) {
+          // أضف فقط الحقول غير الموجودة بالفعل
+          const missingFields = extraFields.filter(
+            (ef) => !existingFieldTypes.includes(ef.type)
+          );
+  
+          return {
+            ...q,
+            question_fields: [...baseFields, ...missingFields],
+          };
+        } else {
+          // ✅ امسح إجابات الأكشن والكومنت والصور للسؤال دا
+          setAnswers((prev) =>
+            prev.filter(
+              (a) =>
+                a.questionID !== newAnswer.questionID ||
+                !["action", "comment", "images"].includes(a.type)
+            )
+          );
+          // احذف فقط الحقول اللي أضفناها يدويًا (ID سالب)
+          return {
+            ...q,
+            question_fields: baseFields.filter(
+              (f: any) =>
+                !(
+                  ["action", "comment", "images"].includes(f.type) &&
+                  f.id < 0 // يعني مضاف محليًا مش جاى من الباك
+                )
+            ),
+          };
+        }
+      })
+    );
+
+  }
+  
 };
 
 
@@ -169,30 +236,43 @@ function handelSubmit(){
   // ✅ تحقق من أن كل الأسئلة المطلوبة متجاوب عليها
   const requiredFields: { questionID: number; fieldID: number }[] = [];
   //=== Step 1
+  // data.forEach((q: QuestionType) => {
+  //   q.question_fields.forEach((field) => {
+  //     requiredFields.push({ questionID: q.id, fieldID: field.id });
+  //     });
+  //   });
   data.forEach((q: QuestionType) => {
     q.question_fields.forEach((field) => {
-      requiredFields.push({ questionID: q.id, fieldID: field.id });
-      // if (field.type === "mcq" || field.type === "score") {
-        //   requiredFields.push({ questionID: q.id, fieldID: field.id });
-        // }
-      });
+      // ✅ استثناء الأنواع غير المطلوبة
+      if (!["action", "images", "comment"].includes(field.type)) {
+        requiredFields.push({ questionID: q.id, fieldID: field.id });
+      }
     });
-    // === Step 2 (بدل ما نخزنهم في Array نخزنهم في Set)
+  });
+
     const answeredFields = new Set(
       answers
-      .filter((a) => {
-        if (a.value === null || a.value === undefined) return false;
-        if (typeof a.value === "string" && a.value.trim() === "") return false; // 💡 مهم
-        return true;
-      })
-      .map((a) => `${a.questionID}-${a.fieldID}`)
+        .filter((a) => {
+          // لو النوع نصي وفضي
+          if (typeof a.value === "string") return a.value.trim() !== "";
+    
+          // لو النوع Blob (زي الصور أو الملفات)
+          if (a.value instanceof Blob) return a.value.size > 0;
+    
+          // لو نوع رقمي
+          if (typeof a.value === "number") return !isNaN(a.value);
+    
+          // fallback لأي نوع تاني
+          return a.value !== null && a.value !== undefined;
+        })
+        .map((a) => `${a.questionID}-${a.fieldID}`)
     );
+    
     // === Step 3 (check missing faster)
     const missing = requiredFields.filter(
       (f) => !answeredFields.has(`${f.questionID}-${f.fieldID}`)
     );
     // === Step 4
-    
     if (missing.length > 0) {
       // ❌ لسه فيه أسئلة ناقصة
       setIsSubmiLoading(false);
@@ -212,6 +292,7 @@ function handelSubmit(){
         templateScore,
         percentage: `${Math.floor((100 * (templateScore / finalScore)))}%`,
       }),
+      inspection_to:inspection_to ?? -1,
       submitted_by: info?.userDetails.full_name ?? "unknown",
       // answered_at: new Date().toISOString(),
     
@@ -236,7 +317,7 @@ function handelSubmit(){
     
     
     
-    console.log("Answers ready to send:", payload);
+    console.error("Answers ready to send:", payload);
     // ===== SUBMIT ANSWERS
     if(isPending){
       setIsSubmiLoading(false);
@@ -263,10 +344,10 @@ function handelSubmit(){
       )
       
     },
-    onError:()=>{
+    onError:(e)=>{
       setIsSubmiLoading(false);
       setShowValidationPopup(true);
-      setValidationPopupMSG(`You still need to answer ${missing.length} required questions.`);
+      setValidationPopupMSG(`${e}`);
     }
   });   
 }
@@ -311,7 +392,7 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
   // console.log("fieldCounts (mcq & score only) :: ", fieldCounts);
   // console.log("Questionss ::>> ",data);
 
-  const Questions = data.map((question: QuestionType, index: number) => (
+  const Questions = questions.map((question: QuestionType, index: number) => (
     <QuestionAnswerTemplateComponent
       key={index}
       questionNumber={index + 1}

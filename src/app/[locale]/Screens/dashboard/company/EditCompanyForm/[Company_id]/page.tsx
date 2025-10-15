@@ -152,6 +152,7 @@ function EditCompanyForm() {
       deleteSite({id:id},{onSuccess:()=>{setLoading(false);},onError:()=>{setLoading(false);}})
     }
     setSites((prev) => prev.filter((_, i) => i !== index));
+    setLoading(false);
   };
 
   const handleUpdateSite = ( index: number, id: number, isID: boolean, updatedSite: Partial<siteType>, saveToAPI: boolean = false) => {

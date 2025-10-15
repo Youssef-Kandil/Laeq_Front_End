@@ -24,7 +24,7 @@ function Report() {
   const isEmployee = info?.role === "employee";
   const targetId = isEmployee ? info?.userDetails?.id : info?.userDetails?.id; // user_id لو يوزر, admin_id لو أدمن
   const adminQuery = useAdminReports(targetId ?? -1);
-  const userQuery = useUserReports(targetId ?? -1);
+  const userQuery = useUserReports(info?.userDetails?.full_name??"");
   
   const { data, isLoading, error } = isEmployee ? userQuery : adminQuery;
 
@@ -60,6 +60,7 @@ function Report() {
   return (
     <div>
       <ClientOnlyTable
+      dateFilter
         titles={[
           `${local_var}.id`,
           `${local_var}.name`,

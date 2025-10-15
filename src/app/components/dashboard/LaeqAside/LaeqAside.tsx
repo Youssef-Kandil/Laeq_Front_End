@@ -11,14 +11,15 @@ import { FaPowerOff } from "react-icons/fa6";
 
 import Cookies from "js-cookie";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 import { AccountInfo } from "@/app/Types/AccountsType";
 
 
 function LaeqAside() {
   const info :AccountInfo = getAdminAccountInfo("AccountInfo") as AccountInfo;
   console.log("Nave INFo ", info);
-// const router = useRouter();
+const router = useRouter();
   const current_lang = useLocale();
   const t = useTranslations("aside_component");
 
@@ -126,7 +127,8 @@ function LaeqAside() {
           onClick={()=>{
               localStorage.clear();
               localStorage.removeItem("AccountInfo");
-              Cookies.remove("AccountInfo")
+              Cookies.remove("AccountInfo");
+              router.replace(`/${current_lang}/Screens/forms/login`);
           }}  
           className={Styles.title} 
           style={{textDecoration:"underline",color:"rgba(199, 8, 8, 0.5)"}}>

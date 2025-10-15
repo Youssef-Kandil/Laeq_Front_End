@@ -22,6 +22,7 @@ import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 
 interface AssignTaskPayload {
   admin_id: number;
+  inspection_to: number;
   user_id: number;
   template_id: number ;
   company_id: number;
@@ -32,6 +33,7 @@ interface AssignTaskPayload {
   duration_type:string|null;
   end_repeated:number;
   repete_every_custom_hour:number|null;
+  
 }
 
 

@@ -14,6 +14,7 @@ import {useTranslations,useLocale} from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useAdminAccount , useGoogleAdminAccount} from '@/app/Hooks/useAdminAccount';
 import Cookies from 'js-cookie';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 
 
 function Signup() {
@@ -300,7 +301,27 @@ function Signup() {
                     {/* === INPUTS === */}
                     
                     <label htmlFor="question" >Security Question</label>
-                    <input type="text" id="question" value={securityQuestion} onChange={(e)=>setSecurityQuestion(e.target.value)} />
+                    {/* <input type="text" id="question" value={securityQuestion} onChange={(e)=>setSecurityQuestion(e.target.value)} /> */}
+                    <div style={{width:"100%" }}>
+                        <DropListComponent
+                          label=''
+                          placeholder='Choose Your Security Question'
+                          value={securityQuestion?{id:0,value:securityQuestion,title:securityQuestion}:null}
+                          list={[
+                            { id: 1, value: "What’s your favorite teacher’s name?" },
+                            { id: 2, value: "What city were you born in?" },
+                            { id: 3, value: "What was your first pet’s name?" },
+                            { id: 4, value: "What’s your mother’s maiden name?" },
+                            { id: 5, value: "What was your first school’s name?" },
+                            { id: 6, value: "What’s your favorite childhood movie?" },
+                            { id: 7, value: "What’s your favorite color?" },
+                            { id: 8, value: "What’s your dream job?" },
+                            { id: 9, value: "What’s your best friend’s name?" },
+                            { id: 10, value: "What’s your favorite food?" },
+                          ]}
+                          onSelect={(e) => setSecurityQuestion(e.value)}
+                        />
+                    </div>
                     <label htmlFor="answer" >Security Answer</label>
                     <input type="text" id="answer" value={securityAnswer} onChange={(e)=>setSecurityAnswer(e.target.value)} />
                     <div style={{ display:"flex", alignItems:"center" ,width:"100%",gap:10}}>

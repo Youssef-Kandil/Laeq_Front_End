@@ -14,11 +14,11 @@ export const useAdminReports = (admin_id: number) => {
 };
 
 // ✅ هوك تقارير اليوزر
-export const useUserReports = (user_id: number) => {
+export const useUserReports = (submitted_by: string) => {
   return useQuery({
-    queryKey: ["userReports", user_id],
+    queryKey: ["userReports", submitted_by],
     queryFn: () =>
-      api.post("/get_user_reports", { user_id }).then((res) => res),
-    enabled: !!user_id,
+      api.post("/get_user_reports", { submitted_by }).then((res) => res),
+    enabled: !!submitted_by,
   });
 };

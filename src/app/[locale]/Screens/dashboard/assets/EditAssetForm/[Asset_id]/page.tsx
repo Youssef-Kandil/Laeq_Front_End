@@ -22,6 +22,7 @@ import { AssetsType } from "@/app/Types/AssetsType";
 import { DropListType } from "@/app/Types/DropListType";
 import { AccountInfo } from "@/app/Types/AccountsType";
 import ImagePreviewPopup from "@/app/components/global/ImagePreviewPopup/ImagePreviewPopup";
+import CategoriesList from "@/app/config/AssetsCtegories";
 
 function EditAssetForm() {
   const router = useRouter();
@@ -270,11 +271,19 @@ function EditAssetForm() {
             value={asset.model ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, model: txt }))}
           />
-          <InputComponent
+          {/* <InputComponent
             label="Category"
             placeholder="Enter asset category"
             value={asset.asset_category ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, asset_category: txt }))}
+          /> */}
+          <DropListComponent
+            label="Category"
+            placeholder="Choose your category"
+            defaultOption={{id:-1,title:asset.asset_category??"",value:asset.asset_category??""}}
+            value={{id:-1,title:asset.asset_category,value:asset?.asset_category??""}}
+            list={CategoriesList}
+            onSelect={(el) => setAsset((prev) => ({ ...prev, asset_category: el.value }))}
           />
           <InputComponent
             label="Brand"

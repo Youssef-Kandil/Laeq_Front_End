@@ -29,11 +29,13 @@ interface Employee {
 
 interface AssignTaskPayload {
   admin_id: number;
+  inspection_to: number;
   user_id: number;
   template_id: number ;
   company_id: number;
   site_id: number;
   status?: string;
+
 }
 
 
@@ -181,6 +183,7 @@ function ChooseUserTableScreen() {
                                       site_id: emp?.site_id??1-1,       // من الجدول sites
                                       company_id: emp.company_id??-1, // من الجدول companies
                                       admin_id: targetId??-1, // من الانفو بتاع الادمن
+                                      inspection_to: targetId??-1, // من الانفو بتاع الادمن
                                       template_id:temp_id!
                                     })); 
                   console.log("Selected Users (modifiing):: ", modifiing);

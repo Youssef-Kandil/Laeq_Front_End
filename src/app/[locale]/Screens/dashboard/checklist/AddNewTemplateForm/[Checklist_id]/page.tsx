@@ -62,7 +62,7 @@ function AddNewTemplateForm() {
       ...prev,
       {
         question_title: "",
-        fields: [{ id: Date.now(), type: "short_text" }],
+        fields: [{ id: Date.now(), type: "mcq",options:[{id:1,label:"Yes",value:"1"},{label:"No",value:"0"},{id:2,label:"N/A",value:"-1"}] }],
       },
     ]);
   };

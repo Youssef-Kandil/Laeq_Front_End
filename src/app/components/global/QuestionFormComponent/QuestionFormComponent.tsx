@@ -67,8 +67,8 @@ function QuestionFormComponent({
       location: ["Location", <FaMapLocationDot key="Location"/>],
       signature: ["Signature", <PiSignatureDuotone key="Signature" />],
       checkbox: ["Checkbox", <GrList key="Checkbox"/>],
-      assets_list: ["assets Checkbox List", <GrList key="all assets"/>],
-      users_list: ["users Checkbox List", <CgUserList key="all assets"/>],
+      assets_list: ["Assets List", <GrList key="all assets"/>],
+      users_list: ["Users List", <CgUserList key="all users"/>],
       mcq: ["MCQ", <BsChatRightText key="MCQ"/>],
     };
 
@@ -193,8 +193,8 @@ function QuestionFormComponent({
             { id: 2, value: "number", title: "number" },
             { id: 3, value: "comment", title: "comment" },
             { id: 4, value: "checkbox", title: "Checkbox" },
-            { id: 5, value: "users_list", title: "users Checkbox List" },
-            { id: 6, value: "assets_list", title: "assets Checkbox List" },
+            { id: 5, value: "users_list", title: "Users List" },
+            { id: 6, value: "assets_list", title: "Assets List" },
             { id: 7, value: "mcq", title: "MCQ" },
             { id: 8, value: "action", title: "action" },
             { id: 9, value: "images", title: "images" },

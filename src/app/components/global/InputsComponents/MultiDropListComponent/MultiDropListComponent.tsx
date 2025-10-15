@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Style from './DropListComponent.module.css';
+import Style from './MultiDropListComponent.module.css';
 import { IoIosArrowDown } from "react-icons/io";
 import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 interface listType {
   id: number;
@@ -13,38 +15,30 @@ interface props {
   label: string;
   list: listType[];
   placeholder?: string;
-  defaultOption?: listType;
-  value?: listType | null;
-  onSelect?: (val: listType) => void;
+  defaultOptions?: listType[];
+  values?: listType[];
+  onSelect?: (val: string[]) => void; // ✅ ترجع array of strings
 }
 
-function DropListComponent({
+function MultiDropListComponent({
   label,
   list,
   placeholder = "اختر...",
-  defaultOption,
-  value,
+  defaultOptions = [],
+  values,
   onSelect,
 }: props) {
-  const [SelectedValue, setSelectedValue] = useState<listType | null>(defaultOption ?? null);
+  const [selectedValues, setSelectedValues] = useState<listType[]>(defaultOptions);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // ✅ تحديث القيمة من الخارج
+  // ✅ تحديث القيم القادمة من الخارج
   useEffect(() => {
-    if (value) {
-      setSelectedValue(value);
+    if (values) {
+      setSelectedValues(values);
     }
-  }, [value]);
-
-  // ✅ تحديث الـ defaultOption
-  useEffect(() => {
-    if (defaultOption && !value) {
-      setSelectedValue(defaultOption);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultOption]);
+  }, [values]);
 
   // ✅ اغلاق القائمة عند الضغط خارجها
   useEffect(() => {
@@ -57,11 +51,21 @@ function DropListComponent({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function handelSelectValue(value: listType) {
-    setSelectedValue(value);
-    onSelect?.(value);
-    setShowPicker(false);
-    setSearchText('');
+  // ✅ دالة تغيير التحديد
+  function handleToggleValue(item: listType) {
+    const exists = selectedValues.some(v => v.id === item.id);
+    let newValues: listType[];
+    if (exists) {
+      newValues = selectedValues.filter(v => v.id !== item.id);
+    } else {
+      newValues = [...selectedValues, item];
+    }
+
+    setSelectedValues(newValues);
+
+    // ✅ نرجع فقط Array of strings من values
+    const onlyValues = newValues.map(v => v.value);
+    onSelect?.(onlyValues);
   }
 
   // ✅ فلترة القائمة
@@ -69,36 +73,29 @@ function DropListComponent({
     (el.title ?? el.value).toLowerCase().includes(searchText.toLowerCase())
   );
 
+  // ✅ عرض النص في الحقل
+  const displayText =
+    selectedValues.length > 0
+      ? selectedValues.map(v => v.title ?? v.value).join(', ')
+      : placeholder;
+
   return (
-    <div 
-      onClick={() => {
-        if(list.length !== 0){
-          setShowPicker(!showPicker);
-        }
-      }} 
-      className={Style.input_wrapper} 
-      ref={wrapperRef}
-    >
+    <div className={Style.input_wrapper} ref={wrapperRef}>
       <label className={Style.input_label}>{label}</label>
-      <div id={Style.piker} className={Style.input_container}>
-        <div
-          className={Style.selected_value}
-          onClick={() => {
-            if(list.length !== 0){
-              setShowPicker(!showPicker);
-            }
-          }} 
-        >
-          {SelectedValue?.title ?? placeholder}
+      <div
+        id={Style.piker}
+        className={Style.input_container}
+        onClick={() => {
+          if (list.length !== 0) {
+            setShowPicker(!showPicker);
+          }
+        }}
+      >
+        <div className={Style.selected_value}>
+          {displayText}
         </div>
 
-        <IoIosArrowDown 
-          onClick={() => {
-            if(list.length !== 0){
-              setShowPicker(!showPicker);
-            }
-          }} 
-        />
+        <IoIosArrowDown />
 
         {showPicker && (
           <div className={Style.options}>
@@ -106,7 +103,6 @@ function DropListComponent({
               <p>{list.length !== 0 ? label : "Error: No Data In The List"}</p>
             </div>
 
-            {/* ✅ مربع البحث */}
             {list.length !== 0 && (
               <input
                 type="text"
@@ -114,20 +110,25 @@ function DropListComponent({
                 placeholder="search..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                onClick={(e) => e.stopPropagation()} // يمنع غلق القائمة عند الكتابة
+                onClick={(e) => e.stopPropagation()}
               />
             )}
 
             <FormGroup className={Style.list}>
               {filteredList.length > 0 ? (
                 filteredList.map((el, index) => (
-                  <span
+                  <FormControlLabel
                     key={index}
-                    onClick={() => handelSelectValue(el)}
+                    control={
+                      <Checkbox
+                        checked={selectedValues.some(v => v.id === el.id)}
+                        onChange={() => handleToggleValue(el)}
+                      />
+                    }
+                    label={el.title ?? el.value}
                     className={Style.label}
-                  >
-                    {el.title ?? el.value}
-                  </span>
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 ))
               ) : (
                 <span className={Style.no_result}>لا توجد نتائج</span>
@@ -140,4 +141,4 @@ function DropListComponent({
   );
 }
 
-export default DropListComponent;
+export default MultiDropListComponent;

@@ -3,11 +3,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Styles from './card.module.css';
 import { IoEllipsisVertical } from "react-icons/io5";
-import { IoMdListBox } from "react-icons/io";
+// import { IoMdListBox } from "react-icons/io";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import { LuClipboardPenLine } from 'react-icons/lu';
+
 
 interface Props {
   title: string;
@@ -16,10 +18,10 @@ interface Props {
   onDelete: (id: number) => void; // 🗑️ فانكشن الحذف
   onEdit: (id: number) => void; 
   disabledMenu?:boolean;  // ❤️ فانكشن التعديل
-  
+  isLaeq?:boolean;
 }
 
-function Card({ title, imgSrc, cardInfo, disabledMenu=false,onDelete, onEdit }: Props) {
+function Card({ title,isLaeq=false, imgSrc, cardInfo, disabledMenu=false,onDelete, onEdit }: Props) {
   const router = useRouter();
   const current_lang = useLocale();
   const [showMenu, setShowMenu] = useState(false);
@@ -28,7 +30,11 @@ function Card({ title, imgSrc, cardInfo, disabledMenu=false,onDelete, onEdit }: 
   // === navigate to quizs ===
   const handelGetQuizs = () => {
     const TemplateID = cardInfo.id;
-    router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${cardInfo.checklist_title}-${TemplateID}`);
+    if (isLaeq) {
+      router.push(`/${current_lang}/laeq-admin/dashboard/checklist/Quizes/${cardInfo.checklist_title}-${TemplateID}`);
+    }else{
+      router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${cardInfo.checklist_title}-${TemplateID}`);
+    }
   };
 
   // === close menu when clicking outside ===
@@ -47,7 +53,7 @@ function Card({ title, imgSrc, cardInfo, disabledMenu=false,onDelete, onEdit }: 
       {imgSrc ? (
         <Image src={imgSrc} alt='' width={280} height={254} />
       ) : (
-        <div className={Styles.notImg}><IoMdListBox /></div>
+        <div className={Styles.notImg}><LuClipboardPenLine /></div>
       )}
 
       <div  className={Styles.cardFooter}>

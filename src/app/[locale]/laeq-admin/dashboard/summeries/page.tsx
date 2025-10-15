@@ -12,8 +12,9 @@ import { IoMdPersonAdd } from "react-icons/io";
 import { SiReaddotcv } from "react-icons/si";
 import { LuPackagePlus } from "react-icons/lu";
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
-import { useSummeries } from '@/app/Hooks/useSummeries';
+import { useLaeqSummeries} from '@/app/Hooks/useSummeries';
 import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
+import Image from 'next/image';
 // import {formatDate} from '@/app/utils/date';
 
 
@@ -83,19 +84,24 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
             {iconColor:"#FF947A",mainColor: "#FFF4DE"},
         ]
         const boxIcon =[
-            <FaSquarePollVertical key="poll-icon"/>,
-            <SiReaddotcv key="poll-icon"/>,
-            <MdSell key="sell-icon"/>,
-            <IoMdPersonAdd key="users-icon"/>,
+          <SiReaddotcv key="poll-icon"/>,
+          <IoMdPersonAdd key="users-icon"/>,
+          <MdSell key="sell-icon"/>,
+          <FaSquarePollVertical key="poll-icon"/>,
             <LuPackagePlus key="assets-icon"/>,
         ]
 
-        const {data:SummeriesData,isLoading,isError} = useSummeries(Number(Info?.userDetails.id));
+        const {data:SummeriesData,isLoading,isError} = useLaeqSummeries(Number(Info?.userDetails.id));
         if (isLoading) return <SkeletonLoader/>;
         if (isError) return <p>Something went wrong</p>;
         
        
-        const boxesData = [{title:"Total Reports",info:SummeriesData?.ReportsCount},{title:"Total Companies",info:SummeriesData?.companiesCount},{title:"Total Sites",info:SummeriesData?.sitesCount},{title:"Total Users",info:SummeriesData?.employeesCount??""},{title:"Total Assets",info:SummeriesData?.assetsCount},]
+        const boxesData = [
+            {title:"Total Companies",info:SummeriesData?.companiesCount},
+            {title:"Total Clients",info:SummeriesData?.SubscripersCount},
+            {title:"Total Sales",info:SummeriesData?.totalAmount},
+            {title:"Total Reports",info:SummeriesData?.ReportsCount??""},
+            {title:"Total Inspectors",info:SummeriesData?.employeesCount}]
         const tasksCounts = calculateReportStatusCounts(SummeriesData?.ReportSummeries || []);
         const ActionsCounts = calculateReportStatusCounts(SummeriesData?.actionSummeries || []);
         
@@ -153,10 +159,11 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
         return(
             <div key={indx} style={{background:boxColors[indx].mainColor}} className={Styles.Box}>
                     <div>
+                        <span className={Styles.title}>{box.title}</span>
                         <span style={{background:boxColors[indx].iconColor}} className={Styles.icon} >{boxIcon[indx]}</span>
                     </div>
-                    <p className={Styles.info}>{box.info}</p>
-                    <span className={Styles.title}>{box.title}</span>
+                    
+                    <p className={Styles.info}>{box.info} {box.title == "Total Sales"?<Image src="/price.svg" alt="" width={30} height={30}/>:null}</p>
             </div>
         )
     })
@@ -175,7 +182,7 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
           </section>
 
           <section id={Styles.Totals}>
-            <h3>Total Tasks</h3>
+            <h3>Tasks</h3>
             <div className={Styles.info_container}>
                 
                 <div className={Styles.Box}>
@@ -248,7 +255,7 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
           </section>
 
           <section id={Styles.Totals}>
-            <h3>Total Actions</h3>
+            <h3>Actions</h3>
             <div className={Styles.info_container}>
                 
                 <div className={Styles.Box}>

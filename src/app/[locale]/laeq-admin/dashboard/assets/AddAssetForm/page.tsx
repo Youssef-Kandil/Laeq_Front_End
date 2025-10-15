@@ -19,6 +19,8 @@ import { useGetCompaniesByUserId } from "@/app/Hooks/useCompany";
 import { AssetsType } from "@/app/Types/AssetsType";
 import { DropListType } from "@/app/Types/DropListType";
 import { AccountInfo } from "@/app/Types/AccountsType";
+import CategoriesList from "@/app/config/AssetsCtegories";
+
 
 function AddAssetForm() {
   const router = useRouter();
@@ -218,11 +220,18 @@ function AddAssetForm() {
             value={asset.model ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, model: txt }))}
           />
-          <InputComponent
+          {/* <InputComponent
             label="Category"
             placeholder="Enter asset category"
             value={asset.asset_category ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, asset_category: txt }))}
+          /> */}
+          <DropListComponent
+            label="Category"
+            placeholder="Enter asset category"
+            value={{id:-1,title:asset.asset_category,value:asset?.asset_category??""}}
+            list={CategoriesList}
+            onSelect={(el) => setAsset((prev) => ({ ...prev, asset_category: el.title }))}
           />
           <InputComponent
             label="Brand"

@@ -14,6 +14,10 @@ import MailIcon from '@mui/icons-material/Mail';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
+import { FaInstagram ,FaWhatsapp ,FaSnapchat} from "react-icons/fa6";
+import { FaFacebookF } from "react-icons/fa";
+
+
 
 
 function Footer() {
@@ -40,10 +44,10 @@ function Footer() {
         {/* <Image src={"/images/شعار لائق -06.jpeg"} alt='logo' width={200} height={200}/> */}
         <Image src={"/images/logo365.jpeg"} alt='logo' width={100} height={100}/>
         <div>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span><FaInstagram/></span>
+            <span><FaSnapchat/></span>
+            <span><FaWhatsapp/></span>
+            <span><FaFacebookF/></span>
         </div>
 
       </section>
@@ -60,19 +64,14 @@ function Footer() {
       <section className={Styles.section} id='3'>   
         <h3>{t_footer("legal.title")}</h3>
         <div>
-            <p>
+            <a href='/pdfs/Privacy Policy.pdf'>
                 {t_footer("legal.privacy_policy")}
-            </p>
+            </a>
         </div>
         <div>
-            <p>
+            <a href='/pdfs/Privacy Policy.pdf'>
                 {t_footer("legal.terms_services")}
-            </p>
-        </div>
-        <div>
-            <p>
-                {t_footer("legal.terms_of_use")}
-            </p>
+            </a>
         </div>
       </section>
     {/* ===== END Legal ===== */}

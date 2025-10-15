@@ -62,11 +62,11 @@ function CheckLists() {
             },
           })
         }
-        const idx = (data || []).findIndex((item: { owner: string | undefined; }) => item.owner === info?.email);
+        const idx = (data || [])?.findIndex((item: { owner: string | undefined; }) => item?.owner === info?.email);
         console.log("data :: ",data[idx])
 
-      const Cards = data.map((card:{id:number,checklist_title:string,admin_id:number},indx:number)=>{
-        return <Card key={indx} disabledMenu={data[idx].id == card.id} onDelete={()=>handelDeleteChecklist(card.id)} onEdit={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/EditCheckList/${card.id}`)} title={card.checklist_title} imgSrc={""} cardInfo={card}/>
+      const Cards = data?.map((card:{id:number,checklist_title:string,admin_id:number},indx:number)=>{
+        return <Card key={indx} isLaeq={true} disabledMenu={data[idx]?.id == card?.id} onDelete={()=>handelDeleteChecklist(card.id)} onEdit={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/EditCheckList/${card.id}`)} title={card.checklist_title} imgSrc={""} cardInfo={card}/>
       })
 
 
@@ -114,8 +114,8 @@ function CheckLists() {
           {/* === START BTN */}  
           {/* {(!isEmployee&& maxChecklist != 0&&maxChecklist)&& <button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm`)} className={Styles.button} >Add New Checklist</button>} */}
           <div className={Styles.btns}>
-            {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/AddNewTemplateForm/${data[idx].id}`)} className={Styles.button2} >Add New Template</button>}
-            {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/AddNewChecklist`)} className={Styles.button} >Add New Checklist</button>}
+            {<button onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/AddNewTemplateForm/${data[idx].id}`)} className={Styles.button2} >Add New Template</button>}
+            {<button onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/AddNewChecklist`)} className={Styles.button} >Add New Category</button>}
           </div>
 
           

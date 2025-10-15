@@ -50,16 +50,16 @@ function Inspector_requests() {
         year: "numeric",
       })
     : "-",
-    assignAction: (
+    assignAction:  item.status == "Pending"?(  
       <BottonComponent
         title='Assign'
         onClick={() => {
-          router.push(`/${current_lang}/laeq-admin/dashboard/inspector_requests/AssignForm/${item?.companies?.id}-${item?.sites?.id}`)
+          router.push(`/${current_lang}/laeq-admin/dashboard/inspector_requests/AssignForm/${item.id}-${item?.admin_id}-${item?.companies?.id}-${item?.sites?.id}`)
           
         }}
       />
-    ),
-    rejectAction: (
+    ):<p color='green'>Assigned</p>,
+    rejectAction:item.status == "Pending"? (
       <BottonComponent
         title='reject'
         onClick={() => {
@@ -67,7 +67,7 @@ function Inspector_requests() {
         }}
         colorRed
       />
-    ),
+    ):"--",
   }));
 
   const local_var = "inspector_requests.tb_headers";
