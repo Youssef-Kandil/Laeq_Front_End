@@ -121,3 +121,18 @@
   flex: 1;
   color: white;
 }
+
+@media (max-width:500px) {
+  .field {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    position: relative;
+    min-height: 60px;
+    width: 360px;
+    max-width:100%;
+    display: flex;
+    align-items: center;
+  }
+}

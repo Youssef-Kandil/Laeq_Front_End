@@ -24,7 +24,7 @@ function Quiz_card({title,questionsCount,imgSrc,icon}:props) {
     <div className={Styles.parent}>
       <section>
         {/* <Image src={imgSrc} alt='QuizImg' width={60} height={60}/> */}
-        <HiOutlineTemplate title={imgSrc} size={30} color={app_identity.secondary_color}/>
+        <HiOutlineTemplate title={imgSrc} style={{alignSelf:"start"}} size={30} color={app_identity.secondary_color}/>
         <div className={Styles.text}>
             <h3>{title}</h3>
             <p>{questionsCount} questions</p>

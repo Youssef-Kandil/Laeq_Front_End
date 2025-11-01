@@ -182,7 +182,7 @@ function AutomationForm() {
   
       SendTask([payload], {
         onSuccess: () => {
-          router.push(`/${current_lang}/Screens/dashboard/tasks`);
+          router.push(`/${current_lang}/laeq-admin/dashboard/tasks`);
         },
         onError: (error) => {
           setSubmitLoading(false);

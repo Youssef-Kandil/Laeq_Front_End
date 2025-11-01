@@ -20,6 +20,7 @@ import { AccountInfo } from "@/app/Types/AccountsType";
 import { preventPageExit } from "@/app/utils/preventPageExit";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 import { report_payload } from "@/app/Types/AnswerType";
+// import { FaFile } from "react-icons/fa";
 
 // نوع البيانات اللي هتتبعت للباك
 interface Answer {
@@ -311,11 +312,32 @@ function handelSubmit(){
     );
     // === Step 4
     
+    // if (missing.length > 0) {
+    //   // ❌ لسه فيه أسئلة ناقصة
+    //   setIsSubmiLoading(false);
+    //   setShowValidationPopup(true);
+    //   setValidationPopupMSG(`You still need to answer ${missing.length} required questions.`);
+    //   return;
+    // }
     if (missing.length > 0) {
-      // ❌ لسه فيه أسئلة ناقصة
       setIsSubmiLoading(false);
       setShowValidationPopup(true);
-      setValidationPopupMSG(`You still need to answer ${missing.length} required questions.`);
+    
+      // استخراج أرقام الأسئلة الناقصة بناءً على ترتيبها في data
+      const missingQuestionNumbers = Array.from(
+        new Set(
+          missing.map((m) => {
+            const questionIndex = data.findIndex((q:any) => q.id === m.questionID);
+            return questionIndex !== -1 ? questionIndex + 1 : null;
+          }).filter((num) => num !== null)
+        )
+      );
+    
+      const formattedList = missingQuestionNumbers.join(", ");
+    
+      setValidationPopupMSG(
+        `You still need to answer question number: ${formattedList[0]}`
+      );
       return;
     }
 
@@ -465,7 +487,8 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
         <div style={{ margin: "0px 20px", padding: "10px", background: "#f0f0f0", borderRadius: "8px" }}>
           <p>Score: {templateScore} / {finalScore}</p> <span>{Math.floor((100*(templateScore/finalScore)))}%</span>
         </div>
-        <div>
+        <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:20}}>
+        {/* <p style={{color:"#444",border:"#444 1px solid",padding:'7px 15px',display:"flex",alignItems:"center",gap:10,marginBottom:10,borderRadius:5,cursor:"pointer"}}><FaFile /> Draft</p> */}
           <BottonComponent
             disabled={isPending}
             title="Submit"
@@ -481,7 +504,8 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
       <div style={{ margin: "0px 20px", padding: "10px", background: "#f0f0f0", borderRadius: "8px" }}>
         <p>Score: {templateScore} / {finalScore}</p> <span>{Math.floor((100*(templateScore/finalScore)))}%</span>
       </div>
-      <div>
+      <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:20}}>
+      {/* <p style={{color:"#444",border:"#444 1px solid",padding:'7px 15px',display:"flex",alignItems:"center",gap:10,marginBottom:10,borderRadius:5,cursor:"pointer"}}><FaFile /> Draft</p> */}
         <BottonComponent
           disabled={isPending}
           title="Submit"

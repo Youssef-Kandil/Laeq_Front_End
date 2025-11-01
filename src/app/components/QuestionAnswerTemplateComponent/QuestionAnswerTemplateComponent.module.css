@@ -13,4 +13,30 @@
         margin-bottom: 20px;
         color:rgba(50, 49, 53, 1);
     }
+    .QuestionAnswers{
+        margin-bottom: 1rem;
+    }
+}
+
+
+@media (max-width:500px) {
+    .Question{
+        /* margin: 50px 20px 100px 20px; */
+        padding:50px 1px 100px 1px ;
+        margin: 20px 5px;
+        background-color: #FFF;
+        border-radius: 8px;
+        && h2{
+            font-family: Roboto;
+            font-weight: 500;
+            font-size: 17px;
+            line-height: 20px;
+            letter-spacing: 0.5%;
+            margin-bottom: 20px;
+            color:rgba(50, 49, 53, 1);
+        }
+        .QuestionAnswers{
+            margin-bottom: 1rem;
+        }
+    }
 }

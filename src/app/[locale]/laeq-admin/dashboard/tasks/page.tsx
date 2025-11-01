@@ -98,6 +98,8 @@ function Tasks() {
   const info = getAdminAccountInfo("AccountInfo");
   const isEmployee = info?.role === "employee";
   const targetId = isEmployee ? info?.id : info?.userDetails?.id;
+  const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+  const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(null);
 
   // Fetch tasks
   const {
@@ -180,11 +182,14 @@ function Tasks() {
               />
             ) : task.status === "In Progress" ? (
               <BottonComponent title="Loading..."  />
+            ) : task.status === "Draft" ? (
+              <BottonComponent title="Complete"/>
             ) : (
               <p style={{ color: "#68A6A6" }}>Finished</p>
-            ),
+            )
         };
-      } else {
+
+      }else{
         return {
           ...baseData,
           // edit: (
@@ -193,8 +198,11 @@ function Tasks() {
           //   </button>
           // ),
           delete: (
-            <button onClick={()=>deleteTask({id:task.id})} className="p-2 hover:text-red-600">
-              <LuTrash2 style={{ fontSize: 20 }} />
+            <button onClick={()=>{
+              setSelectedTaskId(task.id);
+              setConfirmDeletePopup(true);
+            }} className="p-2 hover:text-red-600">
+              <LuTrash2  style={{fontSize:20}}/>
             </button>
           ),
           task:
@@ -212,9 +220,14 @@ function Tasks() {
                   )
                 }
               />
-            ) : task.status === "In Progress" ? (
+            ) 
+            : task.status === "In Progress" ? (
               <BottonComponent title="Loading..."  />
-            ) : (
+            ) 
+            : task.status === "Draft" ? (
+              <BottonComponent title="Complete"  />
+            ) 
+            : (
               <p style={{ color: "#68A6A6" }}>Finished</p>
             ),
         };
@@ -225,14 +238,34 @@ function Tasks() {
   return (
     <div>
       {showValidationPopup&&<Popup icon={<CiSquareRemove color="red"/>} title="Wrong!" subTitle={ValidationPopupMSG} onClose={()=>setShowValidationPopup(false)}/>}
+      {/* بوباب تأكيد الحذف */}
+      {confirmDeletePopup && (
+          <Popup
+            icon={<LuTrash2 style={{ color: "red" }} />}
+            title="Are you sure you want to delete?"
+            subTitle="when you delete this Task you cannot be undone."
+            btnTitle="Yes, delete"
+            btnFunc={() => {
+              if (selectedTaskId) {
+                deleteTask({ id: selectedTaskId });
+              }
+              setConfirmDeletePopup(false);
+              setSelectedTaskId(null);
+            }}
+            onClose={() => {
+              setConfirmDeletePopup(false);
+              setSelectedTaskId(null);
+            }}
+          />
+        )}
       <ClientOnlyTable
         titles={headers}
         data={modifiedData}
         filter
         rowsFlex={
           isEmployee
-            ? [1, 1, 1, 1, 1, 1,1, 1]
-            : [1.5, 1, 1, 1, 1, 1, 1,1.5, 0.5, 1]
+            ? [1, 1, 1, 1, 1, 1,1, 1.2]
+            : [1.5, 1, 1, 1, 1, 1, 1,1.5, 0.5, 1.2]
         }
       />
     </div>

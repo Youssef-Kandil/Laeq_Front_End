@@ -55,12 +55,12 @@ function AddAssetForm() {
     })) ?? [];
 
   function getSitesByCompanyId(companyId: number) {
-    const company = Companies.data?.find((c: { id: number }) => c.id === companyId);
+    const company = Companies?.data?.find((c: { id: number }) => c?.id === companyId);
     const SitesList =
       company?.sites?.map((item: { id: number; site_name: string }) => ({
-        id: item.id,
-        value: item.id,
-        title: item.site_name,
+        id: item?.id,
+        value: item?.id,
+        title: item?.site_name,
       })) ?? [];
     return company ? SitesList : [];
   }
@@ -126,16 +126,16 @@ function AddAssetForm() {
     }
 
     const payload: AssetsType = {
-      asset_name: asset.asset_name ?? "",
-      asset_category: asset.asset_category ?? "",
-      brand: asset.brand ?? "",
-      model: asset.model ?? "",
-      warranty_date: asset.warranty_date ?? "",
-      last_maintenance_date: asset.last_maintenance_date ?? "",
-      next_maintenance_date: asset.next_maintenance_date ?? "",
-      color: asset.color ?? "",
-      serial_number: asset.serial_number ?? "",
-      description: asset.description ?? "",
+      asset_name: asset?.asset_name ?? "",
+      asset_category: asset?.asset_category ?? "",
+      brand: asset?.brand ?? "",
+      model: asset?.model ?? "",
+      warranty_date: asset?.warranty_date ?? "",
+      last_maintenance_date: asset?.last_maintenance_date ?? "",
+      next_maintenance_date: asset?.next_maintenance_date ?? "",
+      color: asset?.color ?? "",
+      serial_number: asset?.serial_number ?? "",
+      description: asset?.description ?? "",
       company_id: company,
       site_id: site,
       admin_id: AdminID ?? -1,
@@ -229,10 +229,11 @@ function AddAssetForm() {
           <DropListComponent
             label="Category"
             placeholder="Enter asset category"
-            value={{id:-1,title:asset.asset_category,value:asset?.asset_category??""}}
+            value={{id:-1,title:asset?.asset_category??"",value:asset?.asset_category??""}}
             list={CategoriesList}
-            onSelect={(el) => setAsset((prev) => ({ ...prev, asset_category: el.title }))}
+            onSelect={(el) => setAsset((prev) => ({ ...prev, asset_category: el.value }))}
           />
+          
           <InputComponent
             label="Brand"
             placeholder="Enter brand"

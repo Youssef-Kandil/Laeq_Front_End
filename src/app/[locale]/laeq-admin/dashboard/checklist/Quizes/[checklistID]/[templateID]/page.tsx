@@ -147,7 +147,7 @@ function CheckList() {
         <div>
              <BottonComponent 
                 title='Use This Template'
-                onClick={()=>  router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${title}-${id}/ChooseUserTableScreen`)}/>
+                onClick={()=>  router.push(`/${current_lang}/laeq-admin/dashboard/checklist/Quizes/${checklistID}/${title}-${id}/ChooseUserTableScreen`)}/>
         </div>
       </nav>
       {Questions}

@@ -14,3 +14,24 @@
         outline-color: var(--Secondary-color);
     }
 }
+
+@media (max-width:500px) {
+    .input{
+        display: flex;
+        flex-direction:column;
+        max-width: 100% !important;
+    
+        .field{
+            border: 1px solid rgba(224, 228, 236, 1);
+            border-radius: 8px;
+            width: 100%!important;
+            min-width: 250px;
+            max-width: 519px;
+            height: 52px;
+            padding: 10px 16px;
+            margin-top: 5px;
+            margin-bottom: 16px;
+            outline-color: var(--Secondary-color);
+        }
+    }
+}

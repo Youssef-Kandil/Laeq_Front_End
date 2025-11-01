@@ -83,7 +83,7 @@ function Subscriptions() {
       <ClientOnlyTable
         titles={baseHeaders}
         data={modifiedData}
-        rowsFlex={ [2, 1, 1, 0.5, 0.5, 1, 0.5]}
+        rowsFlex={ [2, 1, 1, 0.5, 0.5, 1, 1]}
       />
     </div>
   );

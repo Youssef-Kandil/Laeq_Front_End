@@ -1,54 +1,397 @@
-
 {
-
-    "nave_bar_component":{
-        "home":"الرئيسية",
-        "sectors":"التخصصات",
-        "pricing":"الباقات",
-        "about_us":"عنا",
-        "contact_us":"تواصل معنا",
-
-        "login_btn":"تسجيل "
+    "alerts": {
+      "success": {
+        "title": "نجاح",
+        "text": "تم تنفيذ العملية بنجاح"
+      },
+      "error": {
+        "title": "خطأ",
+        "text": "حدث خطأ، يرجى المحاولة مرة أخرى"
+      },
+      "warning": {
+        "title": "تحذير",
+        "wrong_passowrd_or_email": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        "confirm_password_not_match": "كلمتا المرور غير متطابقتين",
+        "missing_data": "يرجى إدخال جميع الحقول المطلوبة",
+        "wrong_phone_number": "يرجى إدخال رقم هاتف صالح",
+        "wrong_email": "يرجى إدخال بريد إلكتروني صالح",
+        "wrong_password": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف كبير وصغير ورقم ورمز خاص",
+        "wrong_data": "يرجى إدخال بيانات صحيحة"
+      },
+      "info": {
+        "title": "معلومة",
+        "text": "إليك بعض المعلومات المفيدة"
+      },
+      "confirm": {
+        "title": "تأكيد",
+        "text": "هل أنت متأكد من المتابعة؟"
+      },
+      "cancel": {
+        "title": "إلغاء",
+        "text": "تم إلغاء العملية"
+      }
     },
-
-    "login_screen":{
-        "title":"اهلا بعودتك",
-        "subtitle":"",
-        "email_label":"البريد الإلكتروني",
-        "password_label":"كلمة المرور",
-        "OR":"أو",
-        "submit_button":"تسجيل الدخول",
-         "google_login":"تسجيل الدخول باستخدام جوجل",
-        "Do_not_have_account":"ليس لديك حساب؟",
-        "signup":"انشاء حساب مجانا"
+  
+    "common": {
+      "loading": "جارٍ التحميل...",
+      "no_data": "لا توجد بيانات متاحة",
+      "search": "بحث",
+      "save": "حفظ",
+      "delete": "حذف",
+      "edit": "تعديل",
+      "update": "تحديث",
+      "add": "إضافة",
+      "remove": "إزالة",
+      "yes": "نعم",
+      "no": "لا",
+      "ok": "موافق",
+      "cancel": "إلغاء"
     },
-
-    "signup_screen":{
-        "title":"انشئ حساب جديد",
-        "full_name_label":"Full name",
-        "email_label":"Email",
-        "Phone_number_label":"Phone number",
-        "password_label":"Password",
-        "Confirm_Password_label":"Confirm Password",
-        "submit_button":"Signup",
-        "OR":"or",
-        "google_signup":"Sign up with Google"
+  
+    "aside_component": {
+      "title": "سلامة الأغذية - LAEQ",
+      "dashboard": "لوحة التحكم",
+      "checklist": "قائمة الفحص",
+      "tasks": "المهام",
+      "reports": "التقارير",
+      "actions": "الإجراءات",
+      "assets": "الأصول",
+      "notifications": "الإشعارات",
+      "users": "المستخدمون",
+      "Inspectors": "المفتشون",
+      "roles": "الأدوار",
+      "company": "الشركات",
+      "department": "الأقسام",
+      "inspector_requests": "طلبات التفتيش",
+      "Subscriptions": "الاشتراكات",
+      "Invoices": "الفواتير",
+      "payments_plans": "المدفوعات والخطط",
+      "settings": "الإعدادات"
     },
-    "website":{
-    "hi":"اختبار",
-        "home_screen":{
-            "header":{
-                "first_title":"نضمن لك أمان عالي في",
-                "special_word":"الغذاء",
-                "second_title":" و ادارة للفريق من اي مكان"
-            },
-            "partners":{},
-            "features":{},
-            "sectors":{},
-            "soluions":{},
-            "assets":{},
-            "actions":{},
-            "experience":{}
+  
+    "table_component": {
+      "search": "بحث",
+      "date": "التاريخ:",
+      "filter": "تصفية",
+      "filter_status": {
+        "title": "اختر الحالة",
+        "reset": "إعادة تعيين",
+        "all": "الكل",
+        "Completed": "مكتمل",
+        "Pending": "قيد الانتظار",
+        "In_Progress": "قيد التنفيذ",
+        "approved": "موافق عليه",
+        "Rejected": "مرفوض",
+        "not_started": "لم يبدأ",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "archived": "مؤرشف",
+        "draft": "مسودة",
+        "published": "منشور",
+        "unpublished": "غير منشور"
+      },
+      "tbfooter": {
+        "previous": "السابق",
+        "next": "التالي"
+      },
+      "client_dashboard": {
+        "employees": {
+          "tb_headers": {
+            "id": "#",
+            "name": "الموظف",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الهاتف",
+            "site": "الموقع",
+            "role": "الدور",
+            "status": "الحالة"
+          },
+          "button_title": "إضافة مستخدم جديد"
+        },
+  
+        "chooseUser": {
+          "tb_headers": {
+            "id": "المعرف",
+            "employee": "الموظف",
+            "phone": "الهاتف",
+            "email": "البريد الإلكتروني",
+            "site": "الموقع",
+            "company": "الشركة",
+            "role": "الدور"
+          },
+          "button_title": "إرسال",
+          "button_title2": "إعدادات متقدمة"
+        },
+  
+        "reports": {
+          "tb_headers": {
+            "id": "معرّف التقرير",
+            "name": "اسم التقرير",
+            "phone": "الهاتف",
+            "company": "الشركة",
+            "site": "الموقع",
+            "score": "النتيجة",
+            "submitted_by": "تم الإرسال بواسطة",
+            "date": "التاريخ",
+            "status": "الحالة"
+          },
+          "button_title": "طباعة",
+          "button_title2": "أتمتة"
+        },
+  
+        "actions": {
+          "tb_headers": {
+            "id": "معرّف الإجراء",
+            "name": "اسم الإجراء",
+            "company": "الشركة",
+            "site": "الموقع",
+            "date": "التاريخ",
+            "submitted_by": "تم الإرسال بواسطة",
+            "status": "الحالة",
+            "assign": "تعيين"
+          },
+          "button_title": "إنشاء إجراء جديد"
+        },
+  
+        "subscriptions": {
+          "tb_headers": {
+            "transaction_id": "رقم المعاملة",
+            "user": "البريد الإلكتروني",
+            "plan": "الخطة",
+            "planType": "المدة",
+            "amount": "المبلغ",
+            "subscripe_at": "تاريخ الاشتراك",
+            "invoice": "الفاتورة"
+          }
+        },
+  
+        "tasks": {
+          "tb_headers": {
+            "employee": "الموظف",
+            "checklist": "قائمة الفحص",
+            "repeated": "مكرر",
+            "company": "الشركة",
+            "site": "الموقع",
+            "score": "النتيجة",
+            "status": "الحالة",
+            "repeate": "مكرر",
+            "location": "الموقع",
+            "date": "التاريخ"
+          }
+        },
+  
+        "assets": {
+          "tb_headers": {
+            "name": "اسم الأصل",
+            "model": "الطراز",
+            "category": "الفئة",
+            "brand": "العلامة التجارية",
+            "warranty": "الضمان",
+            "company": "الشركة",
+            "site": "الموقع"
+          },
+          "button_title": "إضافة أصل جديد"
+        },
+  
+        "roles": {
+          "tb_headers": {
+            "name": "اسم الدور",
+            "department": "القسم",
+            "description": "الوصف",
+            "size": "الحجم"
+          },
+          "button_title": "إضافة دور جديد"
+        },
+  
+        "company": {
+          "tb_headers": {
+            "name": "اسم الشركة",
+            "sectorType": "نوع القطاع",
+            "site": "الموقع",
+            "size": "الحجم"
+          },
+          "button_title": "إضافة شركة جديدة"
+        },
+  
+        "department": {
+          "tb_headers": {
+            "name": "اسم القسم",
+            "company": "الشركة",
+            "site": "الموقع"
+          },
+          "button_title": "إضافة قسم جديد"
+        },
+  
+        "inspector_requests": {
+          "tb_headers": {
+            "id": "رقم الطلب",
+            "company": "الشركة",
+            "site": "الموقع",
+            "location": "الموقع",
+            "date": "التاريخ",
+            "status": "الحالة"
+          },
+          "button_title": "إضافة طلب جديد"
         }
+      }
+    },
+  
+    "nave_bar_component": {
+      "home": "الرئيسية",
+      "sectors": "القطاعات",
+      "pricing": "الأسعار",
+      "about_us": "من نحن",
+      "contact_us": "تواصل معنا",
+      "login_btn": "تسجيل الدخول"
+    },
+  
+    "footer_component": {
+      "reach_us": "تواصل معنا",
+      "legal": {
+        "title": "سياسات",
+        "privacy_policy": "سياسة الخصوصية",
+        "terms_services": "الشروط والخدمات",
+        "terms_of_use": "شروط الاستخدام"
+      },
+      "company": "الشركة"
+    },
+  
+    "login_screen": {
+      "title": "مرحبًا بعودتك",
+      "subtitle": "",
+      "email_label": "البريد الإلكتروني",
+      "password_label": "كلمة المرور",
+      "submit_button": "تسجيل الدخول",
+      "OR": "أو",
+      "google_login": "تسجيل الدخول عبر جوجل",
+      "Do_not_have_account": "ليس لديك حساب؟",
+      "signup": "أنشئ حسابًا مجانًا"
+    },
+  
+    "signup_screen": {
+      "title": "أنشئ حساب تجربة مجانية",
+      "full_name_label": "الاسم الكامل",
+      "email_label": "البريد الإلكتروني",
+      "Phone_number_label": "رقم الهاتف",
+      "password_label": "كلمة المرور",
+      "Confirm_Password_label": "تأكيد كلمة المرور",
+      "submit_button": "تسجيل",
+      "OR": "أو",
+      "google_signup": "التسجيل عبر جوجل",
+      "already_have_an_account": "هل لديك حساب بالفعل؟",
+      "login": "تسجيل الدخول"
+    },
+  
+    "contact_us": {
+      "title": "ابقَ على",
+      "special_word": " تواصل ",
+      "subtitle": "نحن هنا للإجابة على استفساراتك وتقديم الدعم في أي وقت.",
+      "full_name_placeholder": "الاسم *",
+      "email_placeholder": "البريد الإلكتروني *",
+      "Phone_number_placeholder": "رقم الهاتف *",
+      "how_did_you_find_us_placeholder": "كيف تعرفت علينا؟",
+      "Phone_number": "رقم الهاتف",
+      "whatsup": "واتساب",
+      "email": "البريد الإلكتروني",
+      "submit_button": "إرسال"
+    },
+  
+    "not_found_screen": {
+      "title": "عذرًا! الصفحة غير موجودة",
+      "text": "الصفحة التي تبحث عنها غير متاحة أو تم حذفها",
+      "go_back_btn": "العودة إلى الصفحة الرئيسية"
+    },
+  
+    "website": {
+      "home_screen": {
+        "header": {
+          "first_title": "بسّط إدارة السلامة و",
+          "special_word": "الأغذية",
+          "second_title": "لفرق العمل في كل مكان",
+          "get_started_btn": "ابدأ الآن",
+          "free_trial_btn": "ابدأ التجربة المجانية"
+        },
+        "partners": "أكثر من 1000 شركة تثق بـ LAEQ",
+        "features": {
+          "first_title": "خصائص ",
+          "special_word": " قوية ",
+          "second_title": "لتطوير سير عملك",
+          "subtitle": "استكشف مجموعة من الأدوات الذكية التي تسهّل عملياتك اليومية",
+          "boxe1": {
+            "title": "الأصول",
+            "subtitle": "إدارة دقيقة لأصولك للحفاظ على الكفاءة والسلامة"
+          },
+          "boxe2": {
+            "title": "عمليات التفتيش",
+            "subtitle": "أجرِ عمليات تفتيش منظمة وسريعة بضغطة زر"
+          },
+          "boxe3": {
+            "title": "التقارير",
+            "subtitle": "أنشئ تقارير احترافية لتتبع الأداء والجودة بسهولة"
+          }
+        },
+        "sectors": {
+          "title": "القطاعات",
+          "subtitle": "حلول متكاملة لسلامة وجودة الغذاء",
+          "text": "قم بتحسين عملياتك وضمان الامتثال بأدوات سهلة الاستخدام تساعدك على إدارة الفحص والأصول والتقارير في مكان واحد.",
+          "btn": "ابدأ التجربة المجانية"
+        },
+        "soluions": {
+          "first_title": "حلول تناسب جميع ",
+          "special_word": "القطاعات",
+          "subtitle": "نساعدك على تنظيم العمليات وضمان الامتثال بسهولة"
+        },
+        "assets": {
+          "title": "الأصول",
+          "subtitle": "أساس الثقة والحماية",
+          "text": "وفر نظامًا متكاملًا لإدارة الأصول يدعم السلامة والاستدامة في جميع مراحل العمل."
+        },
+        "actions": {
+          "first_title": "اكتشف ",
+          "special_word": "القوة ",
+          "second_title": "في التنفيذ",
+          "subtitle": "شاهد مقاطع قصيرة توضّح كيف تبسّط منصتنا سير العمل وتعزز الأداء."
+        },
+        "experience": {
+          "title": "اختبر الفرق بنفسك",
+          "text": "احصل على عرض مباشر مخصص لاحتياجاتك أو جرّب النظام مجانًا لمدة 14 يومًا بدون بطاقة ائتمان.",
+          "get_started_btn": "ابدأ الآن",
+          "free_trial": "ابدأ التجربة المجانية"
+        }
+      },
+      "pricing_screen": {
+        "title": "ميزات قوية لـ",
+        "special_word": "شركات قوية",
+        "subtitle": "اختر الخطة المناسبة لاحتياجاتك",
+        "pay_monthly": "الدفع شهريًا",
+        "pay_yearly": "الدفع سنويًا"
+      },
+      "about_us_screen": {
+        "header": {
+          "title": "من نحن",
+          "subtitle": "تمكّنك منصة LAEQ من إدارة سلامة الأغذية بسهولة وكفاءة عبر أدوات ذكية تضمن الامتثال وتحسن الإنتاجية وتدعم التعاون داخل الفريق.",
+          "get_started_btn": "ابدأ الآن",
+          "free_trial_btn": "ابدأ التجربة المجانية"
+        },
+        "busniess_section": {
+          "suptitle": "لماذا تختار العمل معنا؟",
+          "title": "لنرتقي بعملك إلى المستوى التالي",
+          "cards": {
+            "experience": "سنوات من الخبرة",
+            "clients": "عملاء مميزون",
+            "brands": "موثوق بنا من قبل علامات رائدة",
+            "service": "دعم فني متواصل"
+          }
+        },
+        "team_section": {
+          "title": "إدارة",
+          "special_word": "الفريق"
+        },
+        "brands_section": {
+          "first_title": "محبوب من قبل ",
+          "special_word": "العلامات التجارية ",
+          "second_title": "حول العالم"
+        }
+      }
     }
-}
+  }
+  

@@ -73,6 +73,7 @@ function Report() {
         data={modifiedData}
         rowsFlex={[0.6, 1, 1, 1, 1, 1 , 0.2]}
         navButtonTitle="reports"
+        navButtonAction={()=>window.print()}
       />
     </div>
   );

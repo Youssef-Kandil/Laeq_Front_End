@@ -22,6 +22,7 @@ import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoade
 import { MdModeEdit } from "react-icons/md";
 // import { useDeleteCheckList } from '@/app/Hooks/useCheckList';
 import { useQueryClient } from '@tanstack/react-query';
+import Popup from '@/app/components/global/Popup/Popup';
 
 // NOTES: THE ROWS OF Checklists THAT HAVE SAME PARENT template
 
@@ -36,7 +37,11 @@ function Quizes() {
     const params = useParams(); 
     const { checklistID }= params
     const ID = checklistID?.toString().split("-")[1]; 
-    // const ID = checklistID?.toString().slice(-1)
+    const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+    const [selectedTemplateId, setSelectedTemplateId] = React.useState<number | null>(null);
+    // const ID = checklistID?.toString().slice(-1);
+    // 🔍 حالة البحث
+    const [searchTerm, setSearchTerm] = React.useState("");
 
     // Send Request To Backend To Get All Quizes OF This template 
     
@@ -56,26 +61,19 @@ function Quizes() {
     //   }
     // }
     const handelDeleteTemplate = (id:number)=>{
-      if (!isPending) {
-        deleteTemplate({id:id},
-          {
-            onSuccess: () => {
-              // 🟢 كدا بيجبر الكويري إنه يعمل refetch
-              queryClient.invalidateQueries({
-                queryKey: ['templates', Number(ID)],
-              });
-            },
-          }
-        )
-      }
+      setSelectedTemplateId(id);
+      setConfirmDeletePopup(true);
     }
 
     if (isLoading) return <SkeletonLoader/>;
     if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
     if (!data) return <div>لا توجد بيانات</div>;
-    
+          // ✅ فلترة البيانات بناءً على نص البحث
+  const filteredData = data.filter((template: TemplateType) =>
+    template.template_title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
     // Reander It (Maping)
-    const Cards = data.map((card:TemplateType,indx:number)=>{
+    const Cards = filteredData.map((card:TemplateType,indx:number)=>{
         return  <Quiz_card
                     key={indx}
                     imgSrc={"/images/login.webp"} 
@@ -96,22 +94,61 @@ function Quizes() {
     
 
   return (
-    <div className={Styles.parent}>
-        
-        <nav>
-            <div className={Styles.pikers}>
-                <div className={Styles.input_container}>
+    <div>
+        {/* بوباب تأكيد الحذف */}
+        {confirmDeletePopup && (
+          <Popup
+            icon={<RiDeleteBinLine style={{ color: "red" }} />}
+            title="Are you sure you want to delete?"
+            subTitle="when you delete this Template you cannot be undone."
+            btnTitle="Yes, delete"
+            btnFunc={() => {
+              if (selectedTemplateId) {
+                if (!isPending) {
+                  deleteTemplate({id:selectedTemplateId},
+                    {
+                      onSuccess: () => {
+                        // 🟢 كدا بيجبر الكويري إنه يعمل refetch
+                        queryClient.invalidateQueries({
+                          queryKey: ['templates', Number(ID)],
+                        });
+                      },
+                    }
+                  )
+                }
+              }
+              setConfirmDeletePopup(false);
+              setSelectedTemplateId(null);
+            }}
+            onClose={() => {
+              setConfirmDeletePopup(false);
+              setSelectedTemplateId(null);
+            }}
+          />
+        )}
+      <div className={Styles.parent}>
+          
+          <nav>
+              <div className={Styles.pikers}>
+              <div className={Styles.input_container}>
                     <IoIosSearch style={{fontSize:22}}/>
-                    <input type="text" placeholder={t("search")} id="" />
+                    {/* 🔍 هنا بندي input حالة البحث */}
+                    <input
+                      type="text"
+                      placeholder={t("search")}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                {/* <BottonComponent colorRed onClick={handelDeleteChecklist} title="Delete this Checklist"/> */}
-            </div>
-      </nav>
+                  {/* <BottonComponent colorRed onClick={handelDeleteChecklist} title="Delete this Checklist"/> */}
+              </div>
+        </nav>
 
-      
-      <section>
-        {Cards}
-      </section>
+        
+        <section>
+          {Cards}
+        </section>
+      </div>
     </div>
   )
 }

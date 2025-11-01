@@ -10,7 +10,7 @@
     .field{
         border: 1px solid rgba(224, 228, 236, 1);
         border-radius: 8px;
-        min-width: 350px;
+        min-width: calc(350px - 78px);
         max-width: 519px;
         height: 52px;
         padding: 10px 16px;

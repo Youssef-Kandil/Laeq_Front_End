@@ -12,3 +12,26 @@
         color: rgb(93, 92, 92);
     }
 }
+
+@media (max-width:500px) {
+    .nav{
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px;
+        flex-wrap: wrap;
+        row-gap: 30px;
+        && span{
+            flex: 2;
+            font-weight: 500;
+            font-size: 17px;
+            line-height: 140%;
+            letter-spacing: 0%;
+            vertical-align: middle;
+            color: rgb(93, 92, 92);
+            width: 100%;
+            min-width: 270px;
+            white-space: normal; /* ✅ يسمح للنص يلف */
+            word-break: break-word;
+        }
+    }
+}

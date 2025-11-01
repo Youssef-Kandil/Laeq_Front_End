@@ -14,6 +14,7 @@ import Popup from '@/app/components/global/Popup/Popup';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { AccountInfo } from '@/app/Types/AccountsType';
+import { FaRegEye } from "react-icons/fa";
 
 
 function Company() {
@@ -26,7 +27,9 @@ function Company() {
                   ? info?.userDetails?.admin_id
                   : info?.userDetails?.id;
         const limits = info?.userDetails?.admin_account_limits;
-        console.log("limits ::: COMPANYESSS >>> ", limits);
+        console.log(limits);
+        const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+        const [selectedCompanyId, setSelectedCompanyId] = React.useState<number | null>(null);
         // const [maxCompanies] = React.useState<number>(
         //     typeof limits?.max_branches === "number" ? limits.max_branches : 0
         // );
@@ -59,8 +62,12 @@ function Company() {
           company_name,
           sector_type,
           sites: sites.length, // عدد المواقع
-          delete_action: isEmployee? null: <LuTrash2 onClick={()=>deleteCompany({id})} style={{ fontSize: 20 }} />,
-          edit_action: isEmployee? null: <FiEdit2 onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/company/EditCompanyForm/${id}`)} style={{ fontSize: 20 }} />
+          delete_action:<LuTrash2 onClick={()=>{
+            setSelectedCompanyId(id);
+            setConfirmDeletePopup(true);
+           }} style={{fontSize:20}}/>,
+          edit_action: isEmployee? null: <FiEdit2 onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/company/EditCompanyForm/${id}`)} style={{ fontSize: 20 }} />,
+          show_action: isEmployee? null: <FaRegEye onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/company/ShowCompanyDetails/${id}`)} style={{ fontSize: 20 }} />
       }));
   return (
     <div>
@@ -71,12 +78,32 @@ function Company() {
         btnTitle="Upgrade to unlock higher limits"
         btnFunc={()=>router.push(`/${current_lang}/laeq-admin/dashboard/payments_plans`)}
         onClose={()=>setShowPopup(false)}/>}
+        {/* بوباب تأكيد الحذف */}
+        {confirmDeletePopup && (
+          <Popup
+            icon={<LuTrash2 style={{ color: "red" }} />}
+            title="Are you sure you want to delete?"
+            subTitle="when you delete this Company you cannot be undone."
+            btnTitle="Yes, delete"
+            btnFunc={() => {
+              if (selectedCompanyId) {
+                deleteCompany({ id: selectedCompanyId });
+              }
+              setConfirmDeletePopup(false);
+              setSelectedCompanyId(null);
+            }}
+            onClose={() => {
+              setConfirmDeletePopup(false);
+              setSelectedCompanyId(null);
+            }}
+          />
+        )}
 
 
         <ClientOnlyTable 
-            titles={[`${local_var}.name`,`${local_var}.sectorType`,`${local_var}.site`,"",""]}
+            titles={[`${local_var}.name`,`${local_var}.sectorType`,`${local_var}.site`,"","",""]}
             data={modifiedData}
-            rowsFlex={isEmployee?[1,1,1,0,0]:[1,1,1,0.2,0.2]}
+            rowsFlex={isEmployee?[1,1,1,0,0]:[1,1,1,0.2,0.2,0.2]}
             navButtonTitle={isEmployee?"":'company'}
             navButtonAction={()=>{
               router.push(`/${current_lang}/laeq-admin/dashboard/company/AddCompanyForm`)

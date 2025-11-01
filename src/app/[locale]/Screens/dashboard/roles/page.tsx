@@ -9,6 +9,7 @@ import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoade
 
 import { LuTrash2 } from "react-icons/lu";
 import { FiEdit2 } from "react-icons/fi";
+import Popup from '@/app/components/global/Popup/Popup';
 
 function Roles() {
         React.useEffect(()=>{
@@ -22,7 +23,9 @@ function Roles() {
       // Delete hook
       const { mutate: deleteRole } = useDeleteRole();
         const {data,isLoading,error} = useRole(Info?.userDetails.id ?? 0);
-        console.warn("data : ",data)
+        const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+        const [selectedRoleId, setSelectedRoleId] = React.useState<number | null>(null);
+          // حالة البوباب التأكيدي للحذف
               if (isLoading) return <SkeletonLoader variant="table" tableColumns={6} tableRows={8} />;
               if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
               if (!data) return <div>لا توجد بيانات</div>;
@@ -46,17 +49,41 @@ function Roles() {
       const modifiedData = (data as Role[]).map(({id, role_name,description}) => ({
         role_name,
         description,
-         delete_action:<LuTrash2 onClick={()=>deleteRole({id})} style={{fontSize:20}}/>,
+        //  delete_action:<LuTrash2 onClick={()=>deleteRole({id})} style={{fontSize:20}}/>,
+         delete_action:<LuTrash2 onClick={()=>{
+          setSelectedRoleId(id);
+          setConfirmDeletePopup(true);
+         }} style={{fontSize:20}}/>,
          edit_action:<FiEdit2 onClick={()=>router.push(`/${current_lang}/Screens/dashboard/roles/EditRoleForm/${id}`)} style={{fontSize:20}}/>
       }));
   return (
     <div>
+            {/* بوباب تأكيد الحذف */}
+    {confirmDeletePopup && (
+          <Popup
+            icon={<LuTrash2 style={{ color: "red" }} />}
+            title="Are you sure you want to delete?"
+            subTitle="when you delete this Role you cannot be undone."
+            btnTitle="Yes, delete"
+            btnFunc={() => {
+              if (selectedRoleId) {
+                deleteRole({ id: selectedRoleId });
+              }
+              setConfirmDeletePopup(false);
+              setSelectedRoleId(null);
+            }}
+            onClose={() => {
+              setConfirmDeletePopup(false);
+              setSelectedRoleId(null);
+            }}
+          />
+        )}
         <ClientOnlyTable 
             titles={[`${local_var}.name`,`${local_var}.description`,"",""]}
             data={modifiedData}
             rowsFlex={[1,1,0.2,0.2]}
             navButtonTitle='roles'
-            navButtonAction={()=>router.push(`/${current_lang}/Screens/dashboard/roles/AddRoleForm`)}
+            navButtonAction={()=>router.push(`/${current_lang}/Screens/dashboard/roles/AddRoleForm?count=${data?.length}`)}
          />
     </div>
   )

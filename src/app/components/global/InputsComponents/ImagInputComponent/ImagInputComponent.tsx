@@ -4,18 +4,16 @@ import { LuImagePlus } from "react-icons/lu";
 import Styles from "./imagInputComponent.module.css";
 import Image from "next/image";
 
-interface props {
+interface Props {
   lable: string;
   defaultValue?: string;
   onChange?: (image: Blob | null) => void;
 }
 
-function ImagInputComponent({ lable, defaultValue, onChange }: props) {
+function ImagInputComponent({ lable, defaultValue, onChange }: Props) {
   const [preview, setPreview] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
 
-  // ✅ نفك JSON string لو جاي كده
   const parsedDefaultUrl = React.useMemo(() => {
     try {
       if (!defaultValue) return null;
@@ -23,26 +21,31 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
         const obj = JSON.parse(defaultValue);
         return obj?.fileUrl ?? null;
       }
-      return defaultValue; // URL عادي
+      return defaultValue;
     } catch {
       return null;
     }
   }, [defaultValue]);
 
-  // ✅ لو فيه defaultValue نحطه في preview
   React.useEffect(() => {
-    if (parsedDefaultUrl) {
-      setPreview(parsedDefaultUrl);
-    }
+    if (parsedDefaultUrl) setPreview(parsedDefaultUrl);
   }, [parsedDefaultUrl]);
 
+  // ✅ آمنة في Next.js: لا تستخدم window أو Image إلا في المتصفح
   const convertToWebp = (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+      if (typeof window === "undefined") {
+        reject("Not in browser environment");
+        return;
+      }
 
-      reader.onload = (e: ProgressEvent<FileReader>) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        if (typeof window === "undefined") return;
+
         const img = document.createElement("img");
+        img.crossOrigin = "anonymous";
         img.src = e.target?.result as string;
 
         img.onload = () => {
@@ -50,24 +53,35 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
           canvas.width = img.width;
           canvas.height = img.height;
           const ctx = canvas.getContext("2d");
-
           if (!ctx) return reject("Canvas not supported");
 
           ctx.drawImage(img, 0, 0);
+
+          // ✅ نحاول نحفظها webp ولو فشل نحفظها jpeg
           canvas.toBlob(
             (blob) => {
               if (blob) resolve(blob);
-              else reject("Conversion failed");
+              else {
+                canvas.toBlob(
+                  (fallbackBlob) => {
+                    if (fallbackBlob) resolve(fallbackBlob);
+                    else reject("Conversion failed");
+                  },
+                  "image/jpeg",
+                  0.9
+                );
+              }
             },
             "image/webp",
             0.9
           );
         };
 
-        img.onerror = reject;
+        img.onerror = () => reject("Error loading image");
       };
 
       reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   };
 
@@ -76,9 +90,9 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const maxSizeKB = 4449;
-    const maxWidth = 4500;
-    const maxHeight = 4500;
+    const maxSizeKB = 14449;
+    const maxWidth = 8500;
+    const maxHeight = 8500;
 
     const fileSizeKB = file.size / 1024;
     if (fileSizeKB > maxSizeKB) {
@@ -90,7 +104,9 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
 
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (typeof window === "undefined") return;
       const img = document.createElement("img");
+
       img.onload = async () => {
         if (img.width > maxWidth || img.height > maxHeight) {
           setError(`أبعاد الصورة يجب أن تكون ${maxWidth}×${maxHeight} بكسل أو أقل.`);
@@ -99,7 +115,6 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
         } else {
           setError(null);
           setPreview(e.target?.result as string);
-
           try {
             const webpBlob = await convertToWebp(file);
             onChange?.(webpBlob);
@@ -109,61 +124,61 @@ function ImagInputComponent({ lable, defaultValue, onChange }: props) {
           }
         }
       };
-      if (e.target?.result) {
-        img.src = e.target.result as string;
-      }
+
+      if (e.target?.result) img.src = e.target.result as string;
     };
     reader.readAsDataURL(file);
 
-    // ✅ فضي القيمة بعد شوية علشان ما يفتحش الـ picker تاني أول مرة
     setTimeout(() => {
       event.target.value = "";
     }, 0);
-  };
-
-  const openFilePicker = () => {
-    inputRef.current?.click();
   };
 
   return (
     <div className={Styles.ImageInput}>
       {error && <p className={Styles.errorMsg}>{error}</p>}
 
-      {!preview && (
-        <label onClick={openFilePicker} htmlFor="image-upload" style={{ cursor: "pointer" }}>
-          <LuImagePlus className={Styles.icon} size={30} />
-          <p>{lable}</p>
-        </label>
-      )}
+      <label htmlFor="image-upload" className={Styles.uploadLabel}>
+        {!preview ? (
+          <>
+            <LuImagePlus className={Styles.icon} size={30} />
+            <p>{lable}</p>
+          </>
+        ) : (
+          <div className={Styles.previewContainer}>
+            <Image
+              src={preview}
+              alt="معاينة الصورة"
+              loading="lazy"
+              width={100}
+              height={100}
+              unoptimized
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+                borderRadius: "8px",
+                objectFit: "contain",
+              }}
+            />
+            <p style={{ marginTop: "8px", textAlign: "center" }}>{lable}</p>
+          </div>
+        )}
+      </label>
 
       <input
-        ref={inputRef}
         type="file"
         id="image-upload"
         accept="image/*"
         capture="environment"
-        style={{ display: "none" }}
         onChange={handleFileChange}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1,
+        }}
       />
-
-      {preview && (
-        <div onClick={openFilePicker}>
-          <Image
-            src={preview}
-            alt="معاينة الصورة"
-            loading="lazy"
-            width={100}
-            height={100}
-            unoptimized // 👈 يمنع Next من محاولة تحميل URL invalid
-            style={{
-              maxWidth: "100%",
-              height: "auto",
-              borderRadius: "8px",
-              objectFit: "contain",
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 }

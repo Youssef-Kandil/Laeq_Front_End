@@ -248,6 +248,7 @@ function EditAssetForm() {
 
       <div style={{ marginLeft: "30px", marginRight: "30px" }}>
         <div style={{ marginBottom: "30px",display:"flex",flexDirection:'column',gap:30,alignItems:"center",justifyContent:"flex-end",width:"fit-content"}}>
+
             <ImagInputComponent
               lable="Asset Image"
               defaultValue={String(data.asset_img ? JSON.parse(data.asset_img).fileUrl : "")??""}

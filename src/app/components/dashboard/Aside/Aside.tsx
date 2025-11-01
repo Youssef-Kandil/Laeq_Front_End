@@ -14,7 +14,17 @@ import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 
+
 function Aside() {
+  // const pathname = usePathname();
+  // const [disabled, setDisabled] = React.useState<boolean>(false);
+  // React.useEffect(() => {
+  //   if (pathname.includes("tasks/")) {
+  //     setDisabled(true)
+  //     console.log("🟢 أنت الآن داخل صفحة خاصة بالـ tasks");
+  //   }
+  // }, [pathname]);
+
   const info :AccountInfo = getAdminAccountInfo("AccountInfo") as AccountInfo;
   console.log("Nave INFo ", info);
 const router = useRouter();
@@ -60,7 +70,7 @@ const router = useRouter();
   if (info?.role === "employee") {
     const userPermissions = info?.userDetails?.permissions || [];
   
-    allowedTitles = aside_titles.filter(
+    allowedTitles = aside_titles?.filter(
       (el) =>
         el.title !== "summary" && ( // 👈 استبعاد شاشة الـ summary
           el.title === "tasks" ||
@@ -71,11 +81,14 @@ const router = useRouter();
   }
 
   // === Render Titles ===
+  
   const titles = allowedTitles.map((el, index) => {
     return (
       <Link
         href={`/${current_lang}/Screens/dashboard${el.href}`}
-        onClick={() => handleTitleClick(el)}
+        onClick={() => {// يمنع التنقل
+         handleTitleClick(el);
+        }}
         style={
           clickedTitle == el.title
             ? {
@@ -119,6 +132,7 @@ const router = useRouter();
   });
 
   return (
+    
     <div className={Styles.parent} lang={current_lang}>
       <div className={Styles.main_title}>
         <Image

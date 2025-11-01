@@ -60,17 +60,41 @@ function AutomationForm() {
   
     if (templateID) {
       const raw = Array.isArray(templateID) ? templateID[0] : templateID;
-      const decoded = decodeURIComponent(raw.split("-")[2]);
-      taskObject = JSON.parse(decoded)[0]
-      console.log("RAWWWC : ",taskObject)
+      console.log("raw:", raw);
+      
+      // فك الترميز أولاً
+      const decodedRaw = decodeURIComponent(raw);
+      console.log("decodedRaw:", decodedRaw);
+      
+      // بعد فك الترميز ابحث عن بداية الـ JSON
+      const startIndex = decodedRaw.indexOf("[");
+      if (startIndex === -1) {
+        console.error("❌ لا يوجد JSON في الرابط");
+      } else {
+        const jsonPart = decodedRaw.substring(startIndex);
+        console.log("jsonPart:", jsonPart);
+      
+        try {
+          const parsed = JSON.parse(jsonPart);
+          taskObject = parsed[0];
+          console.log("✅ taskObject:", taskObject);
+        } catch (err) {
+          console.error("❌ خطأ أثناء تحليل JSON:", err, jsonPart);
+        }
+      }
+      
       
     }
     
 
     function handleSave() {
       setSubmitLoading(true);
-      if (!taskObject) return;
-      console.log("RUNNING  :",taskObject)
+      if (!taskObject) {
+        setSubmitLoading(false);
+        setShowErrorPopup(true);
+        setErrorPopupMSG({title:"Wrong 001!",subTitle:"Must Complete All Data"});
+        return;
+      }
       // 🟢 نحدد القيمة حسب frequency
         let repeatValue = 0;
         switch (frequency) {
@@ -120,44 +144,44 @@ function AutomationForm() {
         if (!payload.repeate_date) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 1!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 002!",subTitle:"Must Complete All Data"});
           return;
         }
         if (!payload.duration_type) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 2!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 003!",subTitle:"Must Complete All Data"});
           return;
         };
 
         if (!payload.admin_id || payload.admin_id === -1) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 3!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 004!",subTitle:"Must Complete All Data"});
           return;
         };
         if (!payload.user_id || payload.user_id === -1) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 4!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 005!",subTitle:"Must Complete All Data"});
           return;
         };
         if (!payload.template_id || payload.template_id === -1) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 5!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 006!",subTitle:"Must Complete All Data"});
           return;
         };
         if (!payload.company_id || payload.company_id === -1) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 6!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 007!",subTitle:"Must Complete All Data"});
           return;
         };
         if (!payload.site_id || payload.site_id === -1) {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong 7!",subTitle:"Must Complete All Data"});
+          setErrorPopupMSG({title:"Wrong 008!",subTitle:"Must Complete All Data"});
           return;
         };
 
@@ -165,7 +189,7 @@ function AutomationForm() {
             if (customHour == null || customHour == 0) {
               setSubmitLoading(false);
               setShowErrorPopup(true);
-              setErrorPopupMSG({title:"Wrong 8!",subTitle:"Must Add Custom Hour"});
+              setErrorPopupMSG({title:"Wrong 009!",subTitle:"Must Add Custom Hour"});
               return;       
             }
         };
@@ -174,7 +198,7 @@ function AutomationForm() {
             if (customDate == null || customDate.trim().length == 0) {
               setSubmitLoading(false);
               setShowErrorPopup(true);
-              setErrorPopupMSG({title:"Wrong 9!",subTitle:"Must Add Custom Date"});
+              setErrorPopupMSG({title:"Wrong 010!",subTitle:"Must Add Custom Date"});
               return;       
             }
         };
@@ -187,7 +211,7 @@ function AutomationForm() {
         onError: (error) => {
           setSubmitLoading(false);
           setShowErrorPopup(true);
-          setErrorPopupMSG({title:"Wrong!",subTitle:"SEND TASK ERROR "})
+          setErrorPopupMSG({title:"Wrong 401!",subTitle:"SEND TASK ERROR "})
           console.error("SEND TASK ERROR : ", error);
         },
       });

@@ -1,5 +1,7 @@
 .btn {
     height: 40px !important;
+    width: fit-content  !important;
+    white-space: nowrap  !important;
     border-radius: 6px !important;
     padding-top: 14.09px !important;
     padding-right: 22.14px !important;
@@ -13,5 +15,6 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    margin-bottom: 10px;
     cursor: pointer !important;
 }

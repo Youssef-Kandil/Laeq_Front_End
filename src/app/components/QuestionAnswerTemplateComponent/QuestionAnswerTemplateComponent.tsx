@@ -152,7 +152,7 @@ type QuestionProps = {
           {questionNumber}. {title} 
         </h2>
   
-        <div className="space-y-4">
+        <div className={Styles.QuestionAnswers} >
           {sortedFields.map((field) => {
             const  handleChange = async (value: unknown) => {
                 console.log("Value ::: ", value);

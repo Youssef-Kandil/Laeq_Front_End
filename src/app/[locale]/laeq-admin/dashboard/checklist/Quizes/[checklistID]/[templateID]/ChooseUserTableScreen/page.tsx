@@ -143,7 +143,7 @@ function ChooseUserTableScreen() {
                 setSubmitLoading(true);
                 SendTask(selectedUserIds,{
                     onSuccess:()=>{
-                      router.push(`/${current_lang}/Screens/dashboard/tasks`);
+                      router.push(`/${current_lang}/laeq-admin/dashboard/tasks`);
                     },
                     onError:()=>{
                       setSubmitLoading(false);
@@ -164,7 +164,7 @@ function ChooseUserTableScreen() {
             navButton2Title='chooseUser'
             navButton2Action={()=>{
               if(selectedUserIds.length != 0 && !isPending){
-                router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${templateID}-${JSON.stringify(selectedUserIds)}/ChooseUserTableScreen/AutomationForm`)
+                router.push(`/${current_lang}/laeq-admin/dashboard/checklist/Quizes/${checklistID}/${templateID}-${JSON.stringify(selectedUserIds)}/ChooseUserTableScreen/AutomationForm`)
               }else{
                 setShowErrorPopup(true);
                 setErrorPopupMSG({title:"Wrong!",subTitle:"Must Select One User"});

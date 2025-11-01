@@ -34,8 +34,6 @@ function AddCompanyForm() {
   const router = useRouter();
   const local = useLocale();
   const AdminInfo = getAdminAccountInfo("AccountInfo");
-  const isFirstTime = localStorage.getItem("first_time");
-  const [showFirstPopup, setShowFirstPopup] = useState<boolean>(isFirstTime?false:true);
   const [showSecPopup, setShowSecPopup] = useState<boolean>(false);
   const [showErrorPopup, setShowErrorPopup] = useState<boolean>(false);
   const [ErrorPopupMSG, setErrorPopupMSG] = useState<{title:string,subTitle:string}>({title:"",subTitle:""});
@@ -62,12 +60,22 @@ function AddCompanyForm() {
   const [companyEmail, setCompanyEmail] = useState<string>("");
   const [companyWebSite, setCompanyWebSite] = useState<string>("");
 
+  
   const { mutate } = useCreateCompany();
   const { data, isLoading, error } = useGetCompaniesByUserId(AdminInfo?.userDetails.id??0);
+  const isFirstTime = localStorage.getItem("first_time");
+  const [showFirstPopup, setShowFirstPopup] = useState<boolean>(false);
+  
+  React.useEffect(() => {
+    if (!isFirstTime && data && data.length === 0) {
+      setShowFirstPopup(true);
+    } else {
+      setShowFirstPopup(false);
+    }
+  }, [data, isFirstTime]);
           if (isLoading) return <div>Loading...</div>;
           if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
           if (!data) return <div>لا توجد بيانات</div>;
-          console.warn("data LLLL",data)
 
 
   const handleAddSite = () => {

@@ -9,6 +9,12 @@ import { FiEdit2 } from "react-icons/fi";
 import { useAssetsByAdmin, useDeleteAsset } from "@/app/Hooks/useAssets";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
+import { FaRegEye } from "react-icons/fa";
+import Popup from '@/app/components/global/Popup/Popup';
+
+
+
+
 
 function Assets() {
   const router = useRouter();
@@ -18,6 +24,9 @@ function Assets() {
   const info = getAdminAccountInfo("AccountInfo");
   const isEmployee = info?.role === "employee";
   const targetId = isEmployee ? info?.userDetails?.admin_id : info?.userDetails?.id;
+   // حالة البوباب التأكيدي للحذف
+  const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+  const [selectedAsset, setSelectedAsset] = React.useState<any | null>(null);
 
   // Fetch assets
   const {
@@ -52,7 +61,10 @@ function Assets() {
       delete_action: (
         <button
           className="p-2 hover:text-red-600"
-          onClick={() => deleteAsset({ id: asset.id,ImageFileName:asset?.asset_img??"" })}
+          onClick={()=>{
+            setSelectedAsset(asset);
+            setConfirmDeletePopup(true);
+          }} 
         >
           <LuTrash2 style={{ fontSize: 20 }} />
         </button>
@@ -69,10 +81,43 @@ function Assets() {
           <FiEdit2 style={{ fontSize: 20 }} />
         </button>
       ),
+      show_action: (
+        <button
+          className="p-2 hover:text-blue-600"
+          onClick={() =>
+            router.push(
+              `/${current_lang}/laeq-admin/dashboard/assets/ShowAssetDetails/${asset.id}`
+            )
+          }
+        >
+          <FaRegEye style={{ fontSize: 20 }} />
+        </button>
+      ),
     })) || [];
 
   return (
     <div>
+
+      {/* بوباب تأكيد الحذف */}
+      {confirmDeletePopup && (
+      <Popup
+        icon={<LuTrash2 style={{ color: "red" }} />}
+        title="Are you sure you want to delete?"
+        subTitle="when you delete this Asset you cannot be undone."
+        btnTitle="Yes, delete"
+        btnFunc={() => {
+          if (selectedAsset) {
+            deleteAsset({ id: selectedAsset.id,ImageFileName:selectedAsset?.asset_img??"" })
+          }
+          setConfirmDeletePopup(false);
+          setSelectedAsset(null);
+        }}
+        onClose={() => {
+          setConfirmDeletePopup(false);
+          setSelectedAsset(null);
+        }}
+      />
+    )}
       <ClientOnlyTable
         titles={[
           `${local_var}.name`,
@@ -84,9 +129,10 @@ function Assets() {
           `${local_var}.site`,
           "",
           "",
+          "",
         ]}
         data={modifiedData}
-        rowsFlex={[1, 1, 1, 1, 1, 1, 1, 0.2, 0.2]}
+        rowsFlex={[1, 1, 1, 1, 1, 1, 1, 0.4, 0.4,0.4]}
         navButtonTitle="assets"
         navButtonAction={() =>
           router.push(

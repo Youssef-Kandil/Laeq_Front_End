@@ -76,7 +76,7 @@ function Actions() {
 
   const headers = isEmployee
     ? [...baseHeaders, ""] // زرار start/finish بس
-    : [...baseHeaders, `${local_var}.assign`, "",""]; // assign + edit + delete
+    : [...baseHeaders, `${local_var}.assign`, "",""];
 
   // ===== Loading / Error States =====
   if (isLoading) return <SkeletonLoader />;
@@ -222,7 +222,7 @@ function Actions() {
         rowsFlex={
           isEmployee
             ? [ 1, 1, 1, 1, 1, 1, 1]
-            : [ 1, 1, 1, 1, 1, 1, 1, 0.2,1]
+            : [ 1, 1, 1, 1, 1, 1, 1.2, 0.4,1]
         }
         navButtonTitle="actions"
         navButtonAction={() =>{

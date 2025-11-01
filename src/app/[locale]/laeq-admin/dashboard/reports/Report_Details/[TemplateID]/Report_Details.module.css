@@ -19,11 +19,35 @@
 }
 
 @media print {
-    .printBtn{
-        display: none;
+  
+    && body {
+      margin: 0;
+      padding: 0;
     }
-    .nav{
-        padding: 0;
-        width: 100vw;
+  
+    .parent {
+      padding: 0;
+      margin: 0;
+      width: 100%;
     }
-}
+  
+    .printBtn {
+      display: none !important;
+    }
+  
+    .nav {
+      justify-content: space-between;
+      padding: 10px 20px;
+      width: 100%;
+      flex-wrap: wrap; /* ✅ خليه يلف لو المساحة ضيقة */
+      white-space: normal !important; /* ✅ خليه يلف النصوص */
+      gap: 15px;
+    }
+  
+    .nav span,
+    .nav p {
+      white-space: normal !important; /* ✅ يمنع القصّ */
+      word-break: break-word;
+    }
+  
+  }

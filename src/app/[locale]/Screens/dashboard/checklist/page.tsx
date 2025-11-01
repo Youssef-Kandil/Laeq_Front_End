@@ -29,8 +29,8 @@ function CheckLists() {
         isEmployee
               ? info?.userDetails?.admin_id
               : info?.userDetails?.id;
-    const maxChecklist = isEmployee?0:info?.userDetails?.admin_account_limits?.max_custom_checklists
-    console.log("maxChecklist :: ",maxChecklist)
+    const maxChecklist = isEmployee?0:info?.userDetails?.admin_account_limits?.max_custom_checklists??0
+
 
     const [showErrorPopup, setShowErrorPopup] = React.useState<boolean>(false);
     const [ErrorPopupMSG, setErrorPopupMSG] = React.useState<{title:string,subTitle:string}>({title:"",subTitle:""});
@@ -117,7 +117,7 @@ function CheckLists() {
             </div>
           {/* === START BTN */}  
           {/* {(!isEmployee&& maxChecklist != 0&&maxChecklist)&& <button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm`)} className={Styles.button} >Add New Checklist</button>} */}
-          {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm/${data[idx].id}`)} className={Styles.button} >Add New Template</button>}
+          {(maxChecklist > Number(data[idx]?._count?.templates??1000))&&<button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewTemplateForm/${data[idx].id}`)} className={Styles.button} >Add New Template</button>}
           {/* {data[idx]?.id&&<button onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/AddNewChecklist`)} className={Styles.button} >Add New Category</button>} */}
           
              

@@ -26,7 +26,8 @@ function DropListComponent({
   value,
   onSelect,
 }: props) {
-  const [SelectedValue, setSelectedValue] = useState<listType | null>(defaultOption ?? null);
+  const [selectedValue, setSelectedValue] = useState<listType | null>(defaultOption ?? null);
+  const [selectedId, setSelectedId] = useState<number | null>(defaultOption?.id ?? null);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -34,17 +35,20 @@ function DropListComponent({
   // ✅ تحديث القيمة من الخارج
   useEffect(() => {
     if (value) {
-      setSelectedValue(value);
+      if(value.id !== selectedId ){
+        setSelectedValue(value);
+        setSelectedId(value.id);
+      }
     }
-  }, [value]);
+  }, [value,selectedId]);
 
   // ✅ تحديث الـ defaultOption
   useEffect(() => {
     if (defaultOption && !value) {
       setSelectedValue(defaultOption);
+      setSelectedId(defaultOption.id);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultOption]);
+  }, [defaultOption, value]);
 
   // ✅ اغلاق القائمة عند الضغط خارجها
   useEffect(() => {
@@ -57,11 +61,14 @@ function DropListComponent({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function handelSelectValue(value: listType) {
-    setSelectedValue(value);
-    onSelect?.(value);
-    setShowPicker(false);
-    setSearchText('');
+  function handleSelectValue(item: listType) {
+    if (selectedId !== item.id) {
+      setSelectedValue(item);
+      setSelectedId(item.id);
+      onSelect?.(item);
+      setSearchText('');
+      setShowPicker(false);
+    }
   }
 
   // ✅ فلترة القائمة
@@ -71,34 +78,18 @@ function DropListComponent({
 
   return (
     <div 
-      onClick={() => {
-        if(list.length !== 0){
-          setShowPicker(!showPicker);
-        }
-      }} 
+      onClick={() => list.length !== 0 && setShowPicker(!showPicker)} 
       className={Style.input_wrapper} 
       ref={wrapperRef}
     >
       <label className={Style.input_label}>{label}</label>
+
       <div id={Style.piker} className={Style.input_container}>
-        <div
-          className={Style.selected_value}
-          onClick={() => {
-            if(list.length !== 0){
-              setShowPicker(!showPicker);
-            }
-          }} 
-        >
-          {SelectedValue?.title ?? placeholder}
+        <div className={Style.selected_value}>
+          {selectedValue?.title ?? placeholder}
         </div>
 
-        <IoIosArrowDown 
-          onClick={() => {
-            if(list.length !== 0){
-              setShowPicker(!showPicker);
-            }
-          }} 
-        />
+        <IoIosArrowDown />
 
         {showPicker && (
           <div className={Style.options}>
@@ -106,7 +97,6 @@ function DropListComponent({
               <p>{list.length !== 0 ? label : "Error: No Data In The List"}</p>
             </div>
 
-            {/* ✅ مربع البحث */}
             {list.length !== 0 && (
               <input
                 type="text"
@@ -114,17 +104,32 @@ function DropListComponent({
                 placeholder="search..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                onClick={(e) => e.stopPropagation()} // يمنع غلق القائمة عند الكتابة
+                onClick={(e) => e.stopPropagation()}
               />
             )}
 
             <FormGroup className={Style.list}>
               {filteredList.length > 0 ? (
-                filteredList.map((el, index) => (
+                filteredList.map((el) => (
                   <span
-                    key={index}
-                    onClick={() => handelSelectValue(el)}
-                    className={Style.label}
+                    key={el.id}
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleSelectValue(el);
+                      console.log("el?.id ?? ",el?.id);
+                      console.log("value?.id ?? ",value?.id);
+                      console.log("selectedId ?? ",selectedId);
+                      console.log("value?.id === el?.id ?? ",value?.id === el?.id);
+                    }}
+                    style={{
+                      padding: "6px 10px",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      backgroundColor: value?.id === el?.id? "#F1F5F9" : "transparent",
+                      color: value?.id === el?.id? "#1E293B" : "#333",
+                      fontWeight: value?.id === el?.id? 600 : 400,
+                      transition: "background 0.2s ease",
+                    }}
                   >
                     {el.title ?? el.value}
                   </span>

@@ -208,7 +208,7 @@ const handleLoginWithGoogle = async () => {
   return (
     <div className={Styles.parent} >
       <div className={Styles.imgBox} >
-        <Image className={Styles.img} src="/images/login.webp" alt="logo" width={800} height={700} />
+        <Image className={Styles.img} src="/images/Login_img.png" loading='lazy' alt="logo" width={800} height={700} />
       </div>
 
       <div className={Styles.form} dir={lang === "ar" ? "rtl" : "ltr"}>

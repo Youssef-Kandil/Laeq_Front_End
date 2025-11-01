@@ -46,6 +46,7 @@ function Signup() {
    const [password,setPassword] = React.useState("");
    const [confirm_password,setConfirmPassword] = React.useState("");
    const [securityQuestion,setSecurityQuestion] = React.useState("");
+   const [securityQuestionID,setSecurityQuestionID] = React.useState(0);
    const [securityAnswer,setSecurityAnswer] = React.useState("");
    const [alertMSG,setAlertMSG] = React.useState("");
    const [alertSeverity,setAlertSeverity] = React.useState<"success" | "info" | "warning" | "error">("warning");
@@ -236,7 +237,7 @@ function Signup() {
   return (
     <div className={Styles.parent} >
       <div className={Styles.imgBox} >
-        <Image className={Styles.img} src="/images/signup.webp" alt="logo" width={800} height={700} />
+        <Image className={Styles.img} src="/images/SignUp_img.png" loading='lazy' alt="logo" width={800} height={700} />
       </div>
 
       <div className={Styles.form} dir={current_lang === "ar" ? "rtl" : "ltr"}>
@@ -255,7 +256,7 @@ function Signup() {
                  >
                   {/* === Form Headers */}
                     <div>
-                      <h2>Create <span style={{color:app_identity.secondary_color}}>free trial</span> an Account</h2>     
+                      <h2>Create a <span style={{color:app_identity.secondary_color}}>free trial</span> Account</h2>     
                     </div>
                     {/* === INPUTS === */}
                     <div  className={Styles.form_inputs}>
@@ -302,24 +303,21 @@ function Signup() {
                     
                     <label htmlFor="question" >Security Question</label>
                     {/* <input type="text" id="question" value={securityQuestion} onChange={(e)=>setSecurityQuestion(e.target.value)} /> */}
-                    <div style={{width:"100%" }}>
+                    <div style={{width:"100%",direction:'ltr',textAlign:'left' }}>
                         <DropListComponent
                           label=''
                           placeholder='Choose Your Security Question'
-                          value={securityQuestion?{id:0,value:securityQuestion,title:securityQuestion}:null}
+                          value={securityQuestion?{id:securityQuestionID,value:securityQuestion,title:securityQuestion}:null}
                           list={[
                             { id: 1, value: "What’s your favorite teacher’s name?" },
                             { id: 2, value: "What city were you born in?" },
                             { id: 3, value: "What was your first pet’s name?" },
                             { id: 4, value: "What’s your mother’s maiden name?" },
-                            { id: 5, value: "What was your first school’s name?" },
-                            { id: 6, value: "What’s your favorite childhood movie?" },
-                            { id: 7, value: "What’s your favorite color?" },
-                            { id: 8, value: "What’s your dream job?" },
-                            { id: 9, value: "What’s your best friend’s name?" },
-                            { id: 10, value: "What’s your favorite food?" },
                           ]}
-                          onSelect={(e) => setSecurityQuestion(e.value)}
+                          onSelect={(e) => {
+                            setSecurityQuestion(e.value)
+                            setSecurityQuestionID(e.id)
+                          }}
                         />
                     </div>
                     <label htmlFor="answer" >Security Answer</label>

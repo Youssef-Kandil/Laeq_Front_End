@@ -9,6 +9,7 @@ import BottonComponent from "@/app/components/global/ButtonComponent/BottonCompo
 import { useGetQuestionsByTemplatesId } from "@/app/Hooks/useTemplateQuestions";
 import { useSubmitTemplateAnswers } from "@/app/Hooks/useSubmitTemplateAnswers";
 import { useUpdateTaskStatus ,useUpdateTaskScore } from "@/app/Hooks/useTasks";
+// import { useUpdateTaskStatus ,useUpdateTaskScore ,useDraftTask} from "@/app/Hooks/useTasks";
 import { useLocale } from "next-intl";
 import Popup from "@/app/components/global/Popup/Popup";
 import Lottie from "lottie-react";
@@ -19,7 +20,7 @@ import { AccountInfo } from "@/app/Types/AccountsType";
 import { preventPageExit } from "@/app/utils/preventPageExit";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 import { report_payload } from "@/app/Types/AnswerType";
-
+// import { FaFile } from "react-icons/fa";
 // نوع البيانات اللي هتتبعت للباك
 interface Answer {
   userID: number;
@@ -82,26 +83,10 @@ function AnswerTemplate() {
     }
   }
 
-  // if (templateID) {
-  //   const raw = Array.isArray(templateID) ? templateID[0] : templateID;
-  //   const firstDash = raw.indexOf("-");
-  //   const lastDash = raw.lastIndexOf("-");
-
-  //   if (firstDash !== -1 && lastDash !== -1 && firstDash < lastDash) {
-  //     const rawTaskId = raw.slice(0, firstDash);
-  //     const encodedTitle = raw.slice(firstDash + 1, lastDash);
-  //     const rawTemplateId = raw.slice(lastDash + 1);
-  
-  //     task_id = Number(rawTaskId);
-  //     title = decodeURIComponent(encodedTitle);
-  //     id = Number(rawTemplateId);
-  //   }
-  // }
-
-  // const { data:taskStatus, isError } = useGetTaskStatus(Number(task_id));
   const { data, isLoading, error } = useGetQuestionsByTemplatesId(Number(id));
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isSubmitLoading,setIsSubmiLoading] = useState<boolean>(false);
+  const [isDrafted,setIsDrafted] = useState<boolean>(false);
   const [showPopup,setShowPopup] = useState<boolean>(false);
   const [showValidationPopup,setShowValidationPopup] = useState<boolean>(false);
   const [ValidationPopupMSG,setValidationPopupMSG] = useState<string>("");
@@ -110,6 +95,7 @@ function AnswerTemplate() {
 
   // استقبال اجابة من الابن
   const  { mutate: updateTaskStatus} = useUpdateTaskStatus();
+  // const  { mutate: saveDraft} = useDraftTask();
   const  { mutate: updateTaskScore} = useUpdateTaskScore();
 
   useEffect(() => {
@@ -273,13 +259,35 @@ function handelSubmit(){
       (f) => !answeredFields.has(`${f.questionID}-${f.fieldID}`)
     );
     // === Step 4
+    // if (missing.length > 0) {
+    //   // ❌ لسه فيه أسئلة ناقصة
+    //   setIsSubmiLoading(false);
+    //   setShowValidationPopup(true);
+    //   setValidationPopupMSG(`You still need to answer ${missing.length} required questions.`);
+    //   return;
+    // }
     if (missing.length > 0) {
-      // ❌ لسه فيه أسئلة ناقصة
       setIsSubmiLoading(false);
       setShowValidationPopup(true);
-      setValidationPopupMSG(`You still need to answer ${missing.length} required questions.`);
+    
+      // استخراج أرقام الأسئلة الناقصة بناءً على ترتيبها في data
+      const missingQuestionNumbers = Array.from(
+        new Set(
+          missing.map((m) => {
+            const questionIndex = data.findIndex((q:any) => q.id === m.questionID);
+            return questionIndex !== -1 ? questionIndex + 1 : null;
+          }).filter((num) => num !== null)
+        )
+      );
+    
+      const formattedList = missingQuestionNumbers.join(", ");
+    
+      setValidationPopupMSG(
+        `You still need to answer question number: ${formattedList[0]}`
+      );
       return;
     }
+    
 
     const payload: report_payload = {
       admin_id: targetId ?? -1,
@@ -352,10 +360,52 @@ function handelSubmit(){
   });   
 }
 
-// console.log("Task Status",taskStatus);
+// function handelSaveAsDraft(){
+//   setIsSubmiLoading(true);
+
+//   if(!info?.id){
+//     setIsSubmiLoading(false);
+//     setShowValidationPopup(true);
+//     setValidationPopupMSG(`001`);
+//     return false;
+//   }
+//   if(!answers){
+//     setIsSubmiLoading(false);
+//     setShowValidationPopup(true);
+//     setValidationPopupMSG(`002`);
+//     return false;
+//   }
+//   if(answers.length == 0){
+//     setIsSubmiLoading(false);
+//     setShowValidationPopup(true);
+//     setValidationPopupMSG(`003`);
+//     return false;
+//   }
+//   if(!task_id){
+//     setIsSubmiLoading(false);
+//     setShowValidationPopup(true);
+//     setValidationPopupMSG(`004`);
+//     return false;
+//   }
+//   saveDraft({
+//     task_id:task_id??-1,
+//     draft:JSON?.stringify(answers??{}),
+//     drafted_by:info?.id??-1
+//   },{
+//     onSuccess:()=>{
+//       setIsSubmiLoading(false);
+//       setIsDrafted(true);
+//     },
+//     onError:()=>{
+//       setIsSubmiLoading(false);
+//       setShowValidationPopup(true);
+//       setValidationPopupMSG(`Can't Draft this template , try again later`);
+//     },
+//   });
+   
+// }
+
 React.useEffect(() => {
-  // if(taskStatus){
-  // }
   if (data) {
     const fieldCounts = data.reduce((acc: Record<string, number>, question: QuestionType) => {
       question.question_fields.forEach((field) => {
@@ -385,12 +435,7 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
     });
     return acc;
   }, {});
-  // ✅ المجموع
-  // const totalMcqAndScore = (fieldCounts.mcq || 0) + (fieldCounts.score || 0);
-  // ✅ الدرجة النهائية
-  // const finalScore = totalMcqAndScore * 5;
-  // console.log("fieldCounts (mcq & score only) :: ", fieldCounts);
-  // console.log("Questionss ::>> ",data);
+
 
   const Questions = questions.map((question: QuestionType, index: number) => (
     <QuestionAnswerTemplateComponent
@@ -421,13 +466,15 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
           subTitle=" " 
           onClose={()=>{}}/>}
       {showValidationPopup&&<Popup icon={<Lottie animationData={WorngIcon} loop={false} style={{ width: 350, height: 250 }}/>} title="Wrong!" subTitle={ValidationPopupMSG} onClose={()=>setShowValidationPopup(false)}/>}
+      {isDrafted&&<Popup  title="Drafted" subTitle={`Your Answers Was Drafted`} onClose={()=>setIsDrafted(false)}/>}
       {showPopup&&<Popup  title="Score" subTitle={`${Math.floor((100*(templateScore/finalScore)))}%`} onClose={()=>setShowPopup(false)}/>}
       <nav className={Styles.nav}>
         <span>{title}</span>
         <div style={{ margin: "0px 20px", padding: "10px", background: "#f0f0f0", borderRadius: "8px" }}>
           <p>Score: {templateScore} / {finalScore}</p> <span>{Math.floor((100*(templateScore/finalScore)))}%</span>
         </div>
-        <div>
+        <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",columnGap:20}}>
+        {/* <p onClick={handelSaveAsDraft} style={{color:"#444",border:"#444 1px solid",padding:'7px 15px',display:"flex",alignItems:"center",gap:10,marginBottom:10,borderRadius:5,cursor:"pointer"}}><FaFile /> {isDrafted?"Draft":"Drafted"}</p> */}
           <BottonComponent
             disabled={isPending}
             title="Submit"
@@ -443,7 +490,8 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
       <div style={{ margin: "0px 20px", padding: "10px", background: "#f0f0f0", borderRadius: "8px" }}>
         <p>Score: {templateScore} / {finalScore}</p> <span>{Math.floor((100*(templateScore/finalScore)))}%</span>
       </div>
-      <div>
+      <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:20}}>
+      {/* <p onClick={handelSaveAsDraft} style={{color:"#444",border:"#444 1px solid",padding:'7px 15px',display:"flex",alignItems:"center",gap:10,marginBottom:10,borderRadius:5,cursor:"pointer"}}><FaFile /> {isDrafted?"Draft":"Drafted"}</p> */}
         <BottonComponent
           disabled={isPending}
           title="Submit"

@@ -1,11 +1,29 @@
 .card{
     width :350px;
     height: 741px;
+    
     /* background-color: var(--Primary-color); */
     background-color: #FFFFFF;
     color: white;
     border-radius: 12px;
     padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
+        /* ✅ الشريطة الحمراء */
+    .savingBadge {
+        position: absolute;
+        top: 30px;
+        right: -35px;
+        background: #e53935;
+        color: white;
+        font-weight: bold;
+        font-size: 13px;
+        padding: 5px 40px;
+        transform: rotate(45deg);
+        box-shadow: -8px 9px 6px #0003;
+        z-index: 10;
+    }
+
     & .title{
 
         & h2{

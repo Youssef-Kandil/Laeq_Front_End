@@ -71,6 +71,7 @@
         "department":"Department",
         "inspector_requests":"Inspection Requests",
         "Subscriptions":"Subscriptions",
+        "Invoices":"Invoices",
         "payments_plans":"Payments & Plans",
         "settings":"Settings"
 
@@ -85,10 +86,11 @@
             "reset":"Reset",
             "all":"All",
             "Completed":"Completed",
+            "Draft":"Draft",
             "Pending":"Pending",
             "In_Progress":"In progress",
             "approved":"Approved",
-            "rejected":"Rejected",
+            "Rejected":"Rejected",
             "not_started":"Not started",
             "active":"Active",
             "inactive":"Inactive",
@@ -234,6 +236,7 @@
                     "id":"Report ID",
                     "company":"Company",
                     "site":"Site",
+                    "location":"Location",
                     "date":"Date",
                     "status":"Status"
                 },

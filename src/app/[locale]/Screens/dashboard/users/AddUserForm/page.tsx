@@ -28,8 +28,7 @@ function AddUserForm() {
     // const current_lang = useLocale();
     const router = useRouter();
     const local = useLocale();
-    const isFirstTime = localStorage.getItem("first_time");
-    const [showFirstPopup, setShowFirstPopup] =  React.useState<boolean>(isFirstTime?false:true);
+
 
     const AdminInfo = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
     const limits = AdminInfo?.userDetails?.admin_account_limits;
@@ -37,7 +36,19 @@ function AddUserForm() {
     const Companies = useGetCompaniesByUserId(AdminInfo?.userDetails.id ?? 0);
     const Roles = useRole(AdminInfo?.userDetails.id ?? 0);
     const { mutate ,isPending} = useCreateEmployee();
+
     const Employees = useEmployees(AdminInfo?.userDetails.id ?? 0);
+    const isFirstTime = localStorage.getItem("first_time");
+    const [showFirstPopup, setShowFirstPopup] = React.useState<boolean>(false);
+    
+    React.useEffect(() => {
+      if (!isFirstTime && Employees?.data && Employees?.data?.length === 0) {
+        setShowFirstPopup(true);
+      } else {
+        setShowFirstPopup(false);
+      }
+    }, [Employees?.data, isFirstTime]);
+
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
       id: item.id,
       value: String(item.id),

@@ -9,7 +9,7 @@ import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { BsBuildingCheck } from "react-icons/bs";
 import { MdTaskAlt } from "react-icons/md";
 
-
+import { TbInvoice } from "react-icons/tb";
 
 
 const iconSize = 20
@@ -108,6 +108,14 @@ const aside_titles =[
         href:"/payments_plans",
         permission_name:"show current payment plan",
         icon:<GoCreditCard style={{fontSize:iconSize }}/>,
+        isActive:false,
+        hasChild:false,
+    },
+    {
+        title:"Invoices",
+        href:"/Subscriptions",
+        permission_name:"invoices",
+        icon:<TbInvoice style={{fontSize:iconSize }}/>,
         isActive:false,
         hasChild:false,
     },

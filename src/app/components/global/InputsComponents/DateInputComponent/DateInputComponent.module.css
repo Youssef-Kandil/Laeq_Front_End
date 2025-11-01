@@ -26,8 +26,8 @@
                 font-weight: 400;
                 font-size: 14px;
                 width: fit-content;
-                min-width: 300px;
-                max-width: 300px;
+                min-width: calc(350px - 78px);
+                max-width:300px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -48,3 +48,4 @@
                 }
 
             }
+

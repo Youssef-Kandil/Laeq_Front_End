@@ -98,6 +98,23 @@ export const useUpdateTaskStatus = () => {
   });
 };
 
+// === Draft Task ===
+export const useDraftTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: { task_id: number; draft: string,drafted_by:number }) =>
+      api.update("/draft_task", payload).then((res) => res),
+
+    onSuccess: (_, variables) => {
+      // invalidate tasks queries للادمن أو اليوزر على حسب
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "admin", variables.task_id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "user", variables.task_id] });
+    },
+  });
+};
+
 // === Update Task Score ===
 export const useUpdateTaskScore = () => {
   const queryClient = useQueryClient();

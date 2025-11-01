@@ -3,7 +3,7 @@ import React from 'react';
 
 import InputComponent from '@/app/components/global/InputsComponents/InputComponent/InputComponent';
 import CheckBoxComponent from '@/app/components/global/InputsComponents/CheckBoxComponent/CheckBoxComponent';
-import { useRouter } from "next/navigation"; 
+import { useRouter ,useSearchParams } from "next/navigation"; 
 import { useLocale } from "next-intl";
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 import app_identity from '@/app/config/identity';
@@ -23,16 +23,26 @@ import { FaFlagCheckered } from "react-icons/fa";
 
 function AddRoleForm() {
     const router = useRouter();
+    const params = useSearchParams();
     const local = useLocale();
     const AdminInfo = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
     const RoleMutation =  useCreateRole();
     const {data} = usePermissions();
+    console.log(params.get("count"));
     const isFirstTime = localStorage.getItem("first_time");
+    const [showFirstPopup, setShowFirstPopup] = React.useState<boolean>(false);
+    
+    React.useEffect(() => {
+      if (!isFirstTime && params && Number(params.get("count")) === 0) {
+        setShowFirstPopup(true);
+      } else {
+        setShowFirstPopup(false);
+      }
+    }, [params, isFirstTime]);
     const [isSubmitLoading,setIsSubmiLoading] = React.useState<boolean>(false);
-    const [showFirstPopup, setShowFirstPopup] =  React.useState<boolean>(isFirstTime?false:true);
     const [showErrorPopup, setShowErrorPopup] =  React.useState<boolean>(false);
     const [ErrorPopupMSG, setErrorPopupMSG] =  React.useState<{title:string,subTitle:string}>({title:"",subTitle:""});
-
+    console.log(params.get("count"));
     const [roleName,setRoleName] = React.useState<string>("");
     const [roleDescription,setRoleDescription] = React.useState<string>("");
     const [permissionsIdList,setPermissionsIdList] = React.useState<number[]>([]);

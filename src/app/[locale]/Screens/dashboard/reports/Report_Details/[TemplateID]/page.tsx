@@ -41,7 +41,7 @@ function Report_Details() {
   ));
 
   return(
-      <div >
+      <div className={Styles.parent}>
         <nav className={Styles.nav}>
           <div className={Styles.nav_details}>
 
@@ -81,7 +81,7 @@ function Report_Details() {
           </div>
 
           <div>
-            <p>Submited At</p>
+            <p>Submitted At</p>
             <span>{new Date(data.date).toLocaleDateString("en-GB", {
               day: "numeric",   // اليوم رقم
               month: "short",   // الشهر نص قصير (Jan, Feb, ...)

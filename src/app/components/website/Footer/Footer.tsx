@@ -2,11 +2,11 @@
 import React  from 'react'
 import Styles from "./footer.module.css"
 // import { usePathname, useRouter } from "next/navigation"; 
-// import {useTranslations,useLocale} from 'next-intl';
+import {useLocale} from 'next-intl';
 import {useTranslations} from 'next-intl';
 import nave_titles from '@/app/config/nave_titles';
 import app_identity from '@/app/config/identity';
-// import Link from 'next/link'
+import Link from 'next/link'
 import Image from 'next/image'
 
 
@@ -14,14 +14,15 @@ import MailIcon from '@mui/icons-material/Mail';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-import { FaInstagram ,FaWhatsapp ,FaSnapchat} from "react-icons/fa6";
-import { FaFacebookF } from "react-icons/fa";
+import { FaInstagram ,FaWhatsapp ,FaXTwitter} from "react-icons/fa6";
+import { FaLinkedinIn } from "react-icons/fa";
+
 
 
 
 
 function Footer() {
-    // const current_lang = useLocale();
+    const current_lang = useLocale();
     // const pathname = usePathname();
     // const router = useRouter();
     const t_footer = useTranslations('footer_component');
@@ -30,11 +31,11 @@ function Footer() {
 
     const titles = nave_titles.map((el,index)=>{
         return(
-            <div key={index}>
+            <Link href={`/${current_lang}/Screens/website${el.href}`} key={index}>
                 <p>
                     {t_nave(el.title)}
                 </p>
-            </div>
+            </Link>
         )
     })
   return (
@@ -45,9 +46,9 @@ function Footer() {
         <Image src={"/images/logo365.jpeg"} alt='logo' width={100} height={100}/>
         <div>
             <span><FaInstagram/></span>
-            <span><FaSnapchat/></span>
+            <span><FaXTwitter/></span>
             <span><FaWhatsapp/></span>
-            <span><FaFacebookF/></span>
+            <span><FaLinkedinIn/></span>
         </div>
 
       </section>

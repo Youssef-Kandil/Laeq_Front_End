@@ -88,8 +88,8 @@ function EditUserForm() {
     
 
     function getSitesByCompanyId(companyId:number) {
-      const company = Companies.data.find((c :{id:number}) => c.id === companyId);
-      const SitesList = company.sites?.map((item:{id:number,site_name:string}) => ({
+      const company = Companies?.data?.find((c :{id:number}) => c.id === companyId);
+      const SitesList = company?.sites?.map((item:{id:number,site_name:string}) => ({
         id: item.id,
         value: item.id,
         title: item.site_name,

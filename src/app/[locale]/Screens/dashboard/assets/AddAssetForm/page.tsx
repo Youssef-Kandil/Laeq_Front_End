@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
@@ -44,106 +45,120 @@ function AddAssetForm() {
   });
 
   // ====== Hooks ======
-  const Companies = useGetCompaniesByUserId(info?.userDetails?.id ?? 0);
+  const Companies = useGetCompaniesByUserId(info?.userDetails?.id ?? -1);
   const { mutate: addNewAsset } = useAddNewAsset();
 
   // ====== Lists ======
 
   const CompaniesList =
-    Companies.data?.map((item: { id: number; company_name: string; sites: any[] }) => ({
-      id: item.id,
-      value: String(item.id),
-      title: item.company_name,
+    Companies?.data?.map((item: { id: number; company_name: string; sites: any[] }) => ({
+      id: item?.id,
+      value: String(item?.id),
+      title: item?.company_name,
     })) ?? [];
 
   function getSitesByCompanyId(companyId: number) {
-    const company = Companies.data?.find((c: { id: number }) => c.id === companyId);
+    const company = Companies?.data?.find((c: { id: number }) => c?.id === companyId);
     const SitesList =
       company?.sites?.map((item: { id: number; site_name: string }) => ({
-        id: item.id,
-        value: item.id,
-        title: item.site_name,
+        id: item?.id,
+        value: item?.id,
+        title: item?.site_name,
       })) ?? [];
     return company ? SitesList : [];
   }
 
   function handelSelectCompany(company: DropListType) {
-    setCompany(company.id);
-    setSitesList(getSitesByCompanyId(company.id));
+    setCompany(company?.id);
+    setSitesList(getSitesByCompanyId(company?.id));
   }
 
   // ====== Submit ======
   function handleSubmit() {
     setLoading(true);
 
-    if (!asset.asset_name || asset.asset_name.trim().length === 0) {
+    if (!asset?.asset_name || asset?.asset_name?.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a name");
       return;
     }
-    if (!asset.color || asset.color.trim().length === 0) {
+    if (!asset?.color || asset.color.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a Color");
       return;
     }
-    if (!asset.brand || asset.brand.trim().length === 0) {
+    if (!asset?.brand || asset?.brand?.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a brand");
       return;
     }
-    if (!asset.model || asset.model.trim().length === 0) {
+    if (!asset?.model || asset?.model?.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a model");
       return;
     }
-    if (!asset.serial_number || asset.serial_number.trim().length === 0) {
+    if (!asset?.serial_number || asset?.serial_number?.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a serial");
       return;
     }
-    if (!asset.warranty_date || asset.warranty_date.trim().length === 0) {
+    if (!asset?.warranty_date || asset?.warranty_date.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a warranty");
       return;
     }
 
     if (!asset.asset_img) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a image");
       return;
     }
-    if (!asset.last_maintenance_date || asset.last_maintenance_date.trim().length === 0) {
+    if (!asset?.last_maintenance_date || asset?.last_maintenance_date?.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a last maintenance date");
       return;
     }
-    if (!asset.asset_category || asset.asset_category.trim().length === 0) {
+    if (!asset?.asset_category || asset?.asset_category?.trim()?.length === 0) {
+      setLoading(false);
       showError("Wrong!", "Asset must have a  category ");
       return;
     }
 
     if (company === -1) {
+      setLoading(false);
       showError("Wrong!", "Must Select Company");
       return;
     }
     if (site === -1) {
+      setLoading(false);
       showError("Wrong!", "Must Select Site");
       return;
     }
     if (!AdminID) {
+      setLoading(false);
       showError("Wrong!", "Re-login and try again later!");
       return;
     }
 
     const payload: AssetsType = {
-      asset_name: asset.asset_name ?? "",
-      asset_category: asset.asset_category ?? "",
+      asset_name: asset?.asset_name ?? "",
+      asset_category: asset?.asset_category ?? "",
       brand: asset.brand ?? "",
       model: asset.model ?? "",
-      warranty_date: asset.warranty_date ?? "",
-      last_maintenance_date: asset.last_maintenance_date ?? "",
-      next_maintenance_date: asset.next_maintenance_date ?? "",
+      warranty_date: asset?.warranty_date ?? "",
+      last_maintenance_date: asset?.last_maintenance_date ?? "",
+      next_maintenance_date: asset?.next_maintenance_date ?? "",
       color: asset.color ?? "",
-      serial_number: asset.serial_number ?? "",
-      description: asset.description ?? "",
+      serial_number: asset?.serial_number ?? "",
+      description: asset?.description ?? "",
       company_id: company,
       site_id: site,
       admin_id: AdminID ?? -1,
-      asset_img: asset.asset_img ?? "",
+      asset_img: asset?.asset_img ?? "",
     };
-    console.log("Assets payload :: ",payload)
+    console.log("Assets payload :: ",payload);
+    // showError("payload", `${JSON.stringify(payload)}`);
+
 
     addNewAsset(payload, {
       onSuccess: () => {
@@ -206,27 +221,38 @@ function AddAssetForm() {
       <div style={{ marginLeft: "30px", marginRight: "30px" }}>
         <ImagInputComponent
           lable="Asset Image"
-          onChange={(file) => setAsset((prev) => ({ ...prev, asset_img: file }))}
+          //defaultValue={String(data.asset_img ? JSON.parse(data.asset_img).fileUrl : "") ?? ""}
+          onChange={(file) => {
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                setAsset((prev) => ({ ...prev, asset_img: reader.result as string }));
+              };
+              reader.readAsDataURL(file);
+            } else {
+              setAsset((prev) => ({ ...prev, asset_img: "" }));
+            }
+          }}
         />
 
         <div style={{ display: "flex", flexWrap: "wrap", maxWidth: 900, alignItems: "center", gap: 20 }}>
           <InputComponent
             label="Asset name"
             placeholder="Please enter asset name"
-            value={asset.asset_name ?? ""}
+            value={asset?.asset_name ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, asset_name: txt }))}
           />
           <InputComponent
             label="Model"
             placeholder="Enter model"
-            value={asset.model ?? ""}
+            value={asset?.model ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, model: txt }))}
           />
 
           <DropListComponent
             label="Category"
             placeholder="Enter asset category"
-            value={{id:-1,title:asset.asset_category,value:asset?.asset_category??""}}
+            value={{id:-1,title:asset?.asset_category??"",value:asset?.asset_category??""}}
             list={CategoriesList}
             onSelect={(el) => setAsset((prev) => ({ ...prev, asset_category: el.value }))}
           />
@@ -240,33 +266,33 @@ function AddAssetForm() {
           <InputComponent
             label="Brand"
             placeholder="Enter brand"
-            value={asset.brand ?? ""}
+            value={asset?.brand ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, brand: txt }))}
           />
           <InputComponent
             label="Serial number"
             placeholder="Enter serial number"
-            value={asset.serial_number ?? ""}
+            value={asset?.serial_number ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, serial_number: txt }))}
           />
           <InputComponent
             label="Color"
             placeholder="Enter color"
-            value={asset.color ?? ""}
+            value={asset?.color ?? ""}
             onTyping={(txt) => setAsset((prev) => ({ ...prev, color: txt }))}
           />
 
           <DropListComponent
             label="Company"
             placeholder="Choose your Company"
-            list={CompaniesList}
+            list={CompaniesList??[]}
             onSelect={(el) => handelSelectCompany(el)}
           />
           <DropListComponent
             label="Site"
             placeholder="Choose your Site"
             list={sitesList ?? []}
-            onSelect={(el) => setSite(el.id)}
+            onSelect={(el) => setSite(el?.id)}
           />
           <DropListComponent
             label="Warranty"
@@ -279,7 +305,7 @@ function AddAssetForm() {
               { id: 5, title: "10 Years", value: "10 Years" },
               { id: 6, title: "More than 10 Years", value: "More than 10 Years" },
             ]}
-            onSelect={(el) => setAsset((prev) => ({ ...prev, warranty_date: el.value }))}
+            onSelect={(el) => setAsset((prev) => ({ ...prev, warranty_date: el?.value }))}
           />
 
           <div>
@@ -300,7 +326,7 @@ function AddAssetForm() {
           isTextArea
           label="Description"
           placeholder="Enter description"
-          value={asset.description ?? ""}
+          value={asset?.description ?? ""}
           onTyping={(txt) => setAsset((prev) => ({ ...prev, description: txt }))}
         />
 

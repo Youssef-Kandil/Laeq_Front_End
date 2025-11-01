@@ -22,7 +22,7 @@ function About_us() {
           <div className={Styles.container}>
             <div className={Styles.header_text}>
               <h1>{t("header.title")}</h1>
-              <p>A Saudi team specializing in quality, food safety, and public health, we work to raise safety standards and ensure food establishments adhere to the highest levels of quality. We have experience in inspection, training, and consulting, and we strive to protect community health by implementing global best practices in line with the Kingdom s Vision 2030 to enhance quality of life.</p>
+              <p>A Saudi company specializing in quality, food safety, and public health, we work to raise safety standards and ensure food establishments adhere to the highest levels of quality. We have experience in inspection, training, and consulting, and we strive to protect community health by implementing global best practices in line with the Kingdom s Vision 2030 to enhance quality of life.</p>
             </div>
             <div className={Styles.header_btns}>
               <Link href={`/${current_lang}/Screens/forms/signup`} className={Styles.getStartedBtn} shallow>{t("header.get_started_btn")}</Link>
@@ -31,7 +31,7 @@ function About_us() {
           </div>
 
           <div className={Styles.header_image}>
-            <Image src={"/images/aboutUs.png"} alt='' loading='lazy' width={300} height={100}/>
+            <Image src={"/images/aboutUs.png"} alt='' loading='lazy' width={700} height={700}/>
           </div>
       </header>
 

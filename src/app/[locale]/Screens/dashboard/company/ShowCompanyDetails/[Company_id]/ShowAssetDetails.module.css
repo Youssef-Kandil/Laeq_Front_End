@@ -1,0 +1,44 @@
+.addSiteButton {
+    width: 100%;
+    margin-top: 30px;
+    color: var(--Secondary-color);
+    padding: 10px 5px;
+    border-width: 1px;
+    border-color: var(--Secondary-color);
+    border-style: dashed;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: transparent;
+  }
+  
+  
+  
+  .SiteFormComponent{
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ccc;
+      padding: 0px 30px;
+      .header{
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-top: 20px;
+          .deleteButton{
+              font-size: 17px;
+              background-color: rgba(247, 9, 9, 0.63);
+              color: rgb(227, 227, 227);
+              width: 25px;
+              height: 25px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: 0.5s;
+              cursor: pointer;
+          }
+          .deleteButton:hover{
+               background-color:rgba(225, 5, 5, 0.841) ;
+               cursor: pointer;
+          }
+      }
+  }

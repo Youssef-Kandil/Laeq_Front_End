@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 // import { SelectChangeEvent } from '@mui/material';
 import { useGetCompaniesByUserId } from '@/app/Hooks/useCompany';
 import { useRole } from '@/app/Hooks/useRole';
-import { useCreateEmployee ,useEmployees} from '@/app/Hooks/useEmployees';
+import { useCreateEmployee } from '@/app/Hooks/useEmployees';
 import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 
@@ -29,21 +29,19 @@ function AddUserForm() {
     const router = useRouter();
 
     const AdminInfo = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
-    const limits = AdminInfo?.userDetails?.admin_account_limits;
-    const maxEmployees = limits?.max_users ?? 0;
-    const Companies = useGetCompaniesByUserId(AdminInfo?.userDetails.id ?? 0);
-    const Roles = useRole(AdminInfo?.userDetails.id ?? 0);
+
+    const Companies = useGetCompaniesByUserId(AdminInfo?.userDetails?.id ?? -1);
+    const Roles = useRole(AdminInfo?.userDetails?.id ?? -1);
     const { mutate ,isPending} = useCreateEmployee();
-    const Employees = useEmployees(AdminInfo?.userDetails.id ?? 0);
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
-      id: item.id,
-      value: String(item.id),
-      title: item.company_name,
+      id: item?.id,
+      value: String(item?.id),
+      title: item?.company_name,
     }));
     const RolesList = Roles.data?.map((item:{id:number,role_name:string}) => ({
-      id: item.id,
-      value: String(item.id),
-      title: item.role_name,
+      id: item?.id,
+      value: String(item?.id),
+      title: item?.role_name,
     }));
 
     const [sitesList,setSitesList] = React.useState<DropListType[]|null>(null)
@@ -58,11 +56,11 @@ function AddUserForm() {
     const [phone,setPhone] = React.useState<string|null>(null)
 
     function getSitesByCompanyId(companyId:number) {
-      const company = Companies.data.find((c :{id:number}) => c.id === companyId);
-      const SitesList = company.sites?.map((item:{id:number,site_name:string}) => ({
-        id: item.id,
-        value: item.id,
-        title: item.site_name,
+      const company = Companies?.data?.find((c :{id:number}) => c?.id === companyId);
+      const SitesList = company?.sites?.map((item:{id:number,site_name:string}) => ({
+        id: item?.id,
+        value: item?.id,
+        title: item?.site_name,
       }));
 
 
@@ -217,32 +215,6 @@ function AddUserForm() {
 
       {showErrorPopup&&<Popup icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={true}/>} title={ErrorPopupMSG.title} subTitle={ErrorPopupMSG.subTitle} onClose={()=>setShowErrorPopup(false)}/>}
     <div style={{margin:"30px"}}>
-            {/* Header */}
-            <header
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                background: "#fff",
-                padding: "20px 30px",
-                borderBottom: "1px solid #eee",
-                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.05)",
-                borderRadius: "8px",
-                marginBottom: "20px",
-              }}
-            >
-              <div style={{ display: "flex", gap: "30px", alignItems: "center" }}>
-                <div style={{ textAlign: "left" }}>
-                  <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>
-                    Employees limit in your plan
-                  </p>
-                  <strong style={{ fontSize: "16px", color: "#08ab95" }}>
-                    {maxEmployees} / {Employees?.data?.length??0}
-                  </strong>
-                </div>
-              </div>
-            </header>
         <div style={{display:'flex',flexWrap:"wrap",maxWidth:900,alignItems:"center",gap:20}}>
             <InputComponent label='Fullname' placeholder='Please enter your fullname' value={full_name ?? ''} onTyping={(txt)=>{setFull_Name(txt)}}/>
             <InputComponent label='Email' placeholder='Please enter your email' value={email?? ''} onTyping={(txt)=>{setEmail(txt)}}/>

@@ -14,6 +14,15 @@ export const useSubscripe = () => {
          .then(res => res),
   });
 };
+
+export const useAdminSubscripe = (admin_id:number) => {
+  return useQuery({
+    queryKey: ["subscripe",admin_id],
+    queryFn: () =>
+      api.post(`/get_admin_subscriptions`,{admin_id})
+         .then(res => res),
+  });
+};
 export const useGetInvoceDetails = (id:number) => {
   return useQuery({
     queryKey: ["subscripe",id],

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import dynamic from 'next/dynamic'; 
 // 3️⃣ عرّف المكوّن بشكل ديناميكي مع تعطيل SSR
@@ -87,8 +88,12 @@ function Table({
     // ==== DATE FILTER ====
     const [showDatePicker, setShowDatePicker] = React.useState<boolean>(false);
     const [range, setRange] = React.useState<Range[]>([
-        { startDate: new Date(), endDate: new Date(), key: 'selection' }
-    ]);
+        { 
+          startDate: new Date(new Date().setDate(new Date().getDate() - 30)), // آخر 30 يوم
+          endDate: new Date(), // اليوم
+          key: 'selection' 
+        }
+      ]);
 
     function handleDateRangeChange(
         rangesByKey: RangeKeyDict,
@@ -112,7 +117,9 @@ function Table({
     const [Status, SetStatus] = React.useState<StatusType[]>([
         {title:"Completed",checked:false},
         {title:"Pending",checked:false},
-        {title:"In_Progress",checked:false}
+        {title:"In_Progress",checked:false},
+        {title:"Draft",checked:false},
+        {title:"Rejected",checked:false},
     ]);
     const [showFilterPicker, setShowFilterPicker] = React.useState<boolean>(false);
 
@@ -126,7 +133,9 @@ function Table({
         SetStatus([
           {title:"Completed",checked:false},
           {title:"Pending",checked:false},
-          {title:"In_Progress",checked:false}
+          {title:"In_Progress",checked:false},
+          {title:"Draft",checked:false},
+          {title:"Rejected",checked:false},
         ]);
     };
 
@@ -138,7 +147,7 @@ function Table({
         // فلترة بالبحث
         if (search.trim() !== "") {
         const lowerSearch = search.toLowerCase();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         temp = temp.filter((row: any) =>
             Object.entries(row).some(([key, value]) => {
             if (key === "status") return false; // تجاهل status
@@ -155,14 +164,36 @@ function Table({
         } 
           );
         if (selectedStatuses.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         temp = temp.filter((row: any) =>
             selectedStatuses.includes(row.status)
         );
         }
+
+         // 📅 فلترة بالتاريخ (لو مفعّلة)
+
+          if (dateFilter && range[0]?.startDate && range[0]?.endDate) {
+            const start = new Date(range[0].startDate).getTime();
+            const end = new Date(range[0].endDate).getTime();
+          
+            temp = temp.filter((row: any) => {
+              if (!row.date) return false;
+          
+              // تحويل "16/10/2025" إلى كائن Date صحيح
+              const [day, month, year] = row.date.split('/').map(Number);
+              const rowDate = new Date(year, month - 1, day).getTime(); // JS months are 0-based
+              console.log(start)
+              console.log(row.date)
+              console.log(rowDate)
+              console.log(end)
+              return rowDate >= start && rowDate <= end;
+            });
+          }
+          
+          
     
         return temp;
-    }, [data, search, Status]);
+    }, [data, search, Status,range,dateFilter]);
   
 
     // === CHECKBOX SELECTION ===
@@ -244,13 +275,39 @@ function Table({
                 {dateFilter&&(
                     <div id={Style.datePiker} className={Style.input_container}>
                         <span className={Style.dateLable}>{t("date")}</span>
-                        <div>
-                            <span>{`${formatDate(new Date(range[0].startDate ?? new Date()))} - ${formatDate(new Date(range[0].endDate ?? new Date()))}`}</span>
+                        <div style={{width:"168px",display:"inline-block"}} className={Style.Range}>
+                            <span style={{width:"168px",display:"inline-block"}}>{`${formatDate(new Date(range[0].startDate ?? new Date()))} - ${formatDate(new Date(range[0].endDate ?? new Date()))}`}</span>
                         </div>
                         <span onClick={() => {
                             setShowDatePicker(!showDatePicker);
                             setShowFilterPicker(false);
                         }} style={{cursor:'pointer'}}><MdOutlineKeyboardArrowDown/></span>
+                          {/* ✅ زر All Date */}
+                            <button
+                            onClick={() => {
+                                // رجّع الرينج لحالة افتراضية تغطي كل الوقت
+                                setRange([
+                                {
+                                    startDate: new Date(2000, 0, 1),
+                                    endDate: new Date(2100, 11, 31),
+                                    key: "selection",
+                                },
+                                ]);
+                            }}
+                            style={{
+                                margin: "10px",
+                                padding: "5px 10px",
+                                width:"150px",
+                                background: app_identity.secondary_color,
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                fontSize: "13px",
+                            }}
+                            >
+                            All Date
+                            </button>
                         {showDatePicker && (
                             <div className={Style.dateRange}>
                                 <DateRange
@@ -366,6 +423,8 @@ function Table({
                                     <p key={i} title={""+row[key]} className={Style.cell}  style={rowsFlex?.length == 0 || rowsFlex == undefined ?{flex:1}:{flex:rowsFlex[i]}}>
                                         {(key !== "status" && key !== "الحالة")  ?  <span>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "Completed" ?  <span style={{color:"#2AA952",background:"#2AA9521A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
+                                        {(key == "status" || key == "الحالة") && row[key] == "Draft" ?  <span style={{color:"#000000",background:"#0707071a",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
+                                        {(key == "status" || key == "الحالة") && row[key] == "Rejected" ?  <span style={{color:"#ff0707",background:"#ff07071a",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "In Progress" ?  <span style={{color:"#03A9F3",background:"#03A9F31A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "Pending" ?  <span style={{color:"#FFAB07",background:"#FFAB071A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                     </p>

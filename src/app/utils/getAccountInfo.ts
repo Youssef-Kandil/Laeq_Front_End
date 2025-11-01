@@ -16,13 +16,13 @@ export function getAdminAccountInfo(localStorage_Key: string) : AccountInfo | nu
 
   try {
     if (typeof window == "undefined") return null;
-    const token = localStorage.getItem(localStorage_Key);
+    const token = localStorage?.getItem(localStorage_Key);
     // const token =  Cookies.get(localStorage_Key);
     console.warn("token :: ",token);
     if (!token) return null;
   
     const key = process.env.NEXT_PUBLIC_HASH_KEY as string;
-    const decryption = encryption.decryption(token, key);
+    const decryption = encryption?.decryption(token, key);
     return JSON.parse(decryption);
   } catch (err) {
     console.error("Decryption failed:", err);

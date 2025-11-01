@@ -4,18 +4,66 @@
     justify-content: space-between;
     padding: 16px 48px;
     grid-column: 2;
+    gap: 50px;
     & h2{
         font-weight: 500;
         font-size: 24px;
+        white-space: nowrap;
     }
     & div{
         display: flex;
         /* gap: 20px; */
+        & p{
+            white-space: nowrap;
+        }
         align-items: center;
 
     }
 }
 
+
+@media (max-width:500) {
+    .parent{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 48px;
+        grid-column: 2;
+        gap: 50px;
+        /* min-width: 400px; */
+        overflow: auto;
+    /* ✅ تخصيص شكل شريط التمرير */
+    &::-webkit-scrollbar {
+        height: 1px; /* شريط تمرير أفقي */
+        width: 1px;  /* شريط تمرير رأسي */
+      }
+  
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.3); /* لون الشريط */
+        border-radius: 10px;
+      }
+  
+      &::-webkit-scrollbar-track {
+        background: transparent; /* الخلفية */
+      }
+
+        & h2{
+            font-weight: 500;
+            font-size: 19px;
+            white-space: nowrap;
+        }
+        & div{
+            display: flex;
+            & p{
+                white-space: nowrap;
+                font-size: 12px;
+            }
+            align-items: center;
+    
+        }
+    }
+    
+}
 @media print {
     .parent{
         display: none;

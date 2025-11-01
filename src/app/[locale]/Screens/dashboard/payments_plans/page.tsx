@@ -17,6 +17,7 @@ import { getFutureDate  } from "@/app/utils/date";
 import { mapPlanToLimits } from "@/app/Hooks/usePlanMapper";
 import Cookies from "js-cookie";
 import encryption from "@/app/utils/encryption";
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 
 interface PaymentPlan {
@@ -167,10 +168,9 @@ function Payments_plans() {
 
 
   const { data: plans, isLoading,isError ,error } = usePaymentPlans();
-      if (isLoading) return <p>...جاري التحميل</p>;
+      if (isLoading) return <SkeletonLoader />;
       if (isError) return <p>{error.message}</p>;
 
-      console.warn("Plans >>> ",plans)
 
       // if (data?.status == "DECLINED") {
       // }

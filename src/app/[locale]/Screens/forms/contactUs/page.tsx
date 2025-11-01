@@ -1,11 +1,9 @@
 "use client";
 import React from 'react'
 import Styles from './contactUs.module.css'
-// import InputLabel from '@mui/material/InputLabel';
-// import MenuItem from '@mui/material/MenuItem';
-// import FormControl from '@mui/material/FormControl';
-// import Select, { SelectChangeEvent } from '@mui/material/Select';
-import {useTranslations,useLocale} from 'next-intl';
+import {useTranslations,useLocale} from 'next-intl'
+import { InputComponent } from '@/app/components/global/InputsComponents';
+import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
 
 function ContactUs() {
       const Current_lang = useLocale();
@@ -29,23 +27,21 @@ function ContactUs() {
         </header>
 
         <div className={Styles.form}>
-            <input type="text" placeholder={t("full_name_placeholder")} name="" id="" />
-            <input type="email" placeholder={t("email_placeholder")} name="" id="" />
-            <input type="number" placeholder={t("Phone_number_placeholder")} />
-            {/* <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">{t("how_did_you_find_us_placeholder")}</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={age}
-                    label={t("how_did_you_find_us_placeholder")}
-                    onChange={handleChange}
-                    >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-            </FormControl> */}
+            <InputComponent  type="text"   label="" value='' placeholder={t("full_name_placeholder")} onTyping={()=>{}}/>
+            <InputComponent type="email"  label="" value='' placeholder={t("email_placeholder")} onTyping={()=>{}}/>
+            <InputComponent type="number" label="" value='' placeholder={t("Phone_number_placeholder")} onTyping={()=>{}}/>
+
+            <DropListComponent 
+              label=''
+              placeholder="Reason" 
+              list={[
+                {id:0,title:"Report a technical error",value:"Report a technical error"},
+                {id:1,title:"Report a problem",value:"Report a problem"},
+                {id:2,title:"Suggestion for addition to future releases",value:"Suggestion for addition to future releases"},
+                {id:3,title:"Just contact",value:"Just contact"},
+                ]}/>
+            <InputComponent isTextArea label="" value='' placeholder="Masseg*" onTyping={()=>{}}/>
+
 
             <button type="button">{t("submit_button")}</button>
         </div>

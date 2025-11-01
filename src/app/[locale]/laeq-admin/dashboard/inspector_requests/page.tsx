@@ -4,12 +4,15 @@ import React from 'react';
 import { useLocale } from 'next-intl';
 import { useRouter } from "next/navigation"; 
 import { ClientOnlyTable } from '@/app/components/global/Table/Table';
-import { useInspectorRequests ,useDeleteInspector_request } from '@/app/Hooks/useInspectorRequest'; 
+import { useInspectorRequests ,useUpdateInspectorRequestStatus } from '@/app/Hooks/useInspectorRequest'; 
+
 // import { getAdminAccountInfo } from '@/app/utils/getAccountInfo';
 import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 // import { AccountInfo } from '@/app/Types/AccountsType';
 // import Popup from '@/app/components/global/Popup/Popup';
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
+import Link from 'next/link';
+import { generateMapLinks } from '@/app/utils/mapLinks';
 
 function Inspector_requests() {
   const current_lang = useLocale();
@@ -27,7 +30,7 @@ function Inspector_requests() {
 
 
     // Delete hook
-    const { mutate: deleteRequest } = useDeleteInspector_request();
+    const { mutate: updateStatus } = useUpdateInspectorRequestStatus();
 
   // === Fetch inspector requests by admin_id
   const { data, isLoading, error } = useInspectorRequests();
@@ -43,6 +46,7 @@ function Inspector_requests() {
     company: item.companies.company_name ?? "-",
     site: item.sites.site_name ?? "-",
     status: item.status,
+    location:item?.sites?.lat? <Link href={generateMapLinks(item?.sites?.lat??"",item?.sites?.long??"").google_search} style={{ color: "#68A6A6", textDecoration: "underline" }} target="_blank">Site Location</Link>:item?.sites?.full_address??"No Location",
     date: item.request_date
     ? new Date(item.request_date).toLocaleDateString("en-US", {
         day: "numeric",
@@ -50,20 +54,26 @@ function Inspector_requests() {
         year: "numeric",
       })
     : "-",
-    assignAction:  item.status == "Pending"?(  
+    assignAction:
+    item.status === "Pending" ? (
       <BottonComponent
-        title='Assign'
+        title="Assign"
         onClick={() => {
-          router.push(`/${current_lang}/laeq-admin/dashboard/inspector_requests/AssignForm/${item.id}-${item?.admin_id}-${item?.companies?.id}-${item?.sites?.id}`)
-          
+          router.push(
+            `/${current_lang}/laeq-admin/dashboard/inspector_requests/AssignForm/${item.id}-${item?.admin_id}-${item?.companies?.id}-${item?.sites?.id}`
+          );
         }}
       />
-    ):<p color='green'>Assigned</p>,
+    ) : item.status === "Rejected" ? (
+      <p style={{ color: "red" }}>Rejected</p>
+    ) : (
+      <p style={{ color: "green" }}>Assigned</p>
+    ),
     rejectAction:item.status == "Pending"? (
       <BottonComponent
         title='reject'
         onClick={() => {
-          deleteRequest({id:item.id})
+          updateStatus({request_id:Number(item.id),status:"Rejected"})
         }}
         colorRed
       />
@@ -82,13 +92,14 @@ function Inspector_requests() {
           `${local_var}.company`,
           `${local_var}.site`,
           `${local_var}.status`,
+          `${local_var}.location`,
           `${local_var}.date`,
           "",
           "",
         ]}
         data={modifiedData}
         filter
-        rowsFlex={[1, 1, 1, 1, 1, 0.5, 0.5]}
+        rowsFlex={[1, 1, 1, 1,1, 1, 0.5, 0.5]}
       />
     </div>
   );

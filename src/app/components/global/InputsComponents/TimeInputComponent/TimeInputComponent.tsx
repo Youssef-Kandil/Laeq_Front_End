@@ -6,8 +6,8 @@ import app_identity from "@/app/config/identity";
 
 interface Props {
   onChange: (selectedTime: string) => void;
-  defaultValue?: string;   // قيمة افتراضية زي "12:00"
-  disabled?: boolean;      // عشان تمنع الفتح
+  defaultValue?: string;
+  disabled?: boolean;
 }
 
 function TimeInputComponent({ onChange, defaultValue = "--:--", disabled = false }: Props) {
@@ -25,23 +25,39 @@ function TimeInputComponent({ onChange, defaultValue = "--:--", disabled = false
   };
 
   const openTimePicker = () => {
-    if (disabled) return; // لو الديسابل ترو ميفتحش
+    if (disabled) return;
     inputRef.current?.showPicker?.();
-    inputRef.current?.click();
+    inputRef.current?.focus();
   };
+
+  function formatDisplay(timeStr: string) {
+    if (!timeStr || timeStr === "--:--") return "--:--";
+    const [hours, minutes] = timeStr.split(":");
+    const date = new Date();
+    date.setHours(Number(hours), Number(minutes));
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
 
   return (
     <div
       id={Styles.datePiker}
       className={`${Styles.input_container} ${disabled ? Styles.disabled : ""}`}
+      style={{ position: "relative" }}
+      onClick={openTimePicker}
     >
       <span className={Styles.dateLable}>Time :</span>
+
       <div>
-        <span>{selectedTime}</span>
+        <span>{formatDisplay(selectedTime)}</span>
       </div>
+
       <span
-        onClick={openTimePicker}
-        style={{ cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1 }}
+        
+        style={{
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.5 : 1,
+          position: "relative",
+        }}
       >
         <MdAccessTime size={25} color={app_identity.secondary_color} />
       </span>
@@ -53,13 +69,14 @@ function TimeInputComponent({ onChange, defaultValue = "--:--", disabled = false
         value={selectedTime === "--:--" ? "" : selectedTime}
         disabled={disabled}
         style={{
-          opacity: 0,
           position: "absolute",
-          left: "230px",
-          top: "100%",
-          width: "1px",
-          height: "1px",
-          zIndex: -1,
+          right: "8px",
+          width: "30px",
+          height: "30px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          opacity: 0,
+          cursor: "pointer",
         }}
       />
     </div>
