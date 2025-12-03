@@ -130,7 +130,7 @@ function ChooseUserTableScreen() {
                   user_id:selectedUserIds?.user_id??-1
                 },{
                     onSuccess:()=>{
-                        router.replace(`/${current_lang}/Screens/dashboard/actions`);
+                        router.replace(`/${current_lang}/laeq-admin/dashboard/actions`);
                     },
                     onError:(error)=>{
                       setLoading(false);

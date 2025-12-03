@@ -1,0 +1,39 @@
+.parent{
+    margin-left: 30px;
+    margin-right: 30px;
+    .titles{
+        padding: 20px 0px 30px;
+        && h2{
+            font-size: 1.8rem;
+            font-weight: 500;
+            && span {
+                color: var(--Secondary-color);
+            }
+        }
+        && p{
+            color: #a7a7a7;
+        }
+    }
+    && img{
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 20px;
+        border:2px dashed var(--Secondary-color);
+        margin: 10px 0px 40px;
+    }
+
+    .ImageBOX{
+        margin-bottom: 20px;
+    }
+
+    .noImage{
+       max-width: 200px;
+       border: 2px dashed #a5a5a5;
+       padding: 10px 15px;
+       margin-bottom: 20px;
+       cursor: not-allowed;
+        && p {
+            color:#a7a7a7
+        }
+    }
+}

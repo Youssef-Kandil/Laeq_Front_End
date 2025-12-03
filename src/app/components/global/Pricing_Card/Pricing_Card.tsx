@@ -38,7 +38,7 @@ const arrayOfFeatures = [
   "Users included",
   "Free Custom checklist",
   "Free onsite inspections",
-  "Access to training programs",
+  "Access to training programs (Soon)",
   "Daily monitoring sheets",
 ];
 
@@ -66,6 +66,9 @@ function Pricing_Card({
 
   const { mutate } = useTapCheckout();
 
+
+ 
+
   function pay() {
     localStorage?.setItem(
       "planInfo",
@@ -85,7 +88,8 @@ function Pricing_Card({
 
     mutate(
       {
-        amount: Number(price),
+        // amount: Number(price),
+        amount: Number((Number(price)*1.15).toFixed(2)),
         currency: "SAR",
         customer: {
           first_name: info?.userDetails?.full_name ?? "Null",

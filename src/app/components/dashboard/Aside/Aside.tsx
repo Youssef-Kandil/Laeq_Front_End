@@ -13,6 +13,7 @@ import { FaPowerOff } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
+import { Badge } from "@/app/components/ui/badge"
 
 
 function Aside() {
@@ -143,7 +144,14 @@ const router = useRouter();
           width={30}
           height={30}
         />
-        <h3>LAEQ365</h3>
+        <h3>
+          LAEQ365
+        </h3>
+      <Badge 
+          className="h-5 min-w-5 rounded-full px-3 font-mono tabular-nums text-yellow-700 bg-yellow-300 border-yellow-500"
+          variant="outline">
+            Beta 0.1
+      </Badge>
       </div>
       <div className={Styles.titlesList}>
         {titles}

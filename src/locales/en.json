@@ -87,6 +87,9 @@
             "all":"All",
             "Completed":"Completed",
             "Draft":"Draft",
+            "High":"High",
+            "Medium":"Medium",
+            "Low":"Low",
             "Pending":"Pending",
             "In_Progress":"In progress",
             "approved":"Approved",
@@ -152,12 +155,12 @@
                 "tb_headers":{
                     "id":"Action ID",
                     "name":"Action name",
-                    "company":"Company",
-                    "site":"Site",
+                    "level":"level",
+                    "location":"Location",
                     "date":"Date",
                     "submitted_by":"Submitted by ",
                     "status":"Status",
-                    "assign":"Assign"
+                    "assign":"Assign to"
                 },
                 "button_title":"Create action"
             },
@@ -256,7 +259,7 @@
     },
 
     "footer_component":{
-        "reach_us":"Reach us",
+        "reach_us":"Contact us",
         "legal":{
             "title":"Legal",
             "privacy_policy":"Privacy Policy",
@@ -375,7 +378,7 @@
 
             "experience":{
                 "title":"Experience the Difference",
-                "text":"Get A Personalized Live Demo Tailored To Your Needs, Or Kickstart Your Journey With A 14-Days FREE Trial—no Credit Card Required, No Strings Attached.",
+                "text":"Get a Personalized Live Demo Tailored to Your Needs, or Kickstart Your Journey with a 14 Day FREE Trial—No Credit Card Required, No Strings Attached.",
                 "get_started_btn":"Get Started",
                 "free_trial":"Start a free trial"
             }

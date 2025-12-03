@@ -2,9 +2,11 @@
 "use client";
 import React from 'react'
 import Styles from './summeries.module.css'
+import { ChartBarInteractive } from '@/app/components/global/Charts/chart-bar-interactive/chart-bar-interactive';
+import { ChartRadialShape } from '@/app/components/global/Charts/chart-radial-shape/chart-radial-shape';
 // import { useLocale } from 'next-intl';
 // import { useRouter } from 'next/navigation'
-import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+// import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 import { FaSquarePollVertical } from "react-icons/fa6";
 import { MdSell } from "react-icons/md";
@@ -42,35 +44,35 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
 
 
         const Info = getAdminAccountInfo("AccountInfo"); 
-        function calculateReportStatusCounts(reports: any[]) {
-            const counts = {
-              inProgress: 0,
-              pendding: 0,
-              completed: 0,
-              rejected: 0,
-            };
+        // function calculateReportStatusCounts(reports: any[]) {
+        //     const counts = {
+        //       inProgress: 0,
+        //       pendding: 0,
+        //       completed: 0,
+        //       rejected: 0,
+        //     };
           
-            reports?.forEach((report) => {
-              switch (report.status?.toLowerCase()) {
-                case "in progress":
-                  counts.inProgress += 1;
-                  break;
-                case "pending":
-                  counts.pendding += 1;
-                  break;
-                case "completed":
-                  counts.completed += 1;
-                  break;
-                case "rejected":
-                  counts.rejected += 1;
-                  break;
-                default:
-                  break;
-              }
-            });
+        //     reports?.forEach((report) => {
+        //       switch (report.status?.toLowerCase()) {
+        //         case "in progress":
+        //           counts.inProgress += 1;
+        //           break;
+        //         case "pending":
+        //           counts.pendding += 1;
+        //           break;
+        //         case "completed":
+        //           counts.completed += 1;
+        //           break;
+        //         case "rejected":
+        //           counts.rejected += 1;
+        //           break;
+        //         default:
+        //           break;
+        //       }
+        //     });
           
-            return counts;
-          }
+        //     return counts;
+        //   }
           
 
         // const t = useTranslations('table_component');
@@ -96,72 +98,28 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
         
        
         const boxesData = [{title:"Total Reports",info:SummeriesData?.ReportsCount},{title:"Total Companies",info:SummeriesData?.companiesCount},{title:"Total Sites",info:SummeriesData?.sitesCount},{title:"Total Users",info:SummeriesData?.employeesCount??""},{title:"Total Assets",info:SummeriesData?.assetsCount},]
-        const tasksCounts = calculateReportStatusCounts(SummeriesData?.ReportSummeries || []);
-        const ActionsCounts = calculateReportStatusCounts(SummeriesData?.actionSummeries || []);
         
-        const TotalActionsData = {
-          total:
-            ActionsCounts.inProgress +
-            ActionsCounts.pendding +
-            ActionsCounts.completed ,
-            // ActionsCounts.rejected,
-          data: ActionsCounts,
-        };
-        const TotalTasksData = {
-          total:
-            tasksCounts.inProgress +
-            tasksCounts.pendding +
-            tasksCounts.completed ,
-            // tasksCounts.rejected,
-          data: tasksCounts,
-        };
 
-        // const TotalData = {total:100 ,data:{inProgress:25,pendding:15,completed:50,rejected:10}}
-        // ==== START DATE FILTER LOGIC ====
-        //  const [showDatePicker, setShowDatePicker] = React.useState<boolean>(false);
-        //  const [range, setRange] = React.useState<Range[]>([
-        //      {
-        //        startDate: new Date(),
-        //        endDate: new Date(),
-        //        key: 'selection'
-        //      }
-        //    ]);
-     
-     
-          //  function handleDateRangeChange(
-          //    rangesByKey: RangeKeyDict,
-          //    setRange: (range: dateRang[]) => void,
-          //  ) {
-          //    const selection = rangesByKey.selection;
-           
-          //    // تأكد من أن التواريخ معرفة وليست undefined
-          //    if (selection.startDate && selection.endDate) {
-          //      const newRange: dateRang[] = [
-          //        {
-          //          startDate: selection.startDate,
-          //          endDate: selection.endDate,
-          //          key: selection.key ?? "defaultKey",
-          //        },
-          //      ];
-          //      setRange(newRange);
-          //    }
-          //  }
+
+
+
          // ==== END DATE FILTER LOGIC ====
 
     // ==  Render boxxes
     const Boxes = boxesData.map((box,indx)=>{
         return(
             <div key={indx} style={{background:boxColors[indx].mainColor}} className={Styles.Box}>
+                    <div className={Styles.Text}>
+                      <span className={Styles.title}>{box.title}</span>
+                      <p className={Styles.info}>{box.info}</p>
+                    </div>
                     <div>
                         <span style={{background:boxColors[indx].iconColor}} className={Styles.icon} >{boxIcon[indx]}</span>
                     </div>
-                    <p className={Styles.info}>{box.info}</p>
-                    <span className={Styles.title}>{box.title}</span>
             </div>
         )
     })
 
-    // === handel chart progress ===
     
 
    return (
@@ -173,152 +131,20 @@ import 'react-date-range/dist/theme/default.css'; // الثيم
                 {Boxes}
             </div>
           </section>
-
-          <section id={Styles.Totals}>
-            <h3>Tasks</h3>
-            <div className={Styles.info_container}>
-                
-                <div className={Styles.Box}>
-                    <h3>Inprogress</h3>
-                        <Gauge 
-                            width={200} 
-                            height={100} 
-                            value={TotalTasksData.data.inProgress} 
-                            valueMax={TotalTasksData.total}
-                            startAngle={-90} 
-                            endAngle={90}
-                            sx={{
-                                // track
-                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
-                                // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: '#FF6060',},
-                                // text
-                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
-                              }}
-                            
-                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                             />
-                </div>
-
-                <div className={Styles.Box}>
-                    <h3>Pendding</h3>
-                        <Gauge 
-                            width={200} 
-                            height={100} 
-                            value={TotalTasksData.data.pendding} 
-                            valueMax={TotalTasksData.total}
-                            startAngle={-90} 
-                            endAngle={90}
-                            sx={{
-                                // track
-                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
-                                // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(27, 203, 128, 1)',},
-                                // text
-                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
-                              }}
-                            
-                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                             />
-                </div>
-
-                <div className={Styles.Box}>
-                    <h3>Completed</h3>
-                        <Gauge 
-                            width={200} 
-                            height={100} 
-                            value={TotalTasksData.data.completed} 
-                            valueMax={TotalTasksData.total}
-                            startAngle={-90} 
-                            endAngle={90}
-                            sx={{
-                                // track
-                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
-                                // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(151, 71, 255, 1)',},
-                                // text
-                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
-                              }}
-                            
-                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                             />
-                </div>
-
+          <div className="p-6">
+             <ChartBarInteractive data={SummeriesData?.tasksData}/>
+        </div>
+        <div className="mx-5 p-1 bg-gradient-to-br from-gray-50 to-gray-200 rounded-2xl shadow-md border border-gray-200" >
+          <div className="flex flex-1 flex-col justify-center gap-1 mb-3 mt-3 px-6 pt-4 pb-3 sm:!py-0">
+            <div data-slot="card-title" className="leading-none font-semibold">
+              Actions Chart 
             </div>
-          </section>
-
-          <section id={Styles.Totals}>
-            <h3>Actions</h3>
-            <div className={Styles.info_container}>
-                
-                <div className={Styles.Box}>
-                    <h3>Inprogress</h3>
-                        <Gauge 
-                            width={200} 
-                            height={100} 
-                            value={TotalActionsData.data.inProgress} 
-                            valueMax={TotalActionsData.total}
-                            startAngle={-90} 
-                            endAngle={90}
-                            sx={{
-                                // track
-                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
-                                // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: '#FF6060',},
-                                // text
-                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
-                              }}
-                            
-                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                             />
-                </div>
-
-                <div className={Styles.Box}>
-                    <h3>Pendding</h3>
-                        <Gauge 
-                            width={200} 
-                            height={100} 
-                            value={TotalActionsData.data.pendding} 
-                            valueMax={TotalActionsData.total}
-                            startAngle={-90} 
-                            endAngle={90}
-                            sx={{
-                                // track
-                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
-                                // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(27, 203, 128, 1)',},
-                                // text
-                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
-                              }}
-                            
-                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                             />
-                </div>
-
-                <div className={Styles.Box}>
-                    <h3>Completed</h3>
-                        <Gauge 
-                            width={200} 
-                            height={100} 
-                            value={TotalActionsData.data.completed} 
-                            valueMax={TotalActionsData.total}
-                            startAngle={-90} 
-                            endAngle={90}
-                            sx={{
-                                // track
-                                [`& .${gaugeClasses.referenceArc}`]: {fill: '#36434E',},
-                                // progress
-                                [`& .${gaugeClasses.valueArc}`]: {fill: 'rgba(151, 71, 255, 1)',},
-                                // text
-                                [`& .${gaugeClasses.valueText}`]: {fontSize: '1rem',fontWeight: 600,fill: '#FFFFFF',color:"#323135",},
-                              }}
-                            
-                            text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                             />
-                </div>
-
+            <div data-slot="card-description" className="text-muted-foreground text-sm">
+              Showing total actions for this month
             </div>
-          </section>
+        </div>
+            <ChartRadialShape items={SummeriesData?.actionsStats as any} />
+        </div>
       </div>
     )
 }

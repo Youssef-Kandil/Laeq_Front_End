@@ -14,6 +14,33 @@ function Nave() {
   const pathname = usePathname();
   const info = getAdminAccountInfo("AccountInfo");
 
+
+
+  const avatarColors = [
+    { bg: "#FEE2E2", color: "#B91C1C" }, // أحمر فاتح
+    { bg: "#E0F2FE", color: "#0369A1" }, // أزرق سماوي
+    { bg: app_identity?.secondary_color , color: app_identity?.primary_color }, // أخضر
+    { bg: "#F3E8FF", color: "#6B21A8" }, // بنفسجي
+    { bg: "#FFF7ED", color: "#C2410C" }, // أورانج
+    { bg: "#EDE9FE", color: "#4C1D95" }, // موف
+  ];
+
+  function getAvatarStyle(name: string) {
+    if (!name) {
+      return avatarColors[0]; // fallback
+    }
+  
+    const firstChar = name[0].toUpperCase();
+    const index = firstChar.charCodeAt(0) % avatarColors.length; // يختار لون ثابت
+  
+    return avatarColors[index];
+  }
+
+  const userName = info?.userDetails?.full_name ?? "";
+  const avatar = getAvatarStyle(userName);
+  const firstLetter = userName[0]?.toUpperCase() ?? "";
+  
+
   // state عشان تخزن فيها الداتا بعد ما الكومبوننت يركب
 
 
@@ -36,9 +63,29 @@ function Nave() {
         <h2>{t(nave_Title === "summeries" ? "dashboard" : nave_Title || "dashboard")}</h2>
       )}
 
-      <div>
-        <p style={{ fontSize: 17, color: app_identity.secondary_color }}>HI,</p>
-        <p>{info?.userDetails?.full_name??""}</p>
+      <div style={{display: "flex",gap:10}}>
+        <div style={{display: "flex",flexDirection:"column"}}>
+          <p style={{ fontSize: 16 }}>{info?.userDetails?.full_name??""}</p>
+          <p style={{ fontSize: 13, color:"#a7a7a7" }}>{info?.role} account</p>
+        </div>
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            border:`1px solid ${avatar.color}`,
+            borderRadius: "50%",
+            background: avatar.bg,
+            color: avatar.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 20,
+            fontWeight: "bold",
+          }}
+        >
+          {firstLetter}
+        </div>
+
       </div>
     </div>
   );

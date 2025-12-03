@@ -36,11 +36,11 @@ function CreateActionForm() {
     const [loading,setLoading] = React.useState<boolean>(false);
     // ==== Values
     const [actionTitle,setActionTitle] = React.useState<string>("");
+    const [actionLevel,setActionLevel] = React.useState<"medium"|"low"|"high">("medium");
     const [userAssignedTo,setUserAssignedTo] = React.useState<number>(-1);
     const [company,setCompany] = React.useState<number>(-1);
     const [site,setSite] = React.useState<number>(-1);
-    console.log("AdminID >>> ",AdminID)
-    console.log("Employees.data >>> ",Employees)
+
     // ==== Lists
     const EmployeesList = Employees.data?.map((item:{id:number,full_name:string,users:{email:string,id:number}}) => ({
       id: item.users.id,
@@ -129,6 +129,7 @@ function CreateActionForm() {
           created_by:info?.id??-1,
           admin_id:AdminID??-1,
           status:"Pending",
+          importance_level:actionLevel,
           company_id:company,
           site_id:site
         },
@@ -146,8 +147,6 @@ function CreateActionForm() {
           }
         }
       );
-
-      setLoading(false);
     }
 
   return (
@@ -178,9 +177,10 @@ function CreateActionForm() {
               btnTitle="Ok" 
               btnFunc={()=>{setShowErrorPopup(false)}} 
               onClose={()=>{setShowErrorPopup(false)}}/>}
-      <div style={{marginLeft:"30px",marginRight:"30px"}}>
+      <div style={{marginLeft:"30px",marginRight:"30px",marginTop:"30px"}}>
           <div style={{display:'flex',flexWrap:"wrap",maxWidth:900,alignItems:"center",gap:20}}>
               <InputComponent label='Action name' placeholder='Please enter your action name' value={actionTitle} onTyping={(txt)=>{setActionTitle(txt)}}/>
+              <DropListComponent label='Level' placeholder='Choose action level' list={[{id:0,value:"Medium",title:"Medium"},{id:1,value:"Low",title:"Low"},{id:2,value:"High",title:"High"}]}  onSelect={(el)=>{setActionLevel(el?.value as "medium"|"low"|"high")}}/>
               <DropListComponent label='User' placeholder='Choose your user' list={EmployeesList??[]}  onSelect={(el)=>{setUserAssignedTo(el.id)}}/>
               <DropListComponent label='Company' placeholder='Choose your Company' list={CompaniesList??[]}  onSelect={(el)=>{handelSelectCompany(el)}}/>
               <DropListComponent label='Site' placeholder='Choose your Site' list={sitesList??[]}  onSelect={(el)=>{setSite(el.id)}}/>

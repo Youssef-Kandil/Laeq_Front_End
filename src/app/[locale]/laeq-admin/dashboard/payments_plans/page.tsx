@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 // import { useRouter } from "next/navigation";
 import CustomSwitch from "@/app/components/global/CustomSwitch/CustomSwitch";
 import { usePaymentPlans } from "@/app/Hooks/usePaymentPlans";
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 
 
@@ -44,7 +45,7 @@ function Payments_plans() {
 
 
   const { data: plans, isLoading,isError ,error } = usePaymentPlans();
-      if (isLoading) return <p>...جاري التحميل</p>;
+      if (isLoading) return <SkeletonLoader />;
       if (isError) return <p>{error.message}</p>;
 
       console.warn("Plans >>> ",plans)

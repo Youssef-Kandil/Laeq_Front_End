@@ -1,5 +1,5 @@
 "use client";
-import React from 'react'
+import React,{useEffect} from 'react'
 
 //You@Laeq123
 import { useRouter } from "next/navigation";
@@ -48,6 +48,13 @@ function AddUserForm() {
         setShowFirstPopup(false);
       }
     }, [Employees?.data, isFirstTime]);
+
+    useEffect(() => {
+      if (Number(maxEmployees) == Number(Employees?.data?.length??0) && Number(Employees?.data?.length??0) != 0 ) {
+        router.replace(`/${local}/Screens/dashboard/summeries`);
+      } 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [Employees?.data,maxEmployees]);
 
     const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
       id: item.id,

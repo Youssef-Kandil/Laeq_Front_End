@@ -14,6 +14,8 @@ import Popup from '@/app/components/global/Popup/Popup';
 import Lottie from 'lottie-react';
 import ErrorIcon from '@/app/Lottie/wrong.json'
 
+
+
 function AccountInfo() {
   // const router = useRouter();
   const info = getAdminAccountInfo("AccountInfo") as AccountInfo | null;
@@ -127,7 +129,6 @@ function AccountInfo() {
       </section>
 
       {/* <SignatureInputComponent label='' placeholder='' value={signature} onChange={setSignature}/> */}
-
 
       <div className={Styles.btnContainer}>
         <BottonComponent disabled={isPending} title='Update Profile' onClick={handelSubmit}/>

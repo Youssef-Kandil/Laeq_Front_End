@@ -14,7 +14,8 @@ import {useTranslations,useLocale} from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useAdminAccount , useGoogleAdminAccount} from '@/app/Hooks/useAdminAccount';
 import Cookies from 'js-cookie';
-import DropListComponent from '@/app/components/global/InputsComponents/DropListComponent/DropListComponent';
+import OTP_InputComponent from '@/app/components/global/InputsComponents/OTP_InputComponent/OTP_InputComponent';
+import { useVerifyOTP ,useRequestOTP } from '@/app/Hooks/useOTP';
 
 
 function Signup() {
@@ -26,6 +27,9 @@ function Signup() {
    const t_alerts = useTranslations('alerts');
    const [step, setStep] = React.useState(1);
    const [direction, setDirection] = React.useState(0);
+
+   const {mutate:RequestOTP}= useRequestOTP();
+   const {mutate:VerifyOTP}= useVerifyOTP();
 
 
    Cookies.remove("AccountInfo");
@@ -45,9 +49,9 @@ function Signup() {
    const [phone,setPhone] = React.useState("");
    const [password,setPassword] = React.useState("");
    const [confirm_password,setConfirmPassword] = React.useState("");
-   const [securityQuestion,setSecurityQuestion] = React.useState("");
-   const [securityQuestionID,setSecurityQuestionID] = React.useState(0);
-   const [securityAnswer,setSecurityAnswer] = React.useState("");
+   const[ isOTPVerifyed,setIsOTPVerifyed] = React.useState<boolean>(true);
+   const[ disabledOTP,setDisabledOTP] = React.useState<boolean>(false);
+
    const [alertMSG,setAlertMSG] = React.useState("");
    const [alertSeverity,setAlertSeverity] = React.useState<"success" | "info" | "warning" | "error">("warning");
    const[ alertState,setAlertState] = React.useState<boolean>(false);
@@ -64,25 +68,7 @@ function Signup() {
       opacity: 0,
     }),
   };
-  // === Step Handler ===
-  function handleNext() {
-    if (step === 1) {
-      setDirection(1);
-      setStep(2);
-    }
 
-    if (step === 2) {
-      setDirection(1);
-      setStep(3);
-    }
-  }
-
-  function prevStep() {
-    if (step > 1) {
-      setDirection(-1);
-      setStep(step - 1);
-    }
-  }
 
 
    // === Validation Inputes Values ===
@@ -120,6 +106,36 @@ function Signup() {
         return true;
    } 
 
+     // === Step Handler ===
+  function handleNext() {
+    const isValide :boolean =  validationFunctions();
+    if (!isValide) {
+        return;
+    }
+    if (step === 1) {
+      setDirection(1);
+      setStep(2);
+      RequestOTP({email},{
+        onSuccess:()=>{},
+        onError:(error)=>{
+          console.error("ERROR :: ",error);
+        },
+      })
+    }
+
+    if (step === 2) {
+      setDirection(1);
+      setStep(3);
+    }
+  }
+
+  function prevStep() {
+    if (step > 1) {
+      setDirection(-1);
+      setStep(step - 1);
+    }
+  }
+
  // === Handle Submit ===
  const { mutate:googleSignup } = useGoogleAdminAccount();
 
@@ -149,8 +165,6 @@ function Signup() {
                 plan_type: "14Days-free",
                 start_date:new Date(Date.now()).toISOString(),
                 end_date: getFutureDate(14).toISOString(),
-                forget_password_question: securityQuestion,
-                forget_password_answer: securityAnswer
               }, 
               {
                 onSuccess: ()=>{
@@ -231,7 +245,34 @@ function Signup() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [step, full_name,email,phone,password,confirm_password,securityQuestion,securityAnswer]);
+  }, [step, full_name,email,phone,password,confirm_password]);
+
+
+
+  function handelCheckOTP(otp:string){
+        if (otp?.length == 4 && email) {
+           setDisabledOTP(true);
+           VerifyOTP({
+            email:email,
+            otp:otp
+           },{
+            onSuccess:()=>{
+              setAlertState(true);
+              setAlertSeverity("success");
+              setAlertMSG(`Your OTP is Verifyed`);
+              setIsOTPVerifyed(false);
+
+            },
+            onError:(error)=>{
+              setDisabledOTP(false);
+              setAlertState(true);
+              setAlertSeverity("error");
+              setAlertMSG(`Please enter Your valid Info . ${error.message}`);
+              setIsOTPVerifyed(true);
+            },
+           })
+        }
+  }
   
   
   return (
@@ -294,42 +335,24 @@ function Signup() {
                   animate="center"
                   exit="exit"
                   transition={{ duration: 0.4 }}
-                  className={Styles.form_inputs}>
+                  >
                   {/* === Form Headers */}
-                    <div>
-                      <h2><span style={{color:app_identity.secondary_color}}>Security</span> Question.</h2>
+                    <div style={{marginBottom:50,width:"100%"}}>
+                      <h2><span style={{color:app_identity.secondary_color}}>Verify</span> Email.</h2>
+                      <label style={{marginBottom:100}} htmlFor="question" >We Sent OTP Code To {email}</label>
                     </div>
                     {/* === INPUTS === */}
                     
-                    <label htmlFor="question" >Security Question</label>
-                    {/* <input type="text" id="question" value={securityQuestion} onChange={(e)=>setSecurityQuestion(e.target.value)} /> */}
-                    <div style={{width:"100%",direction:'ltr',textAlign:'left' }}>
-                        <DropListComponent
-                          label=''
-                          placeholder='Choose Your Security Question'
-                          value={securityQuestion?{id:securityQuestionID,value:securityQuestion,title:securityQuestion}:null}
-                          list={[
-                            { id: 1, value: "What’s your favorite teacher’s name?" },
-                            { id: 2, value: "What city were you born in?" },
-                            { id: 3, value: "What was your first pet’s name?" },
-                            { id: 4, value: "What’s your mother’s maiden name?" },
-                          ]}
-                          onSelect={(e) => {
-                            setSecurityQuestion(e.value)
-                            setSecurityQuestionID(e.id)
-                          }}
-                        />
-                    </div>
-                    <label htmlFor="answer" >Security Answer</label>
-                    <input type="text" id="answer" value={securityAnswer} onChange={(e)=>setSecurityAnswer(e.target.value)} />
+                    
+                    <OTP_InputComponent length={4} disabled={disabledOTP} onChange={(otp)=>handelCheckOTP(otp)} email={email}/>
                     <div style={{ display:"flex", alignItems:"center" ,width:"100%",gap:10}}>
-                      <div onClick={prevStep} style={{flex:0.5,border:`${app_identity.secondary_color} 1px solid`,color:app_identity.secondary_color,background:"#fff"}} className={Styles.signup_btn}>
+                      <button disabled={disabledOTP} onClick={prevStep} style={{flex:0.5,border:`${app_identity.secondary_color} 1px solid`,color:app_identity.secondary_color,background:"#fff"}} className={Styles.signup_btn}>
                         Back
-                      </div>
-                      <div style={{flex:1.5}} className={Styles.signup_btn} onClick={handleSubmit}>
+                      </button>
+                      <button disabled={isOTPVerifyed} style={{flex:1.5}} className={Styles.signup_btn} onClick={handleSubmit}>
                         {t("submit_button") }
                         {isPending && <CircularProgress className={Styles.laoder} size={25} />}
-                      </div>
+                      </button>
                     </div>
               </motion.div>
         )}  
@@ -337,22 +360,6 @@ function Signup() {
 
 
         {/* === signup Button === */}
-        {/* {step === 1?
-        <div className={Styles.signup_btn} onClick={handleNext}>
-         Continue
-        </div>
-        :
-        <div style={{ display:"flex", alignItems:"center" ,width:"100%",gap:10}}>
-          <div onClick={prevStep} style={{flex:0.5,border:`${app_identity.secondary_color} 1px solid`,color:app_identity.secondary_color,background:"#fff"}} className={Styles.signup_btn}>
-            Back
-          </div>
-          <div style={{flex:1.5}} className={Styles.signup_btn} onClick={handleSubmit}>
-            {t("submit_button") }
-            {isPending && <CircularProgress className={Styles.laoder} size={25} />}
-          </div>
-        </div>
-        } */}
-
 
 
         <div className={Styles.have_account}>

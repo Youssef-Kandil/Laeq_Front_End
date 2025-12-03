@@ -7,6 +7,7 @@ import CustomSwitch from "@/app/components/global/CustomSwitch/CustomSwitch";
 import { usePaymentPlans } from "@/app/Hooks/usePaymentPlans";
 import { useRouter } from "next/navigation"; 
 import { useLocale } from "next-intl";
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 // import Popup from "@/app/components/global/Popup/Popup";
 // import { FiXOctagon } from "react-icons/fi";
@@ -30,7 +31,7 @@ function Priceing() {
 
   const [showYearly, setShowYearly] = useState(false);
 
-  if (isLoading) return <p>...جاري التحميل</p>;
+  if (isLoading) return <SkeletonLoader />;
   console.warn(plans[0])
 
   interface PaymentPlan {

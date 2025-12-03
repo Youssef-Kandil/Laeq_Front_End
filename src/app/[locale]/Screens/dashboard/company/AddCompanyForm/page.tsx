@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import Styles from "./AddCompanyForm.module.css";
 
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ import Popup from '@/app/components/global/Popup/Popup';
 import Lottie from "lottie-react";
 import WorngIcon  from '@/app/Lottie/wrong.json'
 import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 import { FaFlagCheckered } from "react-icons/fa";
 
 
@@ -66,14 +67,26 @@ function AddCompanyForm() {
   const isFirstTime = localStorage.getItem("first_time");
   const [showFirstPopup, setShowFirstPopup] = useState<boolean>(false);
   
-  React.useEffect(() => {
+useEffect(() => {
     if (!isFirstTime && data && data.length === 0) {
       setShowFirstPopup(true);
     } else {
       setShowFirstPopup(false);
     }
   }, [data, isFirstTime]);
-          if (isLoading) return <div>Loading...</div>;
+
+useEffect(() => {
+  if (!data || data.length === 0) return; // استنى لما البيانات تكون جاهزة
+
+  const totalCompanies = Number(data.length ?? 0);
+  if (totalCompanies !== 0 && totalCompanies >= Number(maxBranches)) {
+    router.replace(`/${local}/Screens/dashboard/summeries`);
+  }
+}, [data, maxBranches, local, router]);
+
+
+
+          if (isLoading) return <SkeletonLoader />;
           if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
           if (!data) return <div>لا توجد بيانات</div>;
 

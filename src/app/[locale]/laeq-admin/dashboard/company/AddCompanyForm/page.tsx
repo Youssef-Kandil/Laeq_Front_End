@@ -16,6 +16,7 @@ import Popup from '@/app/components/global/Popup/Popup';
 import Lottie from "lottie-react";
 import WorngIcon  from '@/app/Lottie/wrong.json'
 import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 
 
@@ -61,7 +62,7 @@ function AddCompanyForm() {
 
   const { mutate } = useCreateCompany();
   const { data, isLoading, error } = useGetCompaniesByUserId(AdminInfo?.userDetails.id??0);
-          if (isLoading) return <div>Loading...</div>;
+          if (isLoading) return <SkeletonLoader />;
           if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
           if (!data) return <div>لا توجد بيانات</div>;
           console.warn("data LLLL",data)

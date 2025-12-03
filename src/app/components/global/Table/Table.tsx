@@ -22,12 +22,18 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css'; 
 import app_identity from '@/app/config/identity';
 
+interface FilterOption {             // اسم الحقل من البيانات (status | level | priority...)
+    title: string;             // يظهر في UI
+    checked: boolean;          // القيم المتاحة للفلترة
+}
+
+
 interface TableProps {
     titles: string[];
     data?: unknown[];
     rowsFlex?: number[];
     filter?: boolean;
-    filterOptions?: string[];
+    filterOptions?: FilterOption[];
     dateFilter?: boolean;
 
     useCheckRows?:boolean;
@@ -53,6 +59,7 @@ function Table({
     data,
     rowsFlex,
     filter,
+    filterOptions,
     dateFilter,
     navButtonTitle,
     navButtonAction,
@@ -70,22 +77,11 @@ function Table({
 
     //  ==== SEARSH FILTER ====
     const [search, setSearch] = React.useState("");
-    // function filterData(data: any[], search: string) {
-    //     if (!search) return data; // لو السيرش فاضي رجّع كل البيانات
-      
-    //     const lowerSearch = search.toLowerCase();
-      
-    //     return data.filter((row) =>
-    //       Object.entries(row).some(([key, value]) => {
-    //         if (key === "status") return false; // تجاهل عمود status
-    //         if (value === null || value === undefined) return false;
-    //         return String(value).toLowerCase().includes(lowerSearch);
-    //       })
-    //     );
-    //   }
-    //   const filteredData = filterData(data, search);
+
+
 
     // ==== DATE FILTER ====
+
     const [showDatePicker, setShowDatePicker] = React.useState<boolean>(false);
     const [range, setRange] = React.useState<Range[]>([
         { 
@@ -114,13 +110,17 @@ function Table({
 
     // ==== STATUS FILTER ====
     interface StatusType { title: string; checked: boolean; }
-    const [Status, SetStatus] = React.useState<StatusType[]>([
+    const [Status, SetStatus] = React.useState<StatusType[]>(filterOptions??[
         {title:"Completed",checked:false},
         {title:"Pending",checked:false},
         {title:"In_Progress",checked:false},
         {title:"Draft",checked:false},
         {title:"Rejected",checked:false},
+        { title: "High", checked: false },
+        { title: "Medium", checked: false },
+        { title: "Low", checked: false },
     ]);
+
     const [showFilterPicker, setShowFilterPicker] = React.useState<boolean>(false);
 
     const handleStatusFilterChange = (status: string) => {
@@ -134,13 +134,14 @@ function Table({
           {title:"Completed",checked:false},
           {title:"Pending",checked:false},
           {title:"In_Progress",checked:false},
-          {title:"Draft",checked:false},
           {title:"Rejected",checked:false},
         ]);
     };
 
     // ✅ هنا بقى برة خالص (في نفس الكومبوننت مش جوه الفانكشن)
     // === FILTERED DATA (Search + Status) ===
+
+    
     const filteredData = React.useMemo(() => {
         let temp = data ?? [];
     
@@ -150,7 +151,7 @@ function Table({
 
         temp = temp.filter((row: any) =>
             Object.entries(row).some(([key, value]) => {
-            if (key === "status") return false; // تجاهل status
+            if (key === "status" || key === "level") return false;
             if (value === null || value === undefined) return false;
             return String(value).toLowerCase().includes(lowerSearch);
             })
@@ -165,10 +166,12 @@ function Table({
           );
         if (selectedStatuses.length > 0) {
 
-        temp = temp.filter((row: any) =>
-            selectedStatuses.includes(row.status)
-        );
+            temp = temp.filter((row: any) =>{
+                return selectedStatuses.includes(row.level) || selectedStatuses.includes(row.status)
+        }); 
+            
         }
+
 
          // 📅 فلترة بالتاريخ (لو مفعّلة)
 
@@ -334,7 +337,7 @@ function Table({
                         }}>
                             {t("filter")}
                         </div>
-
+                                                           
                         {showFilterPicker && (
                             <div className={Style.filterOptions}>
                                 <div className={Style.title}>
@@ -342,6 +345,7 @@ function Table({
                                     <p className={Style.reset} onClick={()=>handleResetStatusFilter()}>{t("filter_status.reset")}</p>
                                 </div>
                                 <FormGroup className={Style.checkBoxGroup}>
+                                    {/* ==3 */}
                                     {Status.map((status, index) => (
                                         <FormControlLabel
                                           key={index} 
@@ -421,12 +425,16 @@ function Table({
                                 const key = Object.keys(row)[i]; 
                                 return (
                                     <p key={i} title={""+row[key]} className={Style.cell}  style={rowsFlex?.length == 0 || rowsFlex == undefined ?{flex:1}:{flex:rowsFlex[i]}}>
-                                        {(key !== "status" && key !== "الحالة")  ?  <span>{row[key]}</span> :null}
+                                        {(key !== "status" && key !== "level" && key !== "الحالة")  ?  <span>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "Completed" ?  <span style={{color:"#2AA952",background:"#2AA9521A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "Draft" ?  <span style={{color:"#000000",background:"#0707071a",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "Rejected" ?  <span style={{color:"#ff0707",background:"#ff07071a",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "In Progress" ?  <span style={{color:"#03A9F3",background:"#03A9F31A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                         {(key == "status" || key == "الحالة") && row[key] == "Pending" ?  <span style={{color:"#FFAB07",background:"#FFAB071A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
+                                        
+                                        {(key == "level" || key == "المستوي") && row[key] == "Low" ?  <span style={{color:"#2AA952",background:"#2AA9521A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
+                                        {(key == "level" || key == "المستوي") && row[key] == "Medium" ?  <span style={{color:"#FFAB07",background:"#FFAB071A",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
+                                        {(key == "level" || key == "المستوي") && row[key] == "High" ?  <span style={{color:"#ff0707",background:"#ff07071a",padding:8,borderRadius:8,height:33}}>{row[key]}</span> :null}
                                     </p>
                                 );
                             })}

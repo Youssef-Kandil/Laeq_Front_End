@@ -3,7 +3,7 @@ import React from "react";
 import { LuImagePlus } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Styles from "./MultimageInputComponent.module.css";
-import { resizeAndConvert } from "@/app/utils/imageHelpers";
+import { resizeAndConvert ,resizeAndConvertToWebp} from "@/app/utils/imageHelpers";
 import Image from "next/image";
 import { PDFDocument } from "pdf-lib";
 
@@ -13,6 +13,7 @@ interface Props {
   onChange?: (previews: string[], blobs: Blob[]) => void;
   maxWidth?: number;
   maxHeight?: number;
+  max_images?: number;
   quality?: number;
   asPdf?: boolean; // 👈 خيار جديد: هل نرجع PDF بدل الصور
 }
@@ -23,6 +24,7 @@ export default function MultimageInputComponent({
   onChange,
   maxWidth = 400,
   maxHeight = 400,
+  max_images,
   quality = 0.8,
   asPdf = false,
 }: Props) {
@@ -31,7 +33,7 @@ export default function MultimageInputComponent({
   const [pdfBlob, setPdfBlob] = React.useState<Blob | null>(null); // 👈 نخزن ملف الـ PDF هنا
   const [error, setError] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const MAX_IMAGES = 5;
+  const MAX_IMAGES = max_images??5;
 
   React.useEffect(() => {
     if (blobs.length > 0) {
@@ -66,14 +68,25 @@ export default function MultimageInputComponent({
 
     for (const file of toProcess) {
       try {
-        const webpBlob = await resizeAndConvert(
-          file,
-          maxWidth,
-          maxHeight,
-          quality
-        );
-        newBlobs.push(webpBlob);
-        newPreviews.push(URL.createObjectURL(webpBlob));
+        if(asPdf){
+          const webpBlob = await resizeAndConvert(
+            file,
+            maxWidth,
+            maxHeight,
+            quality
+          );
+          newBlobs.push(webpBlob);
+          newPreviews.push(URL.createObjectURL(webpBlob));
+        }else{
+          const webpBlob = await resizeAndConvertToWebp(
+            file,
+            maxWidth,
+            maxHeight,
+            quality
+          );
+          newBlobs.push(webpBlob);
+          newPreviews.push(URL.createObjectURL(webpBlob));
+        }
       } catch {
         // تجاهل أي خطأ في معالجة الصورة
       }

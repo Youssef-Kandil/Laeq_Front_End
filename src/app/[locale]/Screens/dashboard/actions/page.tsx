@@ -1,3 +1,4 @@
+
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -5,6 +6,8 @@ import { useLocale } from "next-intl";
 import { LuTrash2 } from "react-icons/lu";
 // import { FiEdit2 } from "react-icons/fi";
 import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaRegEye } from "react-icons/fa";
+import { MdOutlineDoNotDisturbAlt } from "react-icons/md";
 import { useActions ,useUpdateActionStatus , useDeleteAction} from "@/app/Hooks/useActions";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
@@ -12,13 +15,17 @@ import BottonComponent from "@/app/components/global/ButtonComponent/BottonCompo
 import Popup from '@/app/components/global/Popup/Popup';
 import { ClientOnlyTable } from "@/app/components/global/Table/Table";
 import encryption from "@/app/utils/encryption";
+import { generateMapLinks } from "@/app/utils/mapLinks";
+import Link from "next/link";
+
 
 // ===== Types =====
 interface ActionType {
   id: number;
+  importance_level: number;
   action_title?: string;
   companies?: { company_name?: string };
-  sites?: { site_name?: string };
+  sites?: { site_name?: string,lat:string,long:string };
   users_actions_created_byTousers?: { email?: string ,employees:{full_name:string}}; // لو عندك relation للي عمل الأكشن
   users_actions_assigned_toTousers?: { email?: string,employees:{full_name:string} }; // لو عندك relation للي عمل الأكشن
   created_at?: string;
@@ -29,6 +36,8 @@ function Actions() {
   const router = useRouter();
   const current_lang = useLocale();
   const [showPopup, setShowPopup] = React.useState(false);
+  const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+  const [selectedActionId, setSelectedActionId] = React.useState<number | null>(null);
 
   // Set default clicked title in aside
   React.useEffect(() => {
@@ -45,6 +54,7 @@ function Actions() {
 
   // const [maxActions] = React.useState(limits.max_Corrective_action ?? 0);
   const targetId = isEmployee ? info?.id : info?.userDetails?.id;
+
 
   // Fetch actions
   const {
@@ -67,8 +77,8 @@ function Actions() {
   const baseHeaders = [
     // `${local_var}.id`,
     `${local_var}.name`,
-    `${local_var}.company`,
-    `${local_var}.site`,
+    `${local_var}.level`,
+    `${local_var}.location`,
     `${local_var}.submitted_by`,
     `${local_var}.date`,
     `${local_var}.status`,
@@ -110,13 +120,15 @@ function Actions() {
     // const hasPermission = handelValidation();
 
   // ===== Modify actions data for table =====
+
   const modifiedData =
-    actionsData?.map((action: ActionType) => {
+  actionsData?.map((action: ActionType) => {
       const baseData = {
         // id: action?.id,
         name: action?.action_title || "—",
-        company: action?.companies?.company_name || "—",
-        site: action?.sites?.site_name || "—",
+        level:action.importance_level,
+
+        location: action?.sites?.lat?<Link href={generateMapLinks(action?.sites?.lat,action?.sites?.long)?.google_search}  style={{ color: "#68A6A6", textDecoration: "underline" }} target="_blank">{ action?.sites?.site_name || "—"}</Link>: "No Location",
         submitted_by: action?.users_actions_created_byTousers?.email || "—",
         date: action?.created_at
           ? new Date(action.created_at).toLocaleString("en-US", {
@@ -134,7 +146,7 @@ function Actions() {
         return {
           ...baseData,
           action:
-            action.status === "Pending" ? (
+            (action.status === "Pending"&& action?.users_actions_assigned_toTousers?.email == info?.email) ? (
               <BottonComponent
                 title="Start"
                 onClick={() =>{
@@ -143,21 +155,29 @@ function Actions() {
                 }
                 }
               />
-            ) : action.status === "In Progress" ? (
+            ) : (action.status === "In Progress"&& action?.users_actions_assigned_toTousers?.email == info?.email) ? (
               <BottonComponent title="Done" 
                     onClick={()=>{
                       console.log("Done action", action.action_title);
-                      updateStatus({action_id:action.id,status:"Completed"});
+                      const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
+                      // const enc = encryption.encryption(`${action.id}`, "encryptionKey");
+                      const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+                      router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ActionDetails`);
+                      // updateStatus({action_id:action.id,status:"Completed"});
                     }} />
             ) : (
-              <p style={{ color: "#68A6A6" }}>Finished</p>
+              <p style={{ color: "#68A6A6" }}>{action.status ==  "Completed"?<FaRegEye onClick={()=>{
+                const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
+                const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+                router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ShowActionDetails`);
+              }} style={{ fontSize: 20 }}/>:action.status}</p>
             ),
         };
       } else {
         return {
           ...baseData,
           assign_action: 
-             !action?.users_actions_assigned_toTousers?.email?
+             (!action?.users_actions_assigned_toTousers?.email && action.status === "Pending")?
             (<BottonComponent
               title="Assign"
               onClick={() =>{ 
@@ -170,18 +190,23 @@ function Actions() {
                 router.push(`/${current_lang}/Screens/dashboard/actions/${encryption.encryption(JSON.stringify(action.id),"encryptionKey")}/AssignActionToUser`);
               }}
               />):(
-                <p style={{ color: "#68A6A6" }}>Assigned to {action.users_actions_assigned_toTousers.email}</p>
+                <div>
+                  <p style={{ color: "#68A6A6" }}>{action?.users_actions_assigned_toTousers?.email==info?.email?"You":(action?.users_actions_assigned_toTousers?.email??"unKnown")}</p>
+                </div>
               )
           ,
-          delete_action: action?.users_actions_assigned_toTousers?.email !== info?.email ? (
+          delete_action: (action?.users_actions_assigned_toTousers?.email !== info?.email) ? (
             <button
               className="p-2 hover:text-red-600"
-              onClick={() => deleteAction({ id: action.id })}
+              onClick={() => {
+                setConfirmDeletePopup(true);
+                setSelectedActionId(action.id);
+              }}
             >
               <LuTrash2 style={{ fontSize: 20 }} />
             </button>
-          ):"-",
-          action: ( action.status === "Pending" && action?.users_actions_assigned_toTousers?.email == info?.email) ? (
+          ):<MdOutlineDoNotDisturbAlt style={{ fontSize: 20 }}/>,
+          action: ( action.status === "Pending") ? (
             <BottonComponent
               title="Start"
               onClick={() =>{
@@ -191,15 +216,21 @@ function Actions() {
               }
               }
             />
-          ) :( action.status === "In Progress"&& action?.users_actions_assigned_toTousers?.email == info?.email) ? (
+          ) :( action.status === "In Progress") ? (
             <BottonComponent title="Done" 
                   onClick={()=>{
                     console.log("Done action", action.action_title);
-                    action.status = "Completed" 
-                    updateStatus({action_id:action.id,status:"Completed"});
+                    // action.status = "Completed" 
+                    const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
+                    const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+                    router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ActionDetails`);
                   }} />
           ) : (
-            <p style={{ color: "#68A6A6" }}>Finished</p>
+            <p style={{ color: "#68A6A6" }}>{action.status ==  "Completed"?<FaRegEye onClick={()=>{
+              const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
+              const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+              router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ShowActionDetails`);
+            }} style={{ fontSize: 20 }}/>:action.status}</p>
           ),
         };
       }
@@ -215,14 +246,42 @@ function Actions() {
         btnTitle="Upgrade to unlock higher limits"
         btnFunc={isEmployee?()=>{}:()=>router.push(`/${current_lang}/Screens/dashboard/payments_plans`)}
         onClose={()=>setShowPopup(false)}/>}
+                    {/* بوباب تأكيد الحذف */}
+      {confirmDeletePopup && (
+          <Popup
+            icon={<LuTrash2 style={{ color: "red" }} />}
+            title="Are you sure you want to delete?"
+            subTitle="when you delete this Action you cannot be undone."
+            btnTitle="Yes, delete"
+            btnFunc={() => {
+              if (selectedActionId) {
+                deleteAction({ id: selectedActionId });
+              }
+              setConfirmDeletePopup(false);
+              setSelectedActionId(null);
+            }}
+            onClose={() => {
+              setConfirmDeletePopup(false);
+              setSelectedActionId(null);
+            }}
+          />
+        )}
       <ClientOnlyTable
         titles={headers}
         data={modifiedData}
         filter
+        filterOptions={[
+          {title:"Completed",checked:false},
+          {title:"Pending",checked:false},
+          {title:"In_Progress",checked:false},
+          { title: "High", checked: false },
+          { title: "Medium", checked: false },
+          { title: "Low", checked: false },
+        ]}
         rowsFlex={
           isEmployee
-            ? [ 1, 1, 1, 1, 1, 1, 1]
-            : [ 1, 1, 1, 1, 1, 1, 1.2, 0.4,1]
+            ? [ 1.2, 0.8, 1, 1, 1, 1, 1]
+            : [ 1.2, 0.8, 1, 1, 1, 1, 1.2, 0.4,1]
         }
         navButtonTitle="actions"
         navButtonAction={() =>{

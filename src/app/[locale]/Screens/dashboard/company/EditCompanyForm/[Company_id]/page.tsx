@@ -18,6 +18,7 @@ import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useGetCompanyDataByID ,useUpdateCompany } from '@/app/Hooks/useCompany';
 import {useCreateSite,useUpdateSite,useDeleteSite} from '@/app/Hooks/useSites';
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 // import { number } from "framer-motion";
 
 // ✅ نوع الـ Site اللي هيخش في الـ Payload
@@ -95,7 +96,7 @@ function EditCompanyForm() {
           }
         }
       }, [data]);
-          if (isLoading) return <div>Loading...</div>;
+          if (isLoading) return <SkeletonLoader />;
           if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
           if (!data) return <div>لا توجد بيانات</div>;
           console.warn("data LLLL",data)

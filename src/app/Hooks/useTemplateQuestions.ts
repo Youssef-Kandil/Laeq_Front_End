@@ -11,7 +11,7 @@ export const useGetQuestionsByTemplatesId = (template_id: number) => {
     queryKey: ["questions", template_id], 
     queryFn: () => api.post("/get_checklists_temp_questions", { template_id }),
     enabled: !!template_id, 
-    select: (res) => res[0].questions 
+    select: (res) =>  {return{questions:res[0].questions,draft:res[0]?.tasks[0]?.draft}}
   });
 };
 

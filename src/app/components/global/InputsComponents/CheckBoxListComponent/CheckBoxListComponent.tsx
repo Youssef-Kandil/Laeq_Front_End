@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import Style from './checkBoxListComponent.module.css'
 
 import CheckBoxComponent from '../CheckBoxComponent/CheckBoxComponent';
@@ -13,10 +13,15 @@ interface OptionsType {
 interface Props {
   list: OptionsType[];
   onChange?: (selected: string[]) => void;
+  defaultValue?: string[]; 
 }
 
-function CheckBoxListComponent({ list, onChange }: Props) {
+function CheckBoxListComponent({ list, onChange,defaultValue = [] }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
+
+useEffect(() => {
+  setSelected(defaultValue);
+}, [defaultValue]);
 
   const handleToggle = (label: string) => {
     setSelected((prev) => {

@@ -80,10 +80,10 @@ function Quizes() {
                     title={card.template_title}
                     questionsCount={card._count.questions}
                     icon={ <div  style={{display:"flex",alignItems:"center",gap:"20px"}}>
-                        <MdModeEdit style={{color:"rgba(29, 144, 238, 0.75)"}}  onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/EditTemplate/${card.id}`)}/>
+                        <MdModeEdit style={{color:"rgba(29, 144, 238, 0.75)"}}  onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/Quizes/${checklistID}/EditTemplate/${card.id}`)}/>
                         <RiDeleteBinLine style={{color:"red"}} onClick={()=>handelDeleteTemplate(card.id??-1)}/>
-                        <FaRegEye onClick={()=>router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${card.template_title}-${card.id}`)}/> 
-                        <LuSend onClick={()=>  router.push(`/${current_lang}/Screens/dashboard/checklist/Quizes/${checklistID}/${card.template_title}-${card.id}/ChooseUserTableScreen`)}/>
+                        <FaRegEye onClick={()=>router.push(`/${current_lang}/laeq-admin/dashboard/checklist/Quizes/${checklistID}/${card.template_title}-${card.id}`)}/> 
+                        <LuSend onClick={()=>  router.push(`/${current_lang}/laeq-admin/dashboard/checklist/Quizes/${checklistID}/${card.template_title}-${card.id}/ChooseUserTableScreen`)}/>
                     </div> }/>
     })
     

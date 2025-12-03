@@ -12,6 +12,7 @@ export const useAddAction = () => {
     mutationFn: (payload: {
       action_title: string;
       status: string;
+      importance_level:"medium"|"low"|"high"
       company_id: number;
       site_id: number;
       admin_id: number;
@@ -26,6 +27,73 @@ export const useAddAction = () => {
     },
   });
 };
+
+export const useAddActionDetails = () => {
+  return useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: async (payload: { id: number; action_img?: any; comment: string }) => {
+      const formData = new FormData();
+      let meta = { ...payload };
+
+      try {
+        // ====== Handle Action Image (same logic as your assets hook) ======
+        if (payload.action_img) {
+          // حالة 1: File أو Blob
+          if (
+            typeof payload.action_img !== "string" &&
+            (payload.action_img instanceof Blob ||
+              (payload.action_img as Blob).type?.startsWith("image/"))
+          ) {
+            formData.append("action_img", payload.action_img, "action.webp");
+            meta = { ...payload, action_img: "action_img" };
+          }
+
+          // حالة 2: Base64
+          else if (
+            typeof payload.action_img === "string" &&
+            payload.action_img.startsWith("data:image")
+          ) {
+            const blob = await fetch(payload.action_img).then((r) => r.blob());
+            formData.append("action_img", blob, "action.webp");
+            meta = { ...payload, action_img: "action_img" };
+          }
+
+          // حالة 3: URL عادي
+          else if (typeof payload.action_img === "string") {
+            meta = { ...payload, action_img: payload.action_img };
+          }
+        }
+
+        // ====== باقي البيانات ======
+        formData.append("meta", JSON.stringify(meta));
+
+        // ====== API Call ======
+        const res = await api.updateFormData("/add_action_details", formData);
+        return res;
+      } catch (err) {
+        console.error("❌ Error adding action details:", err);
+        throw err;
+      }
+    },
+
+    onError: (error) => {
+      console.error("❌ Error adding action details:", error);
+    },
+  });
+};
+
+export const useGetActionDetails = (payload:{id: number, admin_id: number}) => {
+  return useQuery({
+    queryKey: ["action_details", payload.id, payload.admin_id],
+    queryFn: () =>
+      api
+        .post("/get_action_details", payload)
+        .then((res) => res),
+    enabled: !!payload.id && !!payload.admin_id,
+  });
+};
+
+
 
 
 

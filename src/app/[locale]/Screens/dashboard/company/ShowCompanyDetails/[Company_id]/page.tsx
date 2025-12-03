@@ -15,6 +15,7 @@ import Lottie from "lottie-react";
 import WorngIcon  from '@/app/Lottie/wrong.json'
 import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 import { useGetCompanyDataByID  } from '@/app/Hooks/useCompany';
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 // import { number } from "framer-motion";
 
@@ -88,7 +89,7 @@ function ShowCompanyDetails() {
           }
         }
       }, [data]);
-          if (isLoading) return <div>Loading...</div>;
+          if (isLoading) return <SkeletonLoader />;
           if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
           if (!data) return <div>لا توجد بيانات</div>;
           console.warn("data LLLL",data)

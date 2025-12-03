@@ -19,6 +19,7 @@ import { AssetsType } from "@/app/Types/AssetsType";
 import { DropListType } from "@/app/Types/DropListType";
 import { AccountInfo } from "@/app/Types/AccountsType";
 import ImagePreviewPopup from "@/app/components/global/ImagePreviewPopup/ImagePreviewPopup";
+import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 
 
 function ShowAssetDetails() {
@@ -88,7 +89,7 @@ function ShowAssetDetails() {
     }
   }, [data]);
   
-      if (isLoading) return <div>Loading...</div>;
+      if (isLoading) return <SkeletonLoader />;
       if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
       if (!data) return <div>لا توجد بيانات</div>;
       console.warn("data LLLL",data)

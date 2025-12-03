@@ -1,0 +1,66 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.otpContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.otpInput {
+  width: 45px;
+  height: 50px;
+  font-size: 22px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.otpInput:focus {
+  /* border-color: #0070f3;
+  box-shadow: 0 0 4px rgba(0, 112, 243, 0.4); */
+  /* border-color: #68A6A6; */
+  /* box-shadow: 0 0 4px #025959; */
+  color: var(--Secondary-color);
+  border-color: var(--Secondary-color);
+  box-shadow: 0 0 4px var(--Primary-color);
+}
+
+.timerContainer {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.resendButton {
+  background: none;
+  border: none;
+  /* color: #68A6A6; */
+  color: var(--Secondary-color);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.resendButton:hover {
+  text-decoration: underline;
+}
+
+.timerText {
+  color: #888;
+}
+.errorText {
+  color: #e74c3c; /* أحمر */
+  font-size: 14px;
+  margin-top: 8px;
+  text-align: center;
+}
+

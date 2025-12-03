@@ -6,10 +6,11 @@ import Styles from "./forget_password.module.css";
 import regex from "@/app/utils/regex";
 import { useRouter } from "next/navigation";
 import {
-  useForgetPasswordQuestion,
-  useCheckForgetPasswordAnswer,
+  useCheckEmail,
   useUpdateForgetPassword,
 } from "@/app/Hooks/useForgetPassword";
+import OTP_InputComponent from "@/app/components/global/InputsComponents/OTP_InputComponent/OTP_InputComponent";
+import { useRequestOTP,useVerifyOTP } from "@/app/Hooks/useOTP";
 
 function ResetPasswordWizard() {
     const router = useRouter();
@@ -18,17 +19,20 @@ function ResetPasswordWizard() {
 
   // === States for inputs ===
   const [email, setEmail] = React.useState("");
-  const [answer, setAnswer] = React.useState("");
+  const [OTP, setOTP] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
-  const [question, setQuestion] = React.useState<string>("");
+
 
   // === Mutations ===
-  const { mutate: getQuestion, isPending: getQuestionLoading } =
-    useForgetPasswordQuestion();
-  const { mutate: checkAnswer, isPending: checkLoading } =
-    useCheckForgetPasswordAnswer();
+  const { mutate: checkEmail, isPending: checkingEmail } =
+  useCheckEmail();
+  const { mutate: RequestOTP } =
+  useRequestOTP();
+  const { mutate: VerifyOTP, isPending: verfyingOTP } =
+  useVerifyOTP();
+
   const { mutate: updatePassword, isPending: updateLoading } =
     useUpdateForgetPassword();
 
@@ -52,15 +56,24 @@ function ResetPasswordWizard() {
     if (step === 1) {
       if (!email.trim()) return setError("Please enter your email.");
       if (!regex.email.test(email)) return setError("Please enter a valid email.");
-
-      getQuestion(
+      //  ===== 1- CHECK IF EMAIL IS Exists IN Data Base
+      checkEmail(
         { email },
         {
           onSuccess: (res: any) => {
-            if(res?.forget_password_question){
-                setQuestion(res?.forget_password_question);
-                setDirection(1);
-                setStep(2);
+            if(res){
+              // ==== 2- SEND OTP TO EMAIL
+              RequestOTP(
+                { email },
+                {
+                  onSuccess: () => {
+                      setDirection(1);
+                      setStep(2);
+                  },
+                  onError: (err: any) => setError(err.message || "can't send OTP."),
+                }
+              );
+
             }else{
                 setError("Please enter a valid email.")
             }
@@ -71,22 +84,26 @@ function ResetPasswordWizard() {
     }
 
     if (step === 2) {
-      if (!answer.trim()) return setError("Please answer the security question.");
+      if (!OTP.trim()) return setError("Please Enter OTP.");
+      if (OTP.length == 4) {
+        VerifyOTP(
+          { email ,otp:OTP},
+          {
+            onSuccess: (res) => {
+              if (res != null) {
+                  setDirection(1);
+                  setStep(3);
+              }else{
+                  setError("OTP is Invalid.")
+              }
+            },
+            onError: () => setError("OTP is Invalid."),
+          }
+        );
+      }else{
+         setError("Please Enter OTP.")
+      }
 
-      checkAnswer(
-        { answer },
-        {
-          onSuccess: (res) => {
-            if (res != null) {
-                setDirection(1);
-                setStep(3);
-            }else{
-                setError("Please answer the Valid Answer.")
-            }
-          },
-          onError: (err: any) => setError(err.message || "Wrong answer."),
-        }
-      );
     }
 
     if (step === 3) {
@@ -157,15 +174,8 @@ function ResetPasswordWizard() {
               transition={{ duration: 0.4 }}
               className={Styles.step}
             >
-              <h2 className={Styles.title}>Step 2: Security Question</h2>
-              <h3>{question}</h3>
-              <input
-                type="text"
-                placeholder="Enter your answer"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                className={Styles.input}
-              />
+              <h2 className={Styles.title}>Step 2: Verify Email</h2>
+              <OTP_InputComponent length={4} onChange={(otp)=>setOTP(otp)} email={email}/>
             </motion.div>
           )}
 
@@ -212,17 +222,13 @@ function ResetPasswordWizard() {
             
           </button>
           <button onClick={handleNext} className={Styles.next}>
-            {step === 3
-              ? updateLoading
-                ? "Submitting..."
-                : "Submit"
-              : step === 2
-              ? checkLoading
-                ? "Checking..."
-                : "Next"
-              : getQuestionLoading
-              ? "Loading..."
-              : "Next"}
+            {step === 3? 
+              updateLoading? "Submitting...": "Submit"
+              : step === 2? 
+              verfyingOTP? "Checking...": "Next"
+              : 
+              checkingEmail? "Loading...": "Next"
+              }
           </button>
         </div>
       </div>

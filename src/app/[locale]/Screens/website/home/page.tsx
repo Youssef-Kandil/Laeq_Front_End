@@ -9,12 +9,45 @@ import sectors_list from '@/app/config/sectors_list';
 import Gallary_Card from '@/app/components/website/Gallary_Card/Gallary_Card';
 import app_identity from '@/app/config/identity';
 
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+// import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 // import WidgetsIcon from '@mui/icons-material/Widgets';
 // import AssessmentIcon from '@mui/icons-material/Assessment';
-import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+// import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
+import {
+  TaskAltOutlined,
+  AutoStoriesOutlined,
+  ThermostatOutlined,
+  AssignmentOutlined,
+  PeopleOutline,
+  InsightsOutlined,
+  FactCheckOutlined,
+  NotificationsActiveOutlined,
+  DashboardOutlined,
+  Inventory2Outlined,
+  BuildOutlined,
+  SettingsOutlined,
+  LockOutlined,
+  LocalShippingOutlined,
+} from '@mui/icons-material';
 
+const featuresList = [
+  { title: "Encrypted Data Storage", text: "Keep all records secure.", icon: <LockOutlined /> },
+  { title: "Management Dashboard", text: "Centralize all compliance in one dashboard.", icon: <DashboardOutlined /> },
+  { title: "Custom Forms", text: "Paperless forms for all your needs.", icon: <AssignmentOutlined /> },
+  { title: "Scheduled Tasks", text: "Laeq365 reminds you of important tasks.", icon: <TaskAltOutlined /> },
+  { title: "Temperature Monitoring", text: "Monitor equipment temperatures digitally.", icon: <ThermostatOutlined /> },
+  { title: "Onboarding Wizard", text: "Easily set up Laeq365 for your business.", icon: <AutoStoriesOutlined /> },
+  { title: "User Accountability", text: "Track who performed each action and when.", icon: <PeopleOutline /> },
+  { title: "Business Insights", text: "Identify potential issues before they arise.", icon: <InsightsOutlined /> },
+  { title: "Audit Reports", text: "Simplify your audits and inspections.", icon: <FactCheckOutlined /> },
+  { title: "Escalations", text: "Automate food safety escalations.", icon: <NotificationsActiveOutlined /> },
+  { title: "Resource Management", text: "Manage your resources efficiently.", icon: <Inventory2Outlined /> },
+  { title: "Corrective Actions", text: "Assign corrective actions to incidents.", icon: <BuildOutlined /> },
+  { title: "Equipment Management", text: "Digital asset register for maintenance.", icon: <SettingsOutlined /> },
+  { title: "Inwards Goods Checklist", text: "Streamline your delivery process.", icon: <LocalShippingOutlined /> },
+  { title: "Reminders", text: "Never miss an important task with automated reminders.", icon: <NotificationsActiveOutlined /> },
+];
 
 
 
@@ -27,7 +60,16 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
       console.log("current_lang :: ", current_lang);
 
+      // const [visibleCount, setVisibleCount] = React.useState(6); 
+      const [showAll, setShowAll] = React.useState(false);
+      const visibleCount = showAll ? featuresList.length : 4; // عدد الكاردات الظاهرة في الوضع الافتراضي
+    
+      const toggleShow = () => setShowAll(!showAll);// 6 كاردات أولية
 
+      // const showMore = () => {
+      //   setVisibleCount(featuresList.length);
+      // };
+      
       
 
   // START FUNCTIONS ===
@@ -74,48 +116,56 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
 
     {/* ====== START Features SECTION ======= */}
-      <section  id={Styles.FeaturesSection} className={Styles.Section}>
+      {/* <section  id={Styles.FeaturesSection} className={Styles.Section}>
         <div className={Styles.SectionHeader}>
           <h3 className={Styles.h3}>{t("features.first_title")} <span>{t("features.special_word")}</span> {t("features.second_title")}</h3>
           <p>{t("features.subtitle")}</p>
         </div>
 
         <div className={Styles.boxs_container}>
-          {[
-            {title:"Scheduled Tasks",text:"You've got enough to worry about. Let Laeq365 worry about reminding you of important tasks."},
-            {title:"Onboarding Wizard",text:"Onboarding Wizard Setting up Laeq365 with your unique requirements couldn't be simpler."},
-            
-            {title:"Temperature Monitoring",text:"Never lose track of equipment temperatures again with temperature monitoring digital solution."},
-            {title:"Custom Forms",text:"Say goodbye to your printer—custom paperless forms eliminate the need for it."},
-            {title:"User Accountability",text:"Track precisely who performed each action and when with User Accountability."},
-            
-            {title:"Business Insights Reporting",text:"Stay informed about your business operations and identify potential issues before they arise."},
-            {title:"Audit/Inspection Reports",text:"Simplify your food safety audits and inspections with Laeq365"},
-            {title:"Escalations",text:"It's time to automate food safety, and escalations can assist."},
-            
-            {title:"Management Dashboard",text:"Centralize all your food safety compliance in one convenient dashboard auditors and inspectors will appreciate it!"},
-            {title:"Resource Management",text:"Leave the paperwork behind"},
-            {title:"Corrective Actions",text:"Safeguard your business by assigning corrective actions to incidents and observations."},
-            
-            {title:"Equipment Management",text:"Simplify equipment maintenance with Laeq365’s digital asset register."},
-            {title:"Encrypted Data Storage",text:"Ensure your food safety records are secure, now and always."},
-            {title:"Inwards Goods Checklist",text:"Streamline your delivery process with ease"},
-            {title:"Reminders",text:"With Laeq365 reminders, you'll never overlook an important food safety task."},
-          ].map((val,index)=>{
-            return <div key={index} className={Styles.box}>
-                    <div className={Styles.icons}>
-                      <span className={Styles.span}>
-                        <ChecklistRtlIcon style={{fontSize:"40px"}}/>
-                      </span>
-                        <ArrowOutwardIcon style={{fontSize:"40px"}}/>
-                    </div>
-                    <h3>{val.title}</h3>
-                    <p>{val.text}</p>
-              </div>
-          })}
-        </div>
+        {featuresList.map((val, index) => (
+          <div key={index} className={Styles.box}>
+            <div className={Styles.icons}>
+              <span className={Styles.span}><ChecklistRtlIcon style={{ fontSize: '24px' }} /></span>
+              <ArrowOutwardIcon style={{ fontSize: '24px' }} />
+            </div>
+            <h3>{val.title}</h3>
+            <p>{val.text}</p>
+          </div>
+        ))}
+      </div>
 
-      </section>
+      </section> */}
+<section id={Styles.FeaturesSection} className={Styles.Section}>
+  <div className={Styles.SectionHeader}>
+    <h3 className={Styles.h3}>
+      Features <span>Highlights</span>
+    </h3>
+    <p>Explore all the key digital solutions Laeq365 provides for your business.</p>
+  </div>
+
+  <div className={Styles.boxs_container}>
+    {featuresList.slice(0, visibleCount).map((feature, index) => (
+      <div
+        key={index}
+        className={`${Styles.box} ${Styles.fadeIn}`}
+        style={{ animationDelay: `${index * 100 + 50}ms` }} 
+      >
+        <div className={Styles.icon_wrapper}>{feature.icon}</div>
+        <h3>{feature.title}</h3>
+        <p>{feature.text}</p>
+      </div>
+    ))}
+  </div>
+
+
+    <div className={Styles.readMoreWrapper}>
+      <button onClick={toggleShow} className={Styles.readMoreBtn}>
+        {showAll ? "Show Less" : "Read More"}
+      </button>
+    </div>
+
+</section>
     {/* ====== END Features SECTION ======= */}
 
 

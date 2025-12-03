@@ -3,7 +3,7 @@ import React from "react";
 import { ClientOnlyTable } from "@/app/components/global/Table/Table";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { useTasks, useUpdateTaskStatus ,useDeleteTask ,useGetTaskStatus} from "@/app/Hooks/useTasks";
+import { useTasks, useUpdateTaskStatus ,useDeleteTask ,useGetTaskStatus ,useUpdateTaskData} from "@/app/Hooks/useTasks";
 import { getAdminAccountInfo } from "@/app/utils/getAccountInfo";
 import SkeletonLoader from "@/app/components/global/SkeletonLoader/SkeletonLoaders";
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
@@ -11,6 +11,7 @@ import Link from "next/link";
 import { generateMapLinks } from "@/app/utils/mapLinks";
 import Popup from "@/app/components/global/Popup/Popup";
 import { CiSquareRemove } from "react-icons/ci";
+import { GiStopwatch } from "react-icons/gi";
 
 // Icons
 
@@ -27,6 +28,7 @@ interface TaskType {
   companies?: { id:number , company_name?: string };
   status?: string;
   repeate_date:string;
+  repeate:number;
   score:string;
   end_repeated?:number;
   repete_every_custom_hour?:number;
@@ -44,10 +46,12 @@ function Tasks() {
   const [showValidationPopup,setShowValidationPopup] = React.useState<boolean>(false);
   const [ValidationPopupMSG,setValidationPopupMSG] = React.useState<string>("");
   const [confirmDeletePopup, setConfirmDeletePopup] = React.useState(false);
+  const [confirmStopRepeatPopup, setConfirmStopRepeatPopup] = React.useState(false);
   const [selectedTaskId, setSelectedTaskId] = React.useState<number | null>(null);
 
     // Delete hook
     const { mutate: deleteTask } = useDeleteTask();
+    const { mutate: updateTaskData } = useUpdateTaskData();
 
   // Mutation hook for Controlling task status
   const { mutate: getTaskStatus } = useGetTaskStatus();
@@ -69,7 +73,7 @@ function Tasks() {
     if (task_id && template_title && template_id && company_id && site_id && inspection_to) {
       getTaskStatus({task_id},{
         onSuccess:(data)=>{
-          if(data.status == "Pending"){
+          if(data.status == "Pending" || data.status == "Draft"){
             updateTaskStatus(
               { task_id, status: "In Progress" },
               {
@@ -110,7 +114,7 @@ function Tasks() {
     id: targetId ?? -1,
     role: info?.role === "admin" ? "admin" : "user",
   });
-  console.log("tasksData >> ",tasksData)
+
 
   // ===== Table Headers =====
   const local_var = "tasks.tb_headers";
@@ -127,7 +131,7 @@ function Tasks() {
 
   const headers = isEmployee
     ? [...baseHeaders, ""]
-    : [...baseHeaders, "", ""];
+    : [...baseHeaders, "", "",""];
 
   // ===== Loading / Error States =====
   if (isLoading) return <SkeletonLoader />;
@@ -191,11 +195,15 @@ function Tasks() {
       } else {
         return {
           ...baseData,
-          // edit: (
-          //   <button className="p-2 hover:text-blue-600">
-          //     <FiEdit2 style={{ fontSize: 20 }} />
-          //   </button>
-          // ),
+          stopRepeated: 
+          task.repeate?(
+              <button onClick={()=>{
+                setSelectedTaskId(task.id);
+                setConfirmStopRepeatPopup(true);
+              }} className="p-2 hover:text-red-600">
+                <GiStopwatch style={{ fontSize: 20 }} />
+              </button>        
+          ):"-",
           delete: (
             <button onClick={()=>{
               setSelectedTaskId(task.id);
@@ -223,7 +231,19 @@ function Tasks() {
               <BottonComponent title="Loading..."  />
             ) 
             : task.status === "Draft" ? (
-              <BottonComponent title="Complete"  />
+              <BottonComponent
+               title="Complete" 
+               onClick={() =>
+                handelStartTask(
+                  task.id,
+                  task?.templates?.template_title || "—",
+                  task?.templates?.id || -10,
+                  task?.companies?.id??-1,
+                  task?.sites?.id??-1,
+                  task?.inspection_to??-1
+                )
+              }
+                />
             ) 
             : (
               <p style={{ color: "#68A6A6" }}>Finished</p>
@@ -236,6 +256,26 @@ function Tasks() {
   return (
     <div>
       {showValidationPopup&&<Popup icon={<CiSquareRemove color="red"/>} title="Wrong!" subTitle={ValidationPopupMSG} onClose={()=>setShowValidationPopup(false)}/>}
+      {/* بوباب تاكيد توقف التكرار*/}
+      {confirmStopRepeatPopup && (
+          <Popup
+            icon={<GiStopwatch style={{ color: "red" }} />}
+            title="stop repeat?"
+            subTitle="when you stop repeat this Task you cannot be undone."
+            btnTitle="Yes, stop"
+            btnFunc={() => {
+              if (selectedTaskId) {
+                updateTaskData({ id: selectedTaskId,repeate_date:null ,repeate:0 ,end_repeated:1});
+              }
+              setConfirmStopRepeatPopup(false);
+              setSelectedTaskId(null);
+            }}
+            onClose={() => {
+              setConfirmStopRepeatPopup(false);
+              setSelectedTaskId(null);
+            }}
+          />
+        )}
       {/* بوباب تأكيد الحذف */}
       {confirmDeletePopup && (
           <Popup
@@ -263,7 +303,7 @@ function Tasks() {
         rowsFlex={
           isEmployee
             ? [1, 1, 1, 1, 1, 1,1, 1.2]
-            : [1.5, 1, 1, 1, 1, 1, 1,1.5, 0.5, 1.2]
+            : [1.5, 1, 1, 1, 1, 1, 1,1.5, 0.5,0.5, 1.2]
         }
       />
     </div>

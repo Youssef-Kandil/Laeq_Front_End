@@ -8,6 +8,7 @@ import QuestionAnswerTemplateComponent from "@/app/components/QuestionAnswerTemp
 import BottonComponent from "@/app/components/global/ButtonComponent/BottonComponent";
 import { useGetQuestionsByTemplatesId } from "@/app/Hooks/useTemplateQuestions";
 import { useSubmitTemplateAnswers } from "@/app/Hooks/useSubmitTemplateAnswers";
+
 import { useUpdateTaskStatus ,useUpdateTaskScore } from "@/app/Hooks/useTasks";
 // import { useUpdateTaskStatus ,useUpdateTaskScore ,useDraftTask} from "@/app/Hooks/useTasks";
 import { useLocale } from "next-intl";
@@ -32,6 +33,7 @@ interface Answer {
   fieldID: number;
   value: string | Blob;
   type: string;
+  action_level:"High"|"Low"|"Medium"|null
 }
 
 function AnswerTemplate() {
@@ -108,9 +110,18 @@ function AnswerTemplate() {
   
   
   const [questions, setQuestions] = useState<QuestionType[]>([]);
+  console.log("Draft :: ",data);
   useEffect(() => {
-    if (data) setQuestions(data);
+    if (data?.questions) {
+      setQuestions(data?.questions);
+      if (data?.draft) {
+        setAnswers(JSON.parse(data?.draft))
+      }
+    }
+
   }, [data]);
+
+  
   const handleAnswerChange = (newAnswer: Answer) => {
     newAnswer.company_id = company_id ?? -1;
     newAnswer.site_id = site_id ?? -1;
@@ -217,6 +228,8 @@ function AnswerTemplate() {
 
 
 
+
+
 function handelSubmit(){
   setIsSubmiLoading(true);
   // ✅ تحقق من أن كل الأسئلة المطلوبة متجاوب عليها
@@ -227,7 +240,7 @@ function handelSubmit(){
   //     requiredFields.push({ questionID: q.id, fieldID: field.id });
   //     });
   //   });
-  data.forEach((q: QuestionType) => {
+  data?.questions?.forEach((q: QuestionType) => {
     q.question_fields.forEach((field) => {
       // ✅ استثناء الأنواع غير المطلوبة
       if (!["action", "images", "comment"].includes(field.type)) {
@@ -274,7 +287,7 @@ function handelSubmit(){
       const missingQuestionNumbers = Array.from(
         new Set(
           missing.map((m) => {
-            const questionIndex = data.findIndex((q:any) => q.id === m.questionID);
+            const questionIndex = data?.questions?.findIndex((q:any) => q.id === m.questionID);
             return questionIndex !== -1 ? questionIndex + 1 : null;
           }).filter((num) => num !== null)
         )
@@ -304,7 +317,7 @@ function handelSubmit(){
       submitted_by: info?.userDetails.full_name ?? "unknown",
       // answered_at: new Date().toISOString(),
     
-      questions: data.map((q: any) => ({
+      questions: data?.questions?.map((q: any) => ({
         question_title: q.question_title,
         answers: answers
           .filter((a) => a.questionID === q.id)
@@ -407,7 +420,7 @@ function handelSubmit(){
 
 React.useEffect(() => {
   if (data) {
-    const fieldCounts = data.reduce((acc: Record<string, number>, question: QuestionType) => {
+    const fieldCounts = data?.questions?.reduce((acc: Record<string, number>, question: QuestionType) => {
       question.question_fields.forEach((field) => {
         if (field.type === "mcq" || field.type === "score") {
           acc[field.type] = (acc[field.type] || 0) + 1;
@@ -427,7 +440,7 @@ if (isLoading) return <SkeletonLoader/>;
 if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
 if (!data) return <div>لا توجد بيانات</div>;
 // ✅ عدّ الحقول mcq و score بس
-const fieldCounts = data.reduce((acc: Record<string, number>, question: QuestionType) => {
+const fieldCounts = data?.questions?.reduce((acc: Record<string, number>, question: QuestionType) => {
     question.question_fields.forEach((field) => {
       if (field.type === "mcq" || field.type === "score") {
         acc[field.type] = (acc[field.type] || 0) + 1;
@@ -445,9 +458,9 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
       fields={question.question_fields}
       questionID={question.id}
       task_id={task_id??-1}
-      admin_id={targetId??-1}
-      userID={info?.id??-1}
-      onAnswerChange={handleAnswerChange}
+      admin_id={targetId ?? -1}
+      userID={info?.id ?? -1}
+      onAnswerChange={handleAnswerChange as (newAnswer: any) => void}
       answers={answers}
     />
   ));
@@ -484,7 +497,7 @@ const fieldCounts = data.reduce((acc: Record<string, number>, question: Question
       </nav>
       {Questions}
 
-      {data.length >=2 &&(
+      {data?.questions.length >=2 &&(
       <nav className={Styles.nav}>
       <span>{title}</span>
       <div style={{ margin: "0px 20px", padding: "10px", background: "#f0f0f0", borderRadius: "8px" }}>

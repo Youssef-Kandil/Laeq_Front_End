@@ -10,6 +10,7 @@ import QuestionTemplateComponent from '@/app/components/QuestionTemplateComponen
 import BottonComponent from '@/app/components/global/ButtonComponent/BottonComponent';
 
 import { useGetQuestionsByTemplatesId } from '../../../../../../../Hooks/useTemplateQuestions';
+import SkeletonLoader from '@/app/components/global/SkeletonLoader/SkeletonLoaders';
 
 // const TestData = [
 //   {
@@ -124,12 +125,12 @@ function CheckList() {
       }
 
       const { data, isLoading, error } = useGetQuestionsByTemplatesId(Number(id));
-              if (isLoading) return <div>جاري التحميل...</div>;
+              if (isLoading) return <SkeletonLoader/>;
               if (error) return <div>حدث خطأ: {(error as Error).message}</div>;
               if (!data) return <div>لا توجد بيانات</div>;
       // === Looping On Data === 
 
-      const Questions = data.map((question:QuestionType,index:number)=>{
+      const Questions = data?.questions?.map((question:QuestionType,index:number)=>{
             return  <QuestionTemplateComponent
                          key={index} 
                          questionNumber={(index+1)}

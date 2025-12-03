@@ -92,6 +92,55 @@ export async function resizeAndConvert_OLD(file: File, maxWidth = 500, maxHeight
     const webpBlob = await (await fetch(webpDataUrl)).blob();
     return webpBlob;
   }
+  
+  export async function resizeAndConvertToWebp(
+    file: File,
+    maxWidth = 500,
+    maxHeight = 500,
+    quality = 0.8  // ← قيمة افتراضية للجودة من 0 إلى 1
+  ): Promise<Blob> {
+    // 1. اقرأ الملف
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  
+    // 2. حمّل الصورة
+    const img = new Image();
+    await new Promise<void>((resolve) => {
+      img.onload = () => resolve();
+      img.src = dataUrl;
+    });
+  
+    // 3. احسب الأبعاد الجديدة مع الحفاظ على نسبة العرض للارتفاع
+    let { width, height } = img;
+    const aspect = width / height;
+    if (width > maxWidth) {
+      width = maxWidth;
+      height = Math.round(width / aspect);
+    }
+    if (height > maxHeight) {
+      height = maxHeight;
+      width = Math.round(height * aspect);
+    }
+  
+    // 4. ارسم على canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0, width, height);
+  
+    // 5. استخرج WebP Data URL باستخدام الجودة الممررة
+    const webpDataUrl = canvas.toDataURL('image/webp', quality);
+    // const webpDataUrl = canvas.toDataURL('image/jpeg', quality);
+  
+    // 6. حول الـ Data URL إلى Blob
+    const webpBlob = await (await fetch(webpDataUrl)).blob();
+    return webpBlob;
+  }
 
 
   // utils/imageHelpers.ts

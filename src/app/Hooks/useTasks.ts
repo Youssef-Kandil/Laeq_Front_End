@@ -97,6 +97,23 @@ export const useUpdateTaskStatus = () => {
     },
   });
 };
+// === Update Task Data ===
+export const useUpdateTaskData = () => {
+  const queryClient = useQueryClient();
+
+
+  return useMutation({
+    mutationFn: (payload: { id: number;repeate_date:null; repeate: number ;end_repeated:number }) =>
+      api.update("/updateTaskDataByID", payload).then((res) => res),
+
+    onSuccess: (_, variables) => {
+      // invalidate tasks queries للادمن أو اليوزر على حسب
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "admin", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", "user", variables.id] });
+    },
+  });
+};
 
 // === Draft Task ===
 export const useDraftTask = () => {

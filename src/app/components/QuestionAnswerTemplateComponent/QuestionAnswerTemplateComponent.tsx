@@ -52,6 +52,7 @@ interface Answer {
   fieldID: number;
   value: string | Blob;
   type: string;
+  action_level:string|null,
 }
 
 // =============================
@@ -136,6 +137,8 @@ type QuestionProps = {
     const usersList = useEmployees(targetId??-1);
     const assetsList = useAssetsByAdmin(targetId??-1);
     const sortedFields = sortFields(fields);
+    const [actionLevels, setActionLevels] = React.useState<Record<number, string>>({});
+
   
     // 📝 function بترجع القيمة الحالية لأي field
     const getFieldValue = (fieldID: number) => {
@@ -145,6 +148,8 @@ type QuestionProps = {
       console.log(ans?ans.value:"")
       return ans ? ans.value : "";
     };
+
+    console.log("answers >>> ",answers)
   
     return (
       <div className={Styles.Question}>
@@ -154,7 +159,7 @@ type QuestionProps = {
   
         <div className={Styles.QuestionAnswers} >
           {sortedFields.map((field) => {
-            const  handleChange = async (value: unknown) => {
+            const  handleChange = async (value: unknown,action_level:string|null = null) => {
                 console.log("Value ::: ", value);
                 if(value !== undefined){
                     const processedValue =
@@ -169,6 +174,7 @@ type QuestionProps = {
                     fieldID: field.id,
                     value: processedValue,
                     type: field.type,
+                    action_level:action_level
                   });
                 };
             }
@@ -181,6 +187,7 @@ type QuestionProps = {
                   <SingleChoiceAnswer
                     key={field.id}
                     options={field.question_field_options}
+                    // defaultValue={Number(currentValue+"")}
                     onChoose={(val)=>handleChange(val)}
                   />
                 );
@@ -221,15 +228,50 @@ type QuestionProps = {
                 );
   
               case "action":
+                const currentLevel = actionLevels[field.id] || "";
                 return (
-                  <InputComponent
-                    key={field.id}
-                    isTextArea
-                    label="Actions"
-                    placeholder="Follow up notes*"
-                    value={typeof currentValue === "string" ? currentValue : ""}
-                    onTyping={handleChange}
-                  />
+                  <div key={field.id}>
+                    <InputComponent                   
+                      isTextArea
+                      label="Actions"
+                      placeholder="Follow up notes*"
+                      value={typeof currentValue === "string" ? currentValue : ""}
+                      onTyping={(textValue) => {
+                        // هنا بنبعت text + action_level
+                        handleChange(
+                          textValue,
+                          currentLevel
+                        );
+                      }}
+                    />
+                     {/* Radio buttons تحت الـ input */}
+                    <div style={{ margin: "8px 0px 30px" ,display:"flex"}}>
+                      {["Medium", "Low", "High"].map((filter, idx) => (
+                        <label key={idx} style={{ margin: "16px" ,display:"flex",gap:"5px" }}>
+                          <input
+                            type="radio"
+                            name={`action_filter_${field.id}`}
+                            value={filter}
+                            checked={currentLevel === filter}
+                            // checked لو عايز تحدد قيمة افتراضية
+                            onChange={(e) => {
+                              const level = e.target.value;
+              
+                              // خزّن القيمة
+                              setActionLevels((prev) => ({ ...prev, [field.id]: level }));
+              
+                              // ابعت فورًا مع القيمة الحالية
+                              handleChange(
+                                currentValue,
+                                level
+                              );
+                            }}
+                          />
+                          {filter}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 );
   
               case "images":
@@ -248,8 +290,9 @@ type QuestionProps = {
                 return (
                   <DateInputComponent
                     key={field.id}
+                    // defaultValue={String(currentValue)}
                     onChange={handleChange}
-                    // value={currentValue}
+                    defaultValue={String(currentValue)}
                   />
                 );
   
@@ -258,7 +301,7 @@ type QuestionProps = {
                   <TimeInputComponent
                     key={field.id}
                     onChange={handleChange}
-                    // value={currentValue}
+                    defaultValue={String(currentValue)}
                   />
                 );
   
@@ -267,17 +310,27 @@ type QuestionProps = {
                   <DateTimeInputComponent
                     key={field.id}
                     onChange={handleChange}
+                    defaultValue={String(currentValue)}
                     // value={currentValue}
                   />
                 );
   
               case "location":
+                let locationValue = { lat: "", long: "" };
+                try {
+                  if (currentValue && typeof currentValue === "string" && currentValue.trim() !== "") {
+                    locationValue = JSON.parse(currentValue);
+                  }
+                } catch (error) {
+                  console.error("Error parsing location value:", error);
+                  locationValue = { lat: "", long: "" };
+                }
                 return (
                   <LocationInputComponent
                     key={field.id}
                     label="Location"
                     placeholder=""
-                    value={currentValue ? JSON.parse(typeof currentValue === "string" ? currentValue : "") : { lat: "", long: "" }}
+                    value={locationValue}
                     onChange={handleChange}
                   />
                 );
@@ -294,21 +347,53 @@ type QuestionProps = {
                 );
 
               case "checkbox":
+                let checkboxValue: any = [];
+                try {
+                  if (currentValue && typeof currentValue === "string" && currentValue.trim() !== "") {
+                    checkboxValue = JSON.parse(currentValue);
+                  }
+                } catch (error) {
+                  console.error("Error parsing checkbox value:", error);
+                  checkboxValue = [];
+                }
                 return (
                   <CheckBoxListComponent
                     key={field.id}
                     list={field.question_field_options}
+                    defaultValue={checkboxValue}
                     onChange={handleChange}
+                    
                   />
                 );
 
-              case "users_list":
+              case "users_list":{
+                  // نحاول نقرأ القيم المحفوظة في الداتا
+                let parsedValues: string[] = [];
+                try {
+                  if (currentValue && typeof currentValue === "string" && currentValue.trim() !== "") {
+                    parsedValues = JSON.parse(currentValue);
+                  }
+                } catch (error) {
+                  console.error("Error parsing users_list value:", error);
+                  parsedValues = [];
+                }
+
+                // نجهز الـ list اللي جاي من اليوزرز
+                const users = mapToOptions(
+                  usersList?.data?.length ? usersList.data : [{ id: 0, full_name: "No Users" }],
+                  "full_name",
+                  "full_name",
+                  "id"
+                );
+
+                // نجهز الـ defaultOptions اللي هتكون متعلمة افتراضياً
+                const defaultOptions =
+                  users.filter((u: any) => parsedValues.includes(u.value)) ?? [];
                 return (
                   <MultiDropListComponent 
                       key={field.id}
                       label="Users List" 
                       placeholder="Choose From Users List"
-                      // list={mapToOptions(usersList?.data??[{id:0,full_name:"No Users"}],"full_name","full_name", "id")}
                       list={
                         mapToOptions(
                           (usersList?.data?.length ? usersList.data : [{id:0,full_name:"No Users"}]),
@@ -317,11 +402,36 @@ type QuestionProps = {
                           "id"
                         )
                       }
+                      values={defaultOptions}
                       onSelect={handleChange}
                    />
                 );
+              }
 
-              case "assets_list":
+              case "assets_list":{
+                                  // نحاول نقرأ القيم المحفوظة في الداتا
+                let parsedValues: string[] = [];
+                try {
+                  if (currentValue && typeof currentValue === "string" && currentValue.trim() !== "") {
+                    parsedValues = JSON.parse(currentValue);
+                  }
+                } catch (error) {
+                  console.error("Error parsing assets_list value:", error);
+                  parsedValues = [];
+                }
+
+                // نجهز الـ list اللي جاي من اليوزرز
+                const assets = mapToOptions(
+                  assetsList?.data?.length ? assetsList.data : [{ id: 0, asset_name: "No Users" }],
+                  "asset_name",
+                  "asset_name",
+                  "id"
+                );
+
+                // نجهز الـ defaultOptions اللي هتكون متعلمة افتراضياً
+                const defaultOptions =
+                assets.filter((u: any) => parsedValues.includes(u.value)) ?? [];
+
                 return (
                   <MultiDropListComponent 
                   key={field.id}
@@ -335,20 +445,17 @@ type QuestionProps = {
                       "id"
                     )
                   }
+                  values={defaultOptions}
                   onSelect={handleChange}
-               />
-                  // <CheckBoxListComponent
-                  //   key={field.id}
-                    
-                  //   list={mapToOptions(assetsList?.data??[],"asset_name","asset_name")}
-                  //   onChange={handleChange}
-                  // />
+                  />
                 );
+              }
   
               case "score":
                 return (
                   <ScoreInputComponent
                     key={field.id}
+                    defaultValue={String(currentValue)}
                     onChange={handleChange}
                   />
                 );

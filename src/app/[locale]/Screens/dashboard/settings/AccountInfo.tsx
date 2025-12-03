@@ -13,6 +13,7 @@ import type { AccountInfo } from '@/app/Types/AccountsType';
 import Popup from '@/app/components/global/Popup/Popup';
 import Lottie from 'lottie-react';
 import ErrorIcon from '@/app/Lottie/wrong.json'
+// import OTP_InputComponent from '@/app/components/global/InputsComponents/OTP_InputComponent/OTP_InputComponent';
 
 function AccountInfo() {
   // const router = useRouter();
@@ -127,7 +128,7 @@ function AccountInfo() {
       </section>
 
       {/* <SignatureInputComponent label='' placeholder='' value={signature} onChange={setSignature}/> */}
-
+      {/* <OTP_InputComponent length={4} onChange={(otp)=>{console.log("OTP: ",otp)}} email='info.youssefkandil@gmail.com'/> */}
 
       <div className={Styles.btnContainer}>
         <BottonComponent disabled={isPending} title='Update Profile' onClick={handelSubmit}/>

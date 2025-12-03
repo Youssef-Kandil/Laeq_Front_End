@@ -51,7 +51,6 @@ function Payments_plans() {
      const Account = getAdminAccountInfo("AccountInfo");
      if (Account) {
        setInfo(Account);
-        console.log("Account >>>>>> ",Account)
       }
     }, []);
 
@@ -82,7 +81,7 @@ function Payments_plans() {
                 operationType:"upgrade",
                 admin_id:info?.userDetails?.id||0,
                 transaction_id:transaction_id||"",
-                amount:planeInfo?.price,
+                amount:Number((Number(planeInfo?.price)*1.15).toFixed(2)),
                 plan_id:planeInfo?.id||0,
                 plan_type:planeInfo?.title,
                 start_date:new Date().toISOString(),
@@ -134,7 +133,7 @@ function Payments_plans() {
                 operationType:"renew",
                 admin_id:info?.userDetails?.id||0,
                 transaction_id:transaction_id||"",
-                amount:planeInfo?.price,
+                amount:Number((Number(planeInfo?.price)*1.15).toFixed(2)),
                 plan_id:planeInfo?.id||0,
                 plan_type:planeInfo?.title,
                 start_date:new Date().toISOString(),
