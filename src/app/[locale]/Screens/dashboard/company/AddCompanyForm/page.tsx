@@ -68,7 +68,7 @@ function AddCompanyForm() {
   const [showFirstPopup, setShowFirstPopup] = useState<boolean>(false);
   
 useEffect(() => {
-    if (!isFirstTime && data && data.length === 0) {
+    if (!isFirstTime && data && data?.companies?.length === 0) {
       setShowFirstPopup(true);
     } else {
       setShowFirstPopup(false);
@@ -76,9 +76,10 @@ useEffect(() => {
   }, [data, isFirstTime]);
 
 useEffect(() => {
-  if (!data || data.length === 0) return; // استنى لما البيانات تكون جاهزة
+  if (!data || data.companies.length === 0) return; // استنى لما البيانات تكون جاهزة
 
-  const totalCompanies = Number(data.length ?? 0);
+
+  const totalCompanies = Number(data.companies.length ?? 0);
   if (totalCompanies !== 0 && totalCompanies >= Number(maxBranches)) {
     router.replace(`/${local}/Screens/dashboard/summeries`);
   }
@@ -138,7 +139,7 @@ useEffect(() => {
       setShowErrorPopup(true);
       setErrorPopupMSG({
         title:"Error",
-        subTitle:"Complete you Brand data",
+        subTitle:"Complete you Branche data",
       })
         return false
     }
@@ -164,7 +165,7 @@ useEffect(() => {
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Error",
-              subTitle:"Failed to add brand",
+              subTitle:"Failed to add Branche",
             })
           }
          }
@@ -200,7 +201,7 @@ useEffect(() => {
       {showSecPopup&&<Popup 
         icon={<FaFlagCheckered />} 
         title="#1" 
-        subTitle="Add your Brand" 
+        subTitle="Add your Branche" 
         btnTitle="Next" 
         btnFunc={()=>{
           setShowSecPopup(false);
@@ -248,10 +249,10 @@ useEffect(() => {
           <div style={{ display: "flex", gap: "30px", alignItems: "center" }}>
             <div style={{ textAlign: "left" }}>
               <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>
-                Companies in your plan
+                Branches in your plan
               </p>
               <strong style={{ fontSize: "16px", color: "#08ab95" }}>
-                {maxBranches} / {Number(data?.length??0)}
+                {maxBranches} / {Number(data?.totalSites??0)}
               </strong>
             </div>
           </div>
@@ -322,6 +323,14 @@ useEffect(() => {
         ))}
 
         {/* Add Site Button */}
+          {/* <button
+            className={Styles.addSiteButton}
+            type="button"
+            onClick={handleAddSite}
+          >
+            + Add New Site
+          </button> */}
+        {sites.length < maxBranches && (
           <button
             className={Styles.addSiteButton}
             type="button"
@@ -329,15 +338,7 @@ useEffect(() => {
           >
             + Add New Site
           </button>
-        {/* {sites.length < maxBranches && (
-          <button
-            className={Styles.addSiteButton}
-            type="button"
-            onClick={handleAddSite}
-          >
-            + Add New Site
-          </button>
-        )} */}
+        )}
       </div>
     </div>
   );

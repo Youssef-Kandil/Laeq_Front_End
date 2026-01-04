@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from 'react'
 
@@ -19,7 +20,7 @@ import regex from '@/app/utils/regex';
 import Popup from '@/app/components/global/Popup/Popup';
 import Lottie from 'lottie-react';
 import ErrorIcon from '@/app/Lottie/wrong.json'
-
+import LoadingIcon  from '@/app/Lottie/Loading animation blue.json'
 
 
 
@@ -45,7 +46,7 @@ function AddUserForm() {
     }));
 
     const [sitesList,setSitesList] = React.useState<DropListType[]|null>(null)
-
+    const [loading,setLoading] = React.useState<boolean>(false);
     const [selectedCompany,setSelectedCompany] = React.useState<DropListType|null>(null)
     const [selectedSite,setSelectedSite] = React.useState<DropListType|null>(null)
     const [selectedRole,setSelectedRole] = React.useState<DropListType|null>(null)
@@ -76,7 +77,9 @@ function AddUserForm() {
     }
 
     function handelValidation(){
+      setLoading(true);
       if (!full_name) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -85,6 +88,7 @@ function AddUserForm() {
         return false;
       }
       if (!email) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -93,6 +97,7 @@ function AddUserForm() {
         return false; 
       }
       if (email === AdminInfo?.email) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -101,6 +106,7 @@ function AddUserForm() {
         return false; 
       }
       if(!regex.email.test(email)){
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -109,6 +115,7 @@ function AddUserForm() {
         return false;
       }
       if (!password) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -119,6 +126,7 @@ function AddUserForm() {
       }
 
       if(!regex.password.test(password)){
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -127,6 +135,7 @@ function AddUserForm() {
         return false;
       }
       if (!jobTitle) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -136,6 +145,7 @@ function AddUserForm() {
         
       }
       if (phone == null) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -145,6 +155,7 @@ function AddUserForm() {
         
       }
       if (selectedCompany == null) {
+        setLoading(false);
           setShowErrorPopup(true);
           setErrorPopupMSG({
             title:"warn!",
@@ -154,6 +165,7 @@ function AddUserForm() {
         
       }
       if (!selectedSite) {
+        setLoading(false);
         setShowErrorPopup(true);
         setErrorPopupMSG({
           title:"warn!",
@@ -163,6 +175,7 @@ function AddUserForm() {
         
       }
       if (!selectedRole) {
+        setLoading(false);
           setShowErrorPopup(true);
           setErrorPopupMSG({
             title:"warn!",
@@ -194,13 +207,20 @@ function AddUserForm() {
                 },
                 { 
                   onSuccess: () => {
+                    // setLoading(false);
                     router.back();
                   },
-                  onError:()=>{
+                  onError:(error:any)=>{
+                    const backendError =
+                    error?.response?.data?.error || // لو راجع من السيرفر
+                    error?.message ||               // لو جا من React Query
+                    "Something went wrong"; 
+                    console.log("backendError ",backendError);    // fallback
+                    setLoading(false);
                     setShowErrorPopup(true);
                     setErrorPopupMSG({
                       title:"ERROR!",
-                      subTitle:"faild to add user"
+                      subTitle: backendError,
                     });
                   }
                 }
@@ -212,6 +232,17 @@ function AddUserForm() {
 
   return (
     <div>
+      {loading&&<Popup
+          icon={
+            <Lottie
+            animationData={LoadingIcon}
+            loop={true}
+            style={{ width: 350, height: 250 }}
+          />
+          } 
+          title={"loading..."} 
+          subTitle=" " 
+          onClose={()=>{}}/>}
 
       {showErrorPopup&&<Popup icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={true}/>} title={ErrorPopupMSG.title} subTitle={ErrorPopupMSG.subTitle} onClose={()=>setShowErrorPopup(false)}/>}
     <div style={{margin:"30px"}}>

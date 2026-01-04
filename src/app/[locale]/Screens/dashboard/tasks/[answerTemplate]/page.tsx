@@ -125,6 +125,10 @@ function AnswerTemplate() {
   const handleAnswerChange = (newAnswer: Answer) => {
     newAnswer.company_id = company_id ?? -1;
     newAnswer.site_id = site_id ?? -1;
+      // ✨ لو نوع الإجابة أكشن ومفيش action_level نحطها null
+      if (newAnswer.type === "action" && !newAnswer.action_level) {
+        newAnswer.action_level = null;
+      }
     setAnswers((prev) => {
       const exist = prev.find(
         (a) =>
@@ -235,11 +239,7 @@ function handelSubmit(){
   // ✅ تحقق من أن كل الأسئلة المطلوبة متجاوب عليها
   const requiredFields: { questionID: number; fieldID: number }[] = [];
   //=== Step 1
-  // data.forEach((q: QuestionType) => {
-  //   q.question_fields.forEach((field) => {
-  //     requiredFields.push({ questionID: q.id, fieldID: field.id });
-  //     });
-  //   });
+
   data?.questions?.forEach((q: QuestionType) => {
     q.question_fields.forEach((field) => {
       // ✅ استثناء الأنواع غير المطلوبة
@@ -272,13 +272,6 @@ function handelSubmit(){
       (f) => !answeredFields.has(`${f.questionID}-${f.fieldID}`)
     );
     // === Step 4
-    // if (missing.length > 0) {
-    //   // ❌ لسه فيه أسئلة ناقصة
-    //   setIsSubmiLoading(false);
-    //   setShowValidationPopup(true);
-    //   setValidationPopupMSG(`You still need to answer ${missing.length} required questions.`);
-    //   return;
-    // }
     if (missing.length > 0) {
       setIsSubmiLoading(false);
       setShowValidationPopup(true);
@@ -324,6 +317,7 @@ function handelSubmit(){
           .map((a) => ({
             type: a.type,
             value: a.value,
+            action_level:a?.action_level,
             options:
               a.type === "mcq" || a.type === "checkbox"
                 ? q.question_fields

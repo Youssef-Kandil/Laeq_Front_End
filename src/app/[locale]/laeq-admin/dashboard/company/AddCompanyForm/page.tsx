@@ -115,7 +115,7 @@ function AddCompanyForm() {
       setShowErrorPopup(true);
       setErrorPopupMSG({
         title:"Error",
-        subTitle:"Complete you Brand data",
+        subTitle:"Complete you Branche data",
       })
         return false
     }
@@ -137,7 +137,7 @@ function AddCompanyForm() {
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Error",
-              subTitle:"Failed to add brand",
+              subTitle:"Failed to add Branche",
             })
           }
          }
@@ -279,15 +279,7 @@ function AddCompanyForm() {
           >
             + Add New Site
           </button>
-        {/* {sites.length < maxBranches && (
-          <button
-            className={Styles.addSiteButton}
-            type="button"
-            onClick={handleAddSite}
-          >
-            + Add New Site
-          </button>
-        )} */}
+=
       </div>
     </div>
   );

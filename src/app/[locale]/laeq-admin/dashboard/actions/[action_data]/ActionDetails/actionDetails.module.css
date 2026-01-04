@@ -1,0 +1,17 @@
+.parent{
+    margin-left: 30px;
+    margin-right: 30px;
+    .titles{
+        padding: 20px 0px 30px;
+        && h2{
+            font-size: 1.8rem;
+            font-weight: 500;
+            && span {
+                color: var(--Secondary-color);
+            }
+        }
+        && p{
+            color: #a7a7a7;
+        }
+    }
+}

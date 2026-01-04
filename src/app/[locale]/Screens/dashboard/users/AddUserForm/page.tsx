@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React,{useEffect} from 'react'
 
@@ -56,7 +57,7 @@ function AddUserForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [Employees?.data,maxEmployees]);
 
-    const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
+    const CompaniesList = Companies.data?.companies?.map((item:{id:number,company_name:string}) => ({
       id: item.id,
       value: String(item.id),
       title: item.company_name,
@@ -81,7 +82,7 @@ function AddUserForm() {
     const [phone,setPhone] = React.useState<string|null>(null)
 
     function getSitesByCompanyId(companyId:number) {
-      const company = Companies.data.find((c :{id:number}) => c.id === companyId);
+      const company = Companies.data.companies.find((c :{id:number}) => c.id === companyId);
       const SitesList = company.sites?.map((item:{id:number,site_name:string}) => ({
         id: item.id,
         value: item.id,
@@ -231,20 +232,26 @@ function AddUserForm() {
                 },
                 { 
                   onSuccess: () => {
-                    setLoading(false);
-                    localStorage.setItem("first_time","1");
-                    if (!isFirstTime) {
-                      router.replace(`/${local}/Screens/dashboard/checklist`);
-                    }else{
-                      router.back();
-                    }
+                      setLoading(false);
+                      localStorage.setItem("first_time","1");
+                      if (!isFirstTime) {
+                        router.replace(`/${local}/Screens/dashboard/checklist`);
+                      }else{
+                        router.back();
+                      }
+                    
                   },
-                  onError:()=>{
+                  onError:(error:any)=>{
+                    const backendError =
+                    error?.response?.data?.error || // لو راجع من السيرفر
+                    error?.message ||               // لو جا من React Query
+                    "Something went wrong"; 
+                    console.log("backendError ",backendError);    // fallback
                     setLoading(false);
                     setShowErrorPopup(true);
                     setErrorPopupMSG({
                       title:"ERROR!",
-                      subTitle:"faild to add user"
+                      subTitle: backendError,
                     });
                   }
                 }
@@ -252,8 +259,9 @@ function AddUserForm() {
           }
 
     }
-    
-    console.log(Companies.data)
+
+    console.log(" AdminInfo?.email :: ", AdminInfo?.email);
+
   return (
     <div>
       {loading&&<Popup

@@ -58,7 +58,7 @@ function Company() {
               if (!data) return <div>لا توجد بيانات</div>;
               console.log("Comapny : ",data)
       //=== Add Action To The Table Rows
-      const modifiedData = (data as CompanyData[]).map(({id, company_name, sector_type, sites }) => ({
+      const modifiedData = (data.companies as CompanyData[]).map(({id, company_name, sector_type, sites }) => ({
           company_name,
           sector_type,
           sites: sites.length, // عدد المواقع

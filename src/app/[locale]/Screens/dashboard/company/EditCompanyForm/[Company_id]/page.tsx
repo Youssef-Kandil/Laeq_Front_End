@@ -72,16 +72,16 @@ function EditCompanyForm() {
   const { data, isLoading, error } = useGetCompanyDataByID(Number(Company_id)??-1);
       useEffect(() => {
         if (data) {
-          setCompanyName(data.company_name ?? "");
-          setCompanyEmail(data.company_email ?? "");
-          setCompanyWebSite(data.company_website ?? "");
-          setCompanyLicense(data.company_license ?? "");
-          setCompanySector(data.sector_type ? { id: 0, value: data.sector_type, title: data.sector_type } : null);
+          setCompanyName(data.companyData.company_name ?? "");
+          setCompanyEmail(data.companyData.company_email ?? "");
+          setCompanyWebSite(data.companyData.company_website ?? "");
+          setCompanyLicense(data.companyData.company_license ?? "");
+          setCompanySector(data.companyData.sector_type ? { id: 0, value: data.companyData.sector_type, title: data.companyData.sector_type } : null);
       
           // set sites
-          if (data.sites && data.sites.length > 0) {
+          if (data.companyData.sites && data.companyData.sites.length > 0) {
             setSites(
-              data.sites.map((site: any) => ({
+              data.companyData.sites.map((site: any) => ({
                 id:site.id,
                 admin_id: site.admin_id,
                 company_id:site.company_id,
@@ -167,7 +167,15 @@ function EditCompanyForm() {
   
     // لو ضغط Save → نعمل API Call
     if (isID && saveToAPI) {
-      if (typeof updatedSite?.admin_id === "number" && typeof id === "number") {
+      if (
+        typeof updatedSite?.admin_id === "number" 
+        && typeof id === "number" 
+        && updatedSite?.site_name?.trim() != ""
+        && updatedSite?.site_license?.trim() != ""
+        && updatedSite?.post_code?.trim() != ""
+        && updatedSite?.full_address?.trim() != "" 
+        && updatedSite?.lat?.trim() != "" 
+        && updatedSite?.long?.trim() != "" ) {
         setLoadingSiteAction(index);
         EditeSite(
           {
@@ -194,6 +202,11 @@ function EditCompanyForm() {
         );
       }else{
         setLoading(false);
+        setShowErrorPopup(true);
+        setErrorPopupMSG({
+          title: "Missing Data!",
+          subTitle: "Failed to Update Site",
+        });
       }
     }else{
       setLoading(false);
@@ -212,7 +225,7 @@ function EditCompanyForm() {
       setShowErrorPopup(true);
       setErrorPopupMSG({
         title:"Error",
-        subTitle:"Complete you Brand data",
+        subTitle:"Complete you Branche data",
       })
         return false
     }
@@ -234,7 +247,7 @@ function EditCompanyForm() {
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Wrong",
-              subTitle:"Failed to Edit brand",
+              subTitle:"Failed to Edit Branche",
             })
           }
          }
@@ -376,15 +389,15 @@ function EditCompanyForm() {
         ))}
 
         {/* Add Site Button */}
+        {data.totalSites < maxBranches && (
           <button
             className={Styles.addSiteButton}
             type="button"
             onClick={handleAddSite}
           >
             + Add New Site
-          </button>
-        {/* {sites.length < maxBranches && (
-        )} */}
+          </button> 
+        )}
       </div>
     </div>
   );

@@ -74,7 +74,7 @@ function ShowUserDetails() {
     
 
     function getSitesByCompanyId(companyId:number) {
-      const company = Companies.data.find((c :{id:number}) => c.id === companyId);
+      const company = Companies.data?.companies?.find((c :{id:number}) => c.id === companyId);
       const SitesList = company.sites?.map((item:{id:number,site_name:string}) => ({
         id: item.id,
         value: item.id,
@@ -92,7 +92,7 @@ function ShowUserDetails() {
 
 
     
-    console.log(Companies.data)
+
   return (
     <div>
       {showErrorPopup&&<Popup icon={<Lottie animationData={ErrorIcon}  style={{ width: 350, height: 250 }} loop={true}/>} title={ErrorPopupMSG.title} subTitle={ErrorPopupMSG.subTitle} onClose={()=>setShowErrorPopup(false)}/>}

@@ -29,6 +29,7 @@ interface Answer {
   task_id?:number;
   company_id:number;
   site_id:number
+  action_level:string|null
   questionID: number;
   fieldID: number;
   value: string | Blob;
@@ -177,6 +178,10 @@ useEffect(() => {
 const handleAnswerChange = (newAnswer: Answer) => {
   newAnswer.company_id = company_id ?? -1;
   newAnswer.site_id = site_id ?? -1;
+   // ✨ لو نوع الإجابة أكشن ومفيش action_level نحطها null
+  if (newAnswer.type === "action" && !newAnswer.action_level) {
+      newAnswer.action_level = null;
+  }
   setAnswers((prev) => {
     const exist = prev.find(
       (a) =>
@@ -363,6 +368,7 @@ function handelSubmit(){
           .map((a) => ({
             type: a.type,
             value: a.value,
+            action_level:a?.action_level,
             options:
               a.type === "mcq" || a.type === "checkbox"
                 ? q.question_fields

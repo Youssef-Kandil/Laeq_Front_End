@@ -159,17 +159,17 @@ function Actions() {
               <BottonComponent title="Done" 
                     onClick={()=>{
                       console.log("Done action", action.action_title);
-                      const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
+                      const enc = encryption.encryption(`${action.id}`, "encryptionKey");
                       // const enc = encryption.encryption(`${action.id}`, "encryptionKey");
-                      const safeEnc = Buffer.from(enc, "utf8").toString("base64");
-                      router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ActionDetails`);
+                      // const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+                      router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(enc)}/ActionDetails`);
                       // updateStatus({action_id:action.id,status:"Completed"});
                     }} />
             ) : (
               <p style={{ color: "#68A6A6" }}>{action.status ==  "Completed"?<FaRegEye onClick={()=>{
-                const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
-                const safeEnc = Buffer.from(enc, "utf8").toString("base64");
-                router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ShowActionDetails`);
+                const enc = encryption.encryption(`${action.id}`, "encryptionKey");
+                // const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+                router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(enc)}/ShowActionDetails`);
               }} style={{ fontSize: 20 }}/>:action.status}</p>
             ),
         };
@@ -221,15 +221,15 @@ function Actions() {
                   onClick={()=>{
                     console.log("Done action", action.action_title);
                     // action.status = "Completed" 
-                    const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
-                    const safeEnc = Buffer.from(enc, "utf8").toString("base64");
-                    router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ActionDetails`);
+                    const enc = encryption.encryption(`${action.id}`, "encryptionKey");
+                    // // const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+                    router.push(`/${current_lang}/Screens/dashboard/actions/${enc}/ActionDetails`);
                   }} />
           ) : (
             <p style={{ color: "#68A6A6" }}>{action.status ==  "Completed"?<FaRegEye onClick={()=>{
-              const enc = encryption.encryption(`${action.id}-${action.action_title}`, "encryptionKey");
-              const safeEnc = Buffer.from(enc, "utf8").toString("base64");
-              router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(safeEnc)}/ShowActionDetails`);
+              const enc = encryption.encryption(`${action.id}`, "encryptionKey");
+              // const safeEnc = Buffer.from(enc, "utf8").toString("base64");
+              router.push(`/${current_lang}/Screens/dashboard/actions/${encodeURIComponent(enc)}/ShowActionDetails`);
             }} style={{ fontSize: 20 }}/>:action.status}</p>
           ),
         };

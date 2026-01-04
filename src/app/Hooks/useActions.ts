@@ -28,6 +28,17 @@ export const useAddAction = () => {
   });
 };
 
+export const useGetActionDataByID=(payload:{id: number, admin_id: number})=>{
+  return useQuery({
+    queryKey: ["action_data", payload.id, payload.admin_id],
+    queryFn: () =>
+      api
+        .post("/get_action_data_by_id", payload)
+        .then((res) => res),
+    enabled: !!payload.id && !!payload.admin_id,
+  });
+}
+
 export const useAddActionDetails = () => {
   return useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

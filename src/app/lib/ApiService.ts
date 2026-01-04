@@ -18,7 +18,15 @@ export default class ApiService {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      const errorData = await response.json().catch(() => null);
+    
+      // لو السيرفر رجع رسالة error
+      if (errorData?.error) {
+        throw new Error(errorData.error);
+      }
+    
+      // fallback لو مفيش رسالة
+      throw new Error(`Request failed with status ${response.status}`);
     }
 
     return response.json();

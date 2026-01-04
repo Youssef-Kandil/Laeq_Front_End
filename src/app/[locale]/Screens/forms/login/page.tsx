@@ -13,6 +13,7 @@ import Image from 'next/image';
 import Link from "next/link";
 import {useTranslations,useLocale} from 'next-intl';
 import Cookies from "js-cookie";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { useLogin , useGoogleLogin } from '@/app/Hooks/useLogin';
 
@@ -44,6 +45,8 @@ function Login() {
 
 
   //  START STATE ===
+  const [showPassword, setShowPassword] = useState(false);
+
   const [email,setEmail] = useState<string>("") ;
   const [password,setPassword] = useState<string>("");
   const [error,setError] = useState<string>("");
@@ -222,8 +225,30 @@ const handleLoginWithGoogle = async () => {
             <label htmlFor="email" >{t("email_label")}</label>
             <input type="text"  id="email" onChange={(e)=>setEmail(e.target.value)}  />
 
-            <label htmlFor="password">{t("password_label")}</label>
-            <input type="password"  id="password"  onChange={(e)=>setPassword(e.target.value)}  />
+              <label htmlFor="password">{t("password_label")}</label>
+            <div style={{ position: "relative", width: "100%" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ paddingRight: "40px" }}
+                />
+
+                <div
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "40%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    color: "#757575"
+                  }}
+                >
+                  {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} color='rgba(211, 2, 2, 0.51)'/>}
+                </div>
+            </div>
+
             <div className={Styles.have_account} style={{marginTop:5}}>
               <Link  href={`/${lang}/Screens/forms/forget_password`}>Forget Password?</Link>
             </div>

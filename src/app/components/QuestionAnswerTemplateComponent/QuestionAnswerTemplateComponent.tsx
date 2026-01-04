@@ -137,7 +137,11 @@ type QuestionProps = {
     const usersList = useEmployees(targetId??-1);
     const assetsList = useAssetsByAdmin(targetId??-1);
     const sortedFields = sortFields(fields);
-    const [actionLevels, setActionLevels] = React.useState<Record<number, string>>({});
+
+
+    // const [actionLevels,setActionLevels] = React.useState<Record<number, string>>({});
+
+
 
   
     // 📝 function بترجع القيمة الحالية لأي field
@@ -159,6 +163,7 @@ type QuestionProps = {
   
         <div className={Styles.QuestionAnswers} >
           {sortedFields.map((field) => {
+
             const  handleChange = async (value: unknown,action_level:string|null = null) => {
                 console.log("Value ::: ", value);
                 if(value !== undefined){
@@ -228,7 +233,7 @@ type QuestionProps = {
                 );
   
               case "action":
-                const currentLevel = actionLevels[field.id] || "";
+                // const currentLevel = actionLevels[field.id] || "";
                 return (
                   <div key={field.id}>
                     <InputComponent                   
@@ -240,18 +245,20 @@ type QuestionProps = {
                         // هنا بنبعت text + action_level
                         handleChange(
                           textValue,
-                          currentLevel
+                          "Medium"
                         );
                       }}
                     />
                      {/* Radio buttons تحت الـ input */}
-                    <div style={{ margin: "8px 0px 30px" ,display:"flex"}}>
+                    {/* <div style={{ margin: "8px 0px 30px" ,display:"flex"}}>
                       {["Medium", "Low", "High"].map((filter, idx) => (
                         <label key={idx} style={{ margin: "16px" ,display:"flex",gap:"5px" }}>
                           <input
                             type="radio"
                             name={`action_filter_${field.id}`}
                             value={filter}
+                            // checked={currentLevel === filter}
+                            // checked={actionLevels[field.id] === filter}
                             checked={currentLevel === filter}
                             // checked لو عايز تحدد قيمة افتراضية
                             onChange={(e) => {
@@ -270,7 +277,7 @@ type QuestionProps = {
                           {filter}
                         </label>
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 );
   

@@ -72,16 +72,16 @@ function EditCompanyForm() {
   const { data, isLoading, error } = useGetCompanyDataByID(Number(Company_id)??-1);
       useEffect(() => {
         if (data) {
-          setCompanyName(data.company_name ?? "");
-          setCompanyEmail(data.company_email ?? "");
-          setCompanyWebSite(data.company_website ?? "");
-          setCompanyLicense(data.company_license ?? "");
-          setCompanySector(data.sector_type ? { id: 0, value: data.sector_type, title: data.sector_type } : null);
+          setCompanyName(data.companyData.company_name ?? "");
+          setCompanyEmail(data.companyData.company_email ?? "");
+          setCompanyWebSite(data.companyData.company_website ?? "");
+          setCompanyLicense(data.companyData.company_license ?? "");
+          setCompanySector(data.companyData.sector_type ? { id: 0, value: data.companyData.sector_type, title: data.companyData.sector_type } : null);
       
           // set sites
-          if (data.sites && data.sites.length > 0) {
+          if (data.companyData.sites && data.companyData.sites.length > 0) {
             setSites(
-              data.sites.map((site: any) => ({
+              data.companyData.sites.map((site: any) => ({
                 id:site.id,
                 admin_id: site.admin_id,
                 company_id:site.company_id,
@@ -212,7 +212,7 @@ function EditCompanyForm() {
       setShowErrorPopup(true);
       setErrorPopupMSG({
         title:"Error",
-        subTitle:"Complete you Brand data",
+        subTitle:"Complete you Branche data",
       })
         return false
     }
@@ -234,7 +234,7 @@ function EditCompanyForm() {
             setShowErrorPopup(true);
             setErrorPopupMSG({
               title:"Wrong",
-              subTitle:"Failed to Edit brand",
+              subTitle:"Failed to Edit Branche",
             })
           }
          }
@@ -383,8 +383,6 @@ function EditCompanyForm() {
           >
             + Add New Site
           </button>
-        {/* {sites.length < maxBranches && (
-        )} */}
       </div>
     </div>
   );

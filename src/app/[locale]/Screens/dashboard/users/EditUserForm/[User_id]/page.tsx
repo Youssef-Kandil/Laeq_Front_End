@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React from 'react'
@@ -36,7 +37,7 @@ function EditUserForm() {
     const { mutate ,isPending} = useEditeEmployee();
     const {data} = useGetEmployeeDataByID(Number(User_id) ?? -1);
 
-    const CompaniesList = Companies.data?.map((item:{id:number,company_name:string}) => ({
+    const CompaniesList = Companies.data.companies?.map((item:{id:number,company_name:string}) => ({
       id: item.id,
       value: String(item.id),
       title: item.company_name,
@@ -88,7 +89,7 @@ function EditUserForm() {
     
 
     function getSitesByCompanyId(companyId:number) {
-      const company = Companies?.data?.find((c :{id:number}) => c.id === companyId);
+      const company = Companies?.data?.companies.find((c :{id:number}) => c.id === companyId);
       const SitesList = company?.sites?.map((item:{id:number,site_name:string}) => ({
         id: item.id,
         value: item.id,
@@ -229,11 +230,16 @@ function EditUserForm() {
                   onSuccess: () => {
                     router.back();
                   },
-                  onError:()=>{
+                  onError:(error:any)=>{
+                    const backendError =
+                    error?.response?.data?.error || // لو راجع من السيرفر
+                    error?.message ||               // لو جا من React Query
+                    "Something went wrong"; 
+                    console.log("backendError ",backendError);    // fallback
                     setShowErrorPopup(true);
                     setErrorPopupMSG({
-                      title:"Wrong!",
-                      subTitle:"faild to Edit user"
+                      title:"warn!",
+                      subTitle: backendError,
                     });
                   }
                 }

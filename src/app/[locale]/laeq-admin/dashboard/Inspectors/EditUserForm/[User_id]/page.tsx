@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React from 'react'
@@ -229,11 +230,16 @@ function EditUserForm() {
                   onSuccess: () => {
                     router.back();
                   },
-                  onError:()=>{
+                  onError:(error:any)=>{
+                    const backendError =
+                    error?.response?.data?.error || // لو راجع من السيرفر
+                    error?.message ||               // لو جا من React Query
+                    "Something went wrong"; 
+                    console.log("backendError ",backendError);    // fallback
                     setShowErrorPopup(true);
                     setErrorPopupMSG({
-                      title:"Wrong!",
-                      subTitle:"faild to Edit user"
+                      title:"ERROR!",
+                      subTitle: backendError,
                     });
                   }
                 }
