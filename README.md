@@ -1,183 +1,111 @@
 # Laeq_Front_End
 =======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-git init
-git add .
-git commit -m "build check list Question Component"
-git branch -M main
-git remote add origin https://github.com/Youssef-Kandil/Laeq_Front_End.git
-git push -u origin main
-git push -f origin main
-ذم
+- git remote add origin https://github.com/Youssef-Kandil/Laeq_Front_End.git
+- npm install
+- npm run build
+- npm run start
 
 
-First, run the development server:
+## Documentation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+All project documentation is centralized in the `Docs` folder:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Figma Design**  
+  - Contains the full UI/UX design for the application.  
+  - Can be used as the single source of truth for layouts, components, and visual guidelines.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Database ERD**  
+  - A complete ERD (Entity Relationship Diagram) for the database.  
+  - Helps understand all entities, relations, and how data flows across the system.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Backend Prisma Schema**  
+  - The backend source code includes a full Prisma schema that reflects the actual production database structure.  
+  - When in doubt about fields or relations, you can rely on the Prisma schema alongside the ERD.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Team Skills Document**  
+  - A dedicated document that outlines the team skills and responsibilities.  
+  - Useful for onboarding, task distribution, and understanding who owns which parts of the system.
 
 
+## Front-End Stack:
+- Next.js
+- Shadcn Ui Kit
+- Typescript
+- Node.js
+- Style With Module Css
+- Lint / Es67
+- React-Query
+- Next-auth
+- React-Icons / Lottie-react 
 
 
-## Date
-      const oneDayInMs = 24 * 60 * 60 * 1000; // 86400000 ملي ثانية
-      const tenDaysInMs = 7 * oneDayInMs;
-      const newTimestamp = Date.now() + tenDaysInMs;
-      const date1 = 1744040104837; // مثال لتاريخ 1
-      const date2 = new Date("2025-05-08").getTime(); // مثال لتاريخ 2
-      const timestamp = new Date(2025, (4 - 1) , 5).getTime();
-      console.log("بعد 7 أيام  : ", new Date(newTimestamp).toLocaleString());
+## Server & Storge:
+- Main Server is VPS  in Hostinger account laeq365.com (Front-end / back-end / DB);
+- Media Storage In Google Cloude Account (All PDF Reports / Assets Images / Other)
+- Use PM2 To Run the Code 
 
-const diffInMs = Math.abs(date1 - date2); // الفرق بالملي ثانية
-const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); // تحويل لأيام
+## Project Structure
 
-console.log(`الفرق بين التاريخين هو ${diffInDays} يوم`);
+- **src/app/[locale]**  
+  - Contains all application pages per language (Next.js App Router).  
+  - Each page composes shared components from `src/app/components` and calls hooks/services as needed.
 
-✅
-## TASKS
+- **src/app/components**  
+  - **components/global**: Reusable UI components (buttons, inputs, tables, cards, popups, etc.) used across the whole project.  
+  - **components/dashboard**: Dashboard‑specific components (e.g. `Nave`, `Aside`, `LaeqNave`, `LaeqAside`) used to build the internal layout.  
+  - **components/website**: Components dedicated to public website / landing pages.
 
-    <!-- COMPONENT TO REUSEING -->
-    BUTTON  ✅
-    TABLE  ✅
-    INPUT  ✅
-    TextArea ✅
-    ImageInput ✅
-    MultiImageInput ✅
-    DateRangeInput ✅
-    DateTimeInput ✅
-    DateInput ✅
-    TimeInput ✅
-    ChooseBtns  ✅
-    ActionBtn
-    FileInput ✅
-    DropListInput ✅
-    DropListInput ✅
-    LocationInput ✅
-    SignatureInput ✅
-    CheckBoxeWithLable To Put It In A List ✅
-    ScoreInput ✅
+- **src/app/Hooks**  
+  - Custom hooks (e.g. `useLogin`, `useAssets`, `useTemplates`, …).  
+  - Each hook encapsulates business logic and data fetching (React Query, API calls) and is consumed by pages or components.
 
-      == EASY ==
-      - popup  ✅
-      - Table Second Button ✅
-      - sceleton loader for tables
-      - sceleton loader for dashboard 
+- **src/app/lib**  
+  - **ApiService.ts**: Centralized API layer (requests, headers, auth handling, etc.).  
+  - **firebase.ts / TrelloService.ts**: Integrations with external services (Firebase, Trello).
 
-      - main client Dashboard ✅
+- **src/app/providers**  
+  - Wraps the app with global providers (React Query Provider, auth/expiration guards, etc.).  
+  - Prepares shared context (session, caching, guards) that is available to all pages.
 
-      - hash in login and create account form
-      - loading and msg  in login and create account form
+- **src/app/services**  
+  - Higher-level services built on top of `ApiService` (e.g. `login_services`, `signup_services`, JWT verification).  
+  - Used by hooks or pages instead of calling the API directly.
 
-      - Translate tables and dashboard +++
+- **src/app/Types**  
+  - Shared TypeScript types and interfaces for core entities (users, templates, assets, reports, etc.).  
+  - Keeps the codebase strongly typed and consistent.
 
+- **src/app/utils**  
+  - Generic utility functions (date helpers, encryption/decryption, regex, image helpers, PDF helpers, `mapLinks`, etc.).  
+  - UI-agnostic helpers used across multiple modules.
 
-      ==== MID ====
+- **src/app/config**  
+  - Static configuration data (navigation titles, aside titles, sectors list, team members, identity, …).  
+  - Feeds components with static content instead of hard‑coding it inside components.
 
-      - add new action form
-      - add new asset form
-      - add new user form
-      - add new company form
-      - add new department form
-      - request inspector form ✅
-      - setting & lang form
-      - add new role form
-      - add new role permission screen
+---
 
+## Component Architecture & Relations
 
-      ==== MID MAX ===
-      - check-lists categories card  ✅
-      - check lists row  ✅
-      - Table with check boxes ✅
-      
-      - automation
-      - show quiz template ✅
-      - answer the quiz ✅ ?????
-      - add temp -m(add new qestions)
+- **Pages (`[locale]` directory)**  
+  - Define what the user sees (screen layout & routing).  
+  - Use Dashboard components (like `Nave`, `Aside`) to build the main page layout.  
+  - Inside each page, global components from `components/global` (such as `Table`, `CheckList_Card`, `QuestionFormComponent`, …) are composed to build the UI.
 
-      // ===  unKoune
-      - notifications screen
-      - show answers in report
+- **Components & Hooks**  
+  - Components focus on **UI** only (render data and handle user interactions).  
+  - Whenever data or side‑effects are needed:
+    - The component calls the appropriate hook (e.g. `useTasks`, `useTemplates`, `useLogin`).  
+    - The hook uses `services`, `ApiService`, and `utils` to handle the business logic and data fetching.  
+  - This creates a clear separation between **UI** (components) and **business/data layer** (hooks + services + lib).
+
+- **Providers**  
+  - `MainProviders` and related provider components wrap the entire app with:
+    - React Query Provider for caching and async state.  
+    - Guards such as `CheckAdminGuard` and `ExpirationGuard` for permissions and session validity.  
+  - Pages and components can rely on these global contexts without duplicating logic.
 
 
-
-{
-  "id": 1,
-  "text": "قيّم الخدمة",
-
-  "fields": [
-    { "id": 1, "type": "text",      "metadata": { "maxLength":5 } },
-
-    { "id": 2, "type": "long_text", "metadata": { "maxLength":500 } },
-
-    { "id": 3, "type": "image",     "metadata": { "maxFiles":1 } },
-
-    {
-      "id": 4,
-      "type": "single",
-      "options": [
-        { "id": 11, "label":"Good","value":"good" },
-        { "id": 12, "label":"Bad", "value":"bad"  }
-      ]
-    }
-  ]
-}
-
-
-
-{
-  "taskId": "xyz",
-  "checklist": {
-    "questions": [
-      {
-        "id": "q1",
-        "text": "ما هو اسمك؟",
-        "fields": [...],
-        "answers": [
-          {
-            "id": "a1",
-            "value": "أنديل",
-            "type": "text"
-          }
-        ]
-      }
-    ]
-  }
-}
-
-
-
-
-
-
->>>>>>> 4caca67 (Initial commit)
